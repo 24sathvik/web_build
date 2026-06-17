@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-zyxen-black: #050505;
+  --color-zyxen-graphite: #0D0D0D;
+  --color-zyxen-silver: #BFC7D5;
+  --color-zyxen-white: #FFFFFF;
+  --color-zyxen-blue: #00D9FF;
+  --color-zyxen-violet: #6E5BFF;
+
+  --font-sans: var(--font-exo), sans-serif;
+  --font-mono: var(--font-roboto-mono), monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  /* Prevent scrollbars while we implement custom smooth scrolling */
+  overscroll-behavior: none;
+}
+
+/* Custom scrollbar for WebKit */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0D0D0D;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #BFC7D5;
+}
+
+/* Glassmorphism utilities */
+.glass-panel {
+  background: rgba(13, 13, 13, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(191, 199, 213, 0.1);
+}
