@@ -1,0 +1,88 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import blogsData from "../../../../content/blogs.json";
+import Image from "next/image";
+
+gsap.registerPlugin(ScrollTrigger);
+
+export function BlogsOverlay() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sections = gsap.utils.toArray(".blog-section") as HTMLElement[];
+    sections.forEach((section) => {
+      const elements = section.querySelectorAll(".reveal-blog");
+      gsap.fromTo(
+        elements,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.2,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            scroller: "#scroll-container-blogs",
+            start: "top 80%",
+            end: "center center",
+            scrub: false,
+          },
+        }
+      );
+    });
+  }, []);
+
+  return (
+    <div id="overlay-container-blogs" ref={containerRef} className="w-full relative z-10 pointer-events-none pb-32">
+      <div className="w-full min-h-screen pt-32 px-8 md:px-24 flex flex-col items-center">
+        
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-[#FFFFFF] mb-16 pointer-events-auto text-center">
+          LATEST IN <span className="text-[#6E5BFF]">INTELLIGENCE</span>
+        </h1>
+
+        <div className="w-full max-w-4xl flex flex-col gap-12">
+          {blogsData.posts.map((post, index) => (
+            <section key={post.id} className="blog-section w-full pointer-events-auto">
+              <div className="reveal-blog glass-panel p-6 md:p-8 rounded-2xl flex flex-col md:flex-row gap-6 border border-white/10 hover:border-[#6E5BFF]/50 transition-colors duration-300">
+                
+                {post.image && (
+                  <div className="w-full md:w-1/3 h-48 relative rounded-xl overflow-hidden shrink-0">
+                    <Image 
+                      src={post.image} 
+                      alt={post.title} 
+                      fill 
+                      className="object-cover" 
+                      unoptimized={post.image.startsWith("http")}
+                    />
+                  </div>
+                )}
+                
+                <div className="flex flex-col flex-grow justify-center">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00D9FF]">
+                      {post.category}
+                    </span>
+                    <span className="text-xs text-white/40">{post.readTime}</span>
+                  </div>
+                  
+                  <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                    {post.title}
+                  </h2>
+                  
+                  <p className="text-[#BFC7D5] text-sm md:text-base line-clamp-3">
+                    {post.excerpt}
+                  </p>
+                </div>
+              </div>
+            </section>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  );
+}

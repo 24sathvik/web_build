@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Info, Package, Cpu, Briefcase, Mail } from "lucide-react";
+import { Home, Info, Package, Cpu, Briefcase, Mail, BookOpen } from "lucide-react";
 
 export function Header() {
   const pathname = usePathname();
@@ -14,6 +14,7 @@ export function Header() {
     { name: "Services", path: "/services", icon: Package },
     { name: "Tech", path: "/technology", icon: Cpu },
     { name: "Projects", path: "/projects", icon: Briefcase },
+    { name: "Blogs", path: "/blogs", icon: BookOpen },
     { name: "Contact", path: "/contact", icon: Mail },
   ];
 
@@ -21,9 +22,9 @@ export function Header() {
     <>
       {/* Top Left Logo */}
       <div className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 pointer-events-none">
-        <span className="pointer-events-auto text-2xl font-bold tracking-[0.2em] text-[#FFFFFF] drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] cursor-pointer">
-          <Link href="/">ZYXEN</Link>
-        </span>
+        <Link href="/" className="pointer-events-auto inline-block">
+          <img src="/images/logo-top.png" alt="Zyxen Logo" className="h-8 md:h-10 w-auto object-contain cursor-pointer" />
+        </Link>
       </div>
 
       {/* Liquid Glass Bottom Nav Bar */}

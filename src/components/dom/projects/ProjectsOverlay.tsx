@@ -37,34 +37,56 @@ export function ProjectsOverlay() {
   return (
     <div id="overlay-container-projects" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       <section className="projects-section w-full h-[100vh] flex flex-col items-start justify-center px-8 md:px-24">
-        <h1 className="reveal-text text-5xl md:text-7xl font-bold tracking-tighter text-[#FFFFFF] mb-4 pointer-events-auto">
-          PROJECT: NEXUS
-        </h1>
-        <div className="reveal-text glass-panel p-6 rounded-xl max-w-md pointer-events-auto">
-          <p className="text-[#BFC7D5] text-lg">
-            A planetary-scale data aggregation engine handling 5 trillion requests per day with zero downtime.
-          </p>
-        </div>
-      </section>
-
-      <section className="projects-section w-full h-[100vh] flex flex-col items-center justify-center px-8 md:px-24">
         <h1 className="reveal-text text-5xl md:text-7xl font-bold tracking-tighter text-[#00D9FF] mb-4 pointer-events-auto">
-          PROJECT: AURA
+          PROJECT: AURA INTELLIGENCE
         </h1>
-        <div className="reveal-text glass-panel p-6 rounded-xl max-w-md text-center pointer-events-auto border border-[#00D9FF]/20">
+        <div className="reveal-text glass-panel p-6 rounded-xl max-w-md pointer-events-auto border border-[#00D9FF]/20">
           <p className="text-[#BFC7D5] text-lg">
             A sentient CRM system that predicts consumer behavior using localized quantum computing clusters.
           </p>
         </div>
       </section>
 
-      <section className="projects-section w-full h-[100vh] flex flex-col items-end justify-center px-8 md:px-24">
+      <section className="projects-section w-full h-[100vh] flex flex-col items-center justify-center px-8 md:px-24">
         <h1 className="reveal-text text-5xl md:text-7xl font-bold tracking-tighter text-[#6E5BFF] mb-4 pointer-events-auto">
-          PROJECT: VOID
+          PROJECT: AROMA DIGITAL
         </h1>
-        <div className="reveal-text glass-panel p-6 rounded-xl max-w-md text-right pointer-events-auto border border-[#6E5BFF]/20">
+        <div className="reveal-text glass-panel p-6 rounded-xl max-w-md text-center pointer-events-auto border border-[#6E5BFF]/20">
           <p className="text-[#BFC7D5] text-lg">
-            The first fully autonomous decentralized cloud architecture designed for multi-planetary settlement.
+            Next-generation digital sensory experiences and immersive web applications.
+          </p>
+        </div>
+      </section>
+
+      <section className="projects-section w-full h-[100vh] flex flex-col items-end justify-center px-8 md:px-24">
+        <h1 className="reveal-text text-5xl md:text-7xl font-bold tracking-tighter text-[#FF0055] mb-4 pointer-events-auto">
+          PROJECT: ARGUS ANALYTICS
+        </h1>
+        <div className="reveal-text glass-panel p-6 rounded-xl max-w-md text-right pointer-events-auto border border-[#FF0055]/20">
+          <p className="text-[#BFC7D5] text-lg">
+            Deep data analytics and visualization platform for enterprise scale decision making.
+          </p>
+        </div>
+      </section>
+
+      <section className="projects-section w-full h-[100vh] flex flex-col items-start justify-center px-8 md:px-24">
+        <h1 className="reveal-text text-5xl md:text-7xl font-bold tracking-tighter text-[#00FF9D] mb-4 pointer-events-auto">
+          PROJECT: LUMINA CORE
+        </h1>
+        <div className="reveal-text glass-panel p-6 rounded-xl max-w-md pointer-events-auto border border-[#00FF9D]/20">
+          <p className="text-[#BFC7D5] text-lg">
+            Core processing and AI optimization engines designed for ultra-low latency operations.
+          </p>
+        </div>
+      </section>
+
+      <section className="projects-section w-full h-[100vh] flex flex-col items-center justify-center px-8 md:px-24">
+        <h1 className="reveal-text text-5xl md:text-7xl font-bold tracking-tighter text-[#FFB300] mb-4 pointer-events-auto">
+          PROJECT: SPACEFLUX WEB
+        </h1>
+        <div className="reveal-text glass-panel p-6 rounded-xl max-w-md text-center pointer-events-auto border border-[#FFB300]/20">
+          <p className="text-[#BFC7D5] text-lg">
+            High-performance web architectures enabling seamless multi-device continuity.
           </p>
         </div>
       </section>

@@ -35,6 +35,12 @@ export function ContactOverlay() {
         <p className="reveal-elem text-xl text-[#BFC7D5] max-w-lg mb-8 pointer-events-auto">
           Ready to engineer the impossible? Connect with our global architecture team to initiate your next multi-planetary project.
         </p>
+        <div className="reveal-elem pointer-events-auto">
+          <p className="text-sm text-[#00D9FF] tracking-widest uppercase mb-1">Direct Comms</p>
+          <a href="mailto:contact@zyxen.in" className="text-2xl text-white hover:text-[#00D9FF] transition-colors">
+            contact@zyxen.in
+          </a>
+        </div>
       </div>
 
       {/* Right side form */}

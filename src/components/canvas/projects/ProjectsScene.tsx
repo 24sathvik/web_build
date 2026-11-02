@@ -9,12 +9,15 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
-function DataCore() {
+function DataCore({ triggerId, scrollerId }: { triggerId: string, scrollerId: string }) {
   const coreRef = useRef<THREE.Group>(null);
   const outerRingRef = useRef<THREE.Mesh>(null);
 
   useGSAP(() => {
     if (!coreRef.current) return;
+    
+    // Make sure elements exist before applying ScrollTrigger to avoid undefined _gsap errors
+    if (typeof window !== 'undefined' && !document.querySelector(triggerId)) return;
 
     // As the user scrolls, the entire core rotates aggressively and scales up
     gsap.to(coreRef.current.rotation, {
@@ -22,8 +25,8 @@ function DataCore() {
       z: Math.PI,
       ease: "power2.inOut",
       scrollTrigger: {
-        trigger: "#overlay-container-projects",
-        scroller: "#scroll-container-projects",
+        trigger: triggerId,
+        scroller: scrollerId,
         start: "top top",
         end: "bottom bottom",
         scrub: 1,
@@ -36,14 +39,14 @@ function DataCore() {
       z: 1.5,
       ease: "power2.inOut",
       scrollTrigger: {
-        trigger: "#overlay-container-projects",
-        scroller: "#scroll-container-projects",
+        trigger: triggerId,
+        scroller: scrollerId,
         start: "top top",
         end: "bottom bottom",
         scrub: 1,
       },
     });
-  });
+  }, { dependencies: [triggerId, scrollerId] });
 
   useFrame((state) => {
     if (outerRingRef.current) {
@@ -88,7 +91,13 @@ function DataCore() {
   );
 }
 
-export default function ProjectsScene() {
+export default function ProjectsScene({ 
+  triggerId = "#overlay-container-projects", 
+  scrollerId = "#scroll-container-projects" 
+}: { 
+  triggerId?: string; 
+  scrollerId?: string; 
+}) {
   return (
     <Canvas
       camera={{ position: [0, 0, 12], fov: 45 }}
@@ -105,7 +114,7 @@ export default function ProjectsScene() {
       <directionalLight position={[-10, -10, -10]} intensity={3} color="#6E5BFF" />
       <pointLight position={[0, 0, 5]} intensity={10} color="#FFFFFF" distance={20} />
 
-      <DataCore />
+      <DataCore triggerId={triggerId} scrollerId={scrollerId} />
 
       {/* Heavy post-processing for a cinematic look */}
       <EffectComposer multisampling={0}>
