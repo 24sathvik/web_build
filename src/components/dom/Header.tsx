@@ -4,19 +4,26 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Info, Package, Cpu, Briefcase, Mail, BookOpen } from "lucide-react";
+import { siteContent } from "@/content/site";
+
+const iconMap: Record<string, typeof Home> = {
+  "/": Home,
+  "/about": Info,
+  "/services": Package,
+  "/technology": Cpu,
+  "/projects": Briefcase,
+  "/blogs": BookOpen,
+  "/contact": Mail,
+};
 
 export function Header() {
   const pathname = usePathname();
 
-  const navItems = [
-    { name: "Home", path: "/", icon: Home },
-    { name: "About", path: "/about", icon: Info },
-    { name: "Services", path: "/services", icon: Package },
-    { name: "Tech", path: "/technology", icon: Cpu },
-    { name: "Projects", path: "/projects", icon: Briefcase },
-    { name: "Blogs", path: "/blogs", icon: BookOpen },
-    { name: "Contact", path: "/contact", icon: Mail },
-  ];
+  const navItems = siteContent.navItems.map((item) => ({
+    name: item.name,
+    path: item.path,
+    icon: iconMap[item.path] || Home,
+  }));
 
   return (
     <>
@@ -40,6 +47,7 @@ export function Header() {
         >
           {navItems.map((item) => {
             const isActive = pathname === item.path;
+            const IconComponent = item.icon;
             return (
               <Link
                 key={item.name}
@@ -61,7 +69,7 @@ export function Header() {
                   }}
                 />
                 
-                <item.icon 
+                <IconComponent 
                   size={22} 
                   strokeWidth={isActive ? 2 : 1.5} 
                   className={clsx("mb-1.5 relative z-10 transition-transform duration-300", isActive && "scale-110")} 
