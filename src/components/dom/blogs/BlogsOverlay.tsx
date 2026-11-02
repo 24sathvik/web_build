@@ -3,12 +3,23 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import blogsData from "../../../../content/blogs.json";
 import Image from "next/image";
+import Link from "next/link";
+
+export interface BlogCard {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  readTime: string;
+  category: string;
+  image: string;
+  date: string;
+}
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function BlogsOverlay() {
+export function BlogsOverlay({ posts }: { posts: BlogCard[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,16 +56,18 @@ export function BlogsOverlay() {
         </h1>
 
         <div className="w-full max-w-4xl flex flex-col gap-12">
-          {blogsData.posts.map((post, index) => (
+          {posts.map((post) => (
             <section key={post.id} className="blog-section w-full pointer-events-auto">
+              <Link href={`/blogs/${post.slug}`} className="block" aria-label={post.title}>
               <div className="reveal-blog glass-panel p-6 md:p-8 rounded-2xl flex flex-col md:flex-row gap-6 border border-white/10 hover:border-[#6E5BFF]/50 transition-colors duration-300">
                 
                 {post.image && (
                   <div className="w-full md:w-1/3 h-48 relative rounded-xl overflow-hidden shrink-0">
                     <Image 
-                      src={post.image} 
+                      src={post.image.startsWith("http") ? post.image : encodeURI(post.image)} 
                       alt={post.title} 
                       fill 
+                      sizes="(min-width: 768px) 33vw, 100vw"
                       className="object-cover" 
                       unoptimized={post.image.startsWith("http")}
                     />
@@ -78,6 +91,7 @@ export function BlogsOverlay() {
                   </p>
                 </div>
               </div>
+              </Link>
             </section>
           ))}
         </div>

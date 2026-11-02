@@ -46,3 +46,21 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(191, 199, 213, 0.1);
 }
+
+/* Blog article typography (server-rendered markdown) */
+.zy-prose { color: #BFC7D5; font-size: 1.0625rem; line-height: 1.8; }
+.zy-prose h1 { display: none; }
+.zy-prose h2 { color: #fff; font-size: 1.6rem; font-weight: 700; margin: 2.5rem 0 1rem; line-height: 1.25; }
+.zy-prose h3 { color: #fff; font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.75rem; }
+.zy-prose p { margin: 1rem 0; }
+.zy-prose a { color: #00D9FF; text-decoration: underline; text-underline-offset: 3px; }
+.zy-prose strong { color: #fff; }
+.zy-prose ul, .zy-prose ol { margin: 1rem 0; padding-left: 1.5rem; }
+.zy-prose ul { list-style: disc; }
+.zy-prose ol { list-style: decimal; }
+.zy-prose li { margin: 0.4rem 0; }
+.zy-prose blockquote { border-left: 3px solid #6E5BFF; padding-left: 1rem; margin: 1.5rem 0; color: #fff; font-style: italic; }
+.zy-prose img { max-width: 100%; height: auto; border-radius: 1rem; margin: 1.5rem 0; }
+.zy-prose hr { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 2.5rem 0; }
+.zy-prose table { display: block; overflow-x: auto; max-width: 100%; }
+.zy-prose code { background: rgba(255,255,255,0.08); padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.9em; }

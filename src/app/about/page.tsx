@@ -1,34 +1,13 @@
-"use client";
+import { pageMetadata } from "@/lib/seo";
+import About from "./client";
 
-import dynamic from "next/dynamic";
-import { Suspense, useEffect } from "react";
-import { Header } from "@/components/dom/Header";
-import { CustomCursor } from "@/components/dom/CustomCursor";
-import { AudioToggle } from "@/components/dom/AudioToggle";
-import { AboutOverlay } from "@/components/dom/about/AboutOverlay";
+export const metadata = pageMetadata({
+  title: "About ZYXEN | Digital Solutions & Creative Agency in Hyderabad",
+  description: "Meet ZYXEN, the Hyderabad team building high-performance websites, software and automation for businesses and aviation academies.",
+  path: "/about",
+  absoluteTitle: true,
+});
 
-const AboutScene = dynamic(() => import("@/components/canvas/about/AboutScene"), { ssr: false });
-
-export default function About() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  return (
-    <main className="relative w-full h-screen overflow-hidden cursor-none">
-      <CustomCursor />
-      <AudioToggle />
-      <Header />
-      
-      <div className="absolute inset-0 z-0">
-        <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
-          <AboutScene />
-        </Suspense>
-      </div>
-
-      <div className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden" id="scroll-container-about">
-        <AboutOverlay />
-      </div>
-    </main>
-  );
+export default function Page() {
+  return <About />;
 }
