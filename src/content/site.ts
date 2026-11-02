@@ -33,6 +33,29 @@ export interface RegulatorItem {
   region: string;
 }
 
+export interface AviationAuthority {
+  code: string;
+  name: string;
+  region: string;
+  questionTypes: string[];
+  subjects: string[];
+  negativeMarking: string;
+  timerPassing: string;
+}
+
+export interface AviationModule {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  features: string[];
+}
+
+export interface AviationFAQ {
+  question: string;
+  answer: string;
+}
+
 export interface SiteContent {
   brand: {
     name: string;
@@ -47,6 +70,7 @@ export interface SiteContent {
       subHeadline: string;
       primaryCta: string;
       secondaryCta: string;
+      aviationCta: string;
     };
     mission: {
       tag: string;
@@ -86,6 +110,30 @@ export interface SiteContent {
   regulators: {
     list: RegulatorItem[];
     note: string;
+  };
+  aviation: {
+    badge: string;
+    headline: string;
+    subHeadline: string;
+    pitch: string;
+    modulesTitle: string;
+    modulesSubtitle: string;
+    modules: AviationModule[];
+    authoritiesTitle: string;
+    authoritiesSubtitle: string;
+    authorities: AviationAuthority[];
+    regulatorNote: string;
+    otherInstitutes: {
+      title: string;
+      description: string;
+      types: string[];
+    };
+    cta: {
+      heading: string;
+      description: string;
+      buttonText: string;
+    };
+    faqs: AviationFAQ[];
   };
   budgetOptions: string[];
   form: {
@@ -132,6 +180,7 @@ export const siteContent: SiteContent = {
   },
   navItems: [
     { name: "Home", path: "/" },
+    { name: "Aviation", path: "/aviation-academy-software" },
     { name: "About", path: "/about" },
     { name: "Services", path: "/services" },
     { name: "Tech", path: "/technology" },
@@ -147,6 +196,7 @@ export const siteContent: SiteContent = {
         "Software for aviation academies and growing businesses: exam portals, fee and finance systems, admissions, ERP and high-performance websites.",
       primaryCta: "Start a project",
       secondaryCta: "Browse Portfolio",
+      aviationCta: "Aviation Academy Systems",
     },
     mission: {
       tag: "The Zyxen Standard",
@@ -331,6 +381,167 @@ export const siteContent: SiteContent = {
       { name: "EASA", region: "Europe" },
     ],
     note: "Configured to follow the exam pattern and rules of DGCA (India), FAA (USA), EASA (Europe), and other authorities on request.", // VERIFY: Exam portal rule sets configurable per authority
+  },
+  aviation: {
+    badge: "Specialized Aviation Academy Software",
+    headline: "Aviation Academy Software",
+    subHeadline: "Exam Portals, Student Fee Management, Admissions & ERP",
+    pitch:
+      "A complete digital system engineered specifically for pilot training institutes and aviation academies. From test simulations configured to match authority syllabi to student fee schedules, admissions pipelines, and multi-branch operations, our software is designed around real academy workflows.",
+    modulesTitle: "Four Core Modules",
+    modulesSubtitle: "Modular software components deployed individually or integrated as a single academy platform.",
+    modules: [
+      {
+        id: "exam-portal",
+        title: "Exam Portal",
+        subtitle: "Mock Exam & Test-Prep Engine",
+        description:
+          "Online test engine configured for pilot-licence ground training. Features timed test simulations, authority syllabus mapping, customizable question pools, and instant performance diagnostics.", // VERIFY: Exam portal deployed for an aviation academy client
+        features: [
+          "Syllabus mapping per subject",
+          "Timed test simulation",
+          "Configurable negative marking",
+          "Subject-wise analytics & review",
+        ],
+      },
+      {
+        id: "finance-fee",
+        title: "Finance & Fee System",
+        subtitle: "Academy Billing & Ledger",
+        description:
+          "End-to-end fee accounting designed for student payment cycles, flight training quotation generation, instalment receipts, and staff payslips.", // VERIFY: Fee system deployed for student accounts at an aviation academy client
+        features: [
+          "Student fee ledgers & instalments",
+          "GST-ready invoice generation",
+          "Payment receipts & follow-ups",
+          "Complete administrative audit trail",
+        ],
+      },
+      {
+        id: "admissions",
+        title: "Admissions System",
+        subtitle: "Enquiry-to-Enrolment Pipeline",
+        description:
+          "Structured pipeline managing inbound student enquiries from website visit to document verification, assessment scheduling, and final batch allocation.", // VERIFY: Admissions workflow deployed for enquiry tracking
+        features: [
+          "Online application intake",
+          "Status pipeline & stage tracking",
+          "Document uploads & verification",
+          "Conversion & intake reports",
+        ],
+      },
+      {
+        id: "erp",
+        title: "ERP Platform",
+        subtitle: "Unified Academy Operations",
+        description:
+          "A centralized operations platform uniting student databases, staff records, flying logs, resource allocation, and multi-branch management into one dashboard.",
+        features: [
+          "Role-based staff permissions",
+          "Batch & student scheduling",
+          "Inventory & equipment tracking",
+          "Multi-centre data synchronization",
+        ],
+      },
+    ],
+    authoritiesTitle: "Built for Each Authority's Rules",
+    authoritiesSubtitle:
+      "Configured to follow the exam pattern and rules of DGCA (India), FAA (USA), and EASA (Europe). Other authorities on request.",
+    authorities: [
+      {
+        code: "DGCA",
+        name: "Directorate General of Civil Aviation",
+        region: "India",
+        questionTypes: [
+          "Multiple Choice Questions (4 options)",
+          "Numerical and calculation-based problems",
+          "Scenario-oriented operational questions",
+        ],
+        subjects: [
+          "Air Navigation",
+          "Aviation Meteorology",
+          "Air Regulations",
+          "Technical General",
+          "Technical Specific",
+          "Radio Telephony (Part 1 & 2 theory)",
+        ],
+        negativeMarking: "Configurable per authority test standards (e.g. 0.25 penalty or zero penalty)",
+        timerPassing: "Timed section timers with 70% passing benchmark",
+      },
+      {
+        code: "FAA",
+        name: "Federal Aviation Administration",
+        region: "USA",
+        questionTypes: [
+          "Airman Knowledge Test structure",
+          "Multiple Choice (3 options standard)",
+          "Figure, chart, and legend reference items",
+        ],
+        subjects: [
+          "Navigation & Flight Planning",
+          "Aviation Weather Reports & Forecasts",
+          "Federal Aviation Regulations (FARs)",
+          "Aerodynamics, Engines & Systems",
+        ],
+        negativeMarking: "Zero negative marking per standard FAA testing format",
+        timerPassing: "Per-subject test timers with 70% passing threshold",
+      },
+      {
+        code: "EASA",
+        name: "European Union Aviation Safety Agency",
+        region: "Europe",
+        questionTypes: [
+          "ECQB-style question format",
+          "Multiple Choice Questions",
+          "Annex, chart, and flight planning interpretation",
+        ],
+        subjects: [
+          "General Navigation & Radio Navigation",
+          "Meteorology",
+          "Air Law & ATC Procedures",
+          "Aircraft General Knowledge",
+          "Flight Performance & Planning",
+        ],
+        negativeMarking: "No negative marking per standard EASA ECQB regulations",
+        timerPassing: "Strict per-subject countdown timers with 75% passing mark",
+      },
+    ],
+    regulatorNote:
+      "Configured to follow the exam pattern and rules of DGCA (India), FAA (USA), EASA (Europe). Other authorities on request.", // VERIFY: Regulatory pattern configuration
+    otherInstitutes: {
+      title: "Adapted for Other Educational Institutes",
+      description:
+        "The same reliable software architecture powers digital operations for schools, undergraduate colleges, professional coaching centres, and competitive exam academies.",
+      types: [
+        "Schools & Junior Colleges (Student Fee Schedules, Admissions, Notices)",
+        "Competitive Exam Coaching Centres (Mock Test Engines, Timers, Negative Marking)",
+        "Professional Training Institutes (Course Enrolment, Batch Scheduling, Invoicing)",
+        "Corporate & Technical Academies (Skill Assessments, Progress Analytics, Certifications)",
+      ],
+    },
+    cta: {
+      heading: "Ready to Upgrade Your Academy's Software?",
+      description:
+        "Speak directly with our engineering team in Hyderabad. We will walk you through live demos of our pilot exam engine, student fee system, and admissions workflows.",
+      buttonText: "Schedule a Consultation",
+    },
+    faqs: [
+      {
+        question: "Can the mock exam engine be configured for DGCA, FAA, or EASA exams?",
+        answer:
+          "Yes. The exam portal allows academy administrators to configure subject categories, question counts, timers, passing percentages, and negative marking rules to follow the syllabus pattern of DGCA (India), FAA (USA), EASA (Europe), or custom authority formats.",
+      },
+      {
+        question: "How does the fee management system handle aviation academy instalments?",
+        answer:
+          "The system supports structured payment schedules tailored for pilot training, including multi-stage ground school and flying fee instalments, quotations, GST-ready invoices, receipts, and individual student balance ledgers.",
+      },
+      {
+        question: "Can these systems be used by schools, colleges, or other coaching institutes?",
+        answer:
+          "Yes. The underlying test-prep, admissions, fee ledger, and operations modules are fully modular and can be adapted for schools, colleges, and competitive coaching centres.",
+      },
+    ],
   },
   budgetOptions: [
     "Under ₹50,000",

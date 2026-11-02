@@ -3,11 +3,12 @@
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Info, Package, Cpu, Briefcase, Mail, BookOpen } from "lucide-react";
+import { Home, Info, Package, Cpu, Briefcase, Mail, BookOpen, Plane } from "lucide-react";
 import { siteContent } from "@/content/site";
 
 const iconMap: Record<string, typeof Home> = {
   "/": Home,
+  "/aviation-academy-software": Plane,
   "/about": Info,
   "/services": Package,
   "/technology": Cpu,
@@ -35,9 +36,9 @@ export function Header() {
       </div>
 
       {/* Liquid Glass Bottom Nav Bar */}
-      <header className="fixed bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
+      <header className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-auto max-w-[95vw] overflow-x-auto no-scrollbar">
         <nav 
-          className="flex items-center gap-1 sm:gap-2 p-2 rounded-[2rem] border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
+          className="flex items-center gap-1 p-1.5 md:p-2 rounded-[2rem] border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
           style={{
             background: "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)",
             backdropFilter: "blur(20px)",
@@ -53,14 +54,14 @@ export function Header() {
                 key={item.name}
                 href={item.path}
                 className={clsx(
-                  "relative flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[1.5rem] transition-all duration-500 overflow-hidden",
+                  "relative flex flex-col items-center justify-center w-[58px] sm:w-[68px] md:w-[72px] h-[64px] md:h-[72px] rounded-[1.2rem] md:rounded-[1.5rem] transition-all duration-300 overflow-hidden flex-shrink-0",
                   isActive ? "text-[#FFFFFF]" : "text-[#BFC7D5] hover:text-[#FFFFFF]"
                 )}
               >
                 {/* Active Background Glow */}
                 <div
                   className={clsx(
-                    "absolute inset-0 transition-opacity duration-500",
+                    "absolute inset-0 transition-opacity duration-300",
                     isActive ? "opacity-100" : "opacity-0"
                   )}
                   style={{
@@ -70,11 +71,11 @@ export function Header() {
                 />
                 
                 <IconComponent 
-                  size={22} 
+                  size={20} 
                   strokeWidth={isActive ? 2 : 1.5} 
-                  className={clsx("mb-1.5 relative z-10 transition-transform duration-300", isActive && "scale-110")} 
+                  className={clsx("mb-1 relative z-10 transition-transform duration-300", isActive && "scale-110")} 
                 />
-                <span className="text-[10px] font-medium tracking-wider relative z-10">
+                <span className="text-[9px] md:text-[10px] font-medium tracking-wider relative z-10 truncate max-w-[60px] text-center">
                   {item.name}
                 </span>
               </Link>

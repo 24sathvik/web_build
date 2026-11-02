@@ -54,7 +54,16 @@ export function Overlay() {
           >
             {siteContent.home.hero.primaryCta}
           </button>
-          <a href="/projects" className="px-8 py-3 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all">
+          <a 
+            href="/aviation-academy-software" 
+            className="px-8 py-3 bg-white/10 border border-[#00D9FF]/40 text-[#00D9FF] font-bold uppercase tracking-widest text-sm rounded-full hover:bg-[#00D9FF]/20 hover:scale-105 transition-all"
+          >
+            {siteContent.home.hero.aviationCta}
+          </a>
+          <a 
+            href="/projects" 
+            className="px-8 py-3 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all"
+          >
             {siteContent.home.hero.secondaryCta}
           </a>
         </div>
@@ -93,6 +102,15 @@ export function Overlay() {
                 </div>
               );
             })}
+          </div>
+
+          <div className="reveal-text mt-10">
+            <a 
+              href="/aviation-academy-software" 
+              className="text-sm font-semibold text-[#00D9FF] hover:underline inline-flex items-center gap-1.5"
+            >
+              Explore Aviation Academy Software Modules &rarr;
+            </a>
           </div>
         </div>
       </section>
