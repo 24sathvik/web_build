@@ -19,13 +19,17 @@ export interface ServiceItem {
   name: string;
   description: string;
   highlights: string[];
+  linkUrl: string;
+  linkText: string;
 }
 
 export interface ProjectItem {
   id: string;
   name: string;
   tagline: string;
+  group: "aviation" | "business";
   features: string[];
+  badge: string;
 }
 
 export interface RegulatorItem {
@@ -107,6 +111,16 @@ export interface SiteContent {
   };
   services: ServiceItem[];
   projects: ProjectItem[];
+  projectGroups: {
+    aviation: {
+      title: string;
+      subtitle: string;
+    };
+    business: {
+      title: string;
+      subtitle: string;
+    };
+  };
   regulators: {
     list: RegulatorItem[];
     note: string;
@@ -156,9 +170,10 @@ export interface SiteContent {
     subHeadline: string;
     cardHeading: string;
     cardDescription: string;
-    stack: {
+    principles: {
       title: string;
       description: string;
+      tag: string;
     }[];
   };
 }
@@ -190,7 +205,6 @@ export const siteContent: SiteContent = {
   ],
   home: {
     hero: {
-      // H1 kept exactly as required
       headline: "ENGINEERING EXPERIENCES.",
       subHeadline:
         "Software for aviation academies and growing businesses: exam portals, fee and finance systems, admissions, ERP and high-performance websites.",
@@ -233,33 +247,33 @@ export const siteContent: SiteContent = {
     },
   },
   about: {
-    tag: "About Zyxen",
-    headline: "ENGINEERING WITH PURPOSE.",
+    tag: "Hyderabad Web & Software Agency",
+    headline: "ABOUT ZYXEN",
     intro:
-      "A Hyderabad web and software agency designing focused systems for aviation training academies, growing manufacturers, and modern businesses.",
-    storyTitle: "Why We Started Zyxen",
+      "ZYXEN is an independent web development and software engineering agency based in Hyderabad, Telangana. We build custom software, pilot exam portals, fee and finance systems, admissions pipelines, and interactive websites for aviation academies, growing manufacturers, and modern businesses.", // VERIFY: Hyderabad base and agency scope
+    storyTitle: "How We Work",
     storyBody:
-      "ZYXEN was started in Hyderabad out of a clear realization: specialized institutes and growing businesses are frequently forced to choose between rigid off-the-shelf software and bloated custom systems that never quite fit. We build focused software that handles everyday operations—from pilot mock tests and student fee schedules to production tracking—with precision and clean interfaces.", // VERIFY: Origin story and scope of work in Hyderabad
-    quote: "Reliability is the foundation, but clarity of use is the standard.",
-    pillarsTitle: "How We Build",
+      "We founded ZYXEN in Hyderabad to give organizations software that matches their real day-to-day operations. Too many teams are forced to choose between rigid subscription tools and bloated custom enterprise software that never quite fits. We design and build focused systems where every screen, workflow, and report is built around your team's specific requirements.", // VERIFY: Agency philosophy and operational focus in Hyderabad
+    quote: "Clear specifications, focused software, and direct engineering support.",
+    pillarsTitle: "Our Working Principles",
     pillars: [
       {
         number: "01",
-        title: "Workflow Accuracy",
+        title: "Clear Scope",
         description:
-          "Software structured around actual daily routines, compliance checklists, and verified business rules rather than generic templates.",
+          "Detailed technical specifications, itemized deliverables, and agreed milestones before any code is written, ensuring no surprise costs or misaligned expectations.",
       },
       {
         number: "02",
-        title: "Performance & Clarity",
+        title: "Fast Delivery",
         description:
-          "Clean, fast-loading interfaces designed so staff, students, and customers can complete tasks without training delays.",
+          "Working software deployed iteratively in weeks rather than months, so academy administrators and business teams can test and refine workflows early.",
       },
       {
         number: "03",
-        title: "Direct Support",
+        title: "Long-Term Support",
         description:
-          "Direct communication with the engineers building your platform, ensuring swift adjustments as your team scales.",
+          "Direct, ongoing communication with the engineers who built your platform for maintenance, compliance rule adjustments, and feature additions.",
       },
     ],
   },
@@ -271,6 +285,8 @@ export const siteContent: SiteContent = {
       description:
         "Fast, responsive websites built with modern web frameworks to present your business clearly and convert visitors into enquiries.",
       highlights: ["Next.js & TypeScript", "Search Optimization", "Mobile-first Layout", "Fast Page Speeds"],
+      linkUrl: "/contact",
+      linkText: "Discuss a Website",
     },
     {
       id: "interactive-3d",
@@ -279,6 +295,8 @@ export const siteContent: SiteContent = {
       description:
         "Engaging 3D and motion-driven web experiences that showcase high-value products and modern brands without sacrificing load time.",
       highlights: ["WebGL & Three.js", "Smooth GSAP Motion", "Hardware-optimized", "Immersive Visuals"],
+      linkUrl: "/projects#interactive-websites",
+      linkText: "View Interactive Sites",
     },
     {
       id: "custom-software",
@@ -287,6 +305,8 @@ export const siteContent: SiteContent = {
       description:
         "Tailored web applications built around your exact operational workflows, team roles, and internal business rules.",
       highlights: ["Role-based Access", "Secure APIs", "Operational Portals", "Custom Dashboards"],
+      linkUrl: "/projects#zyops",
+      linkText: "Explore Custom Systems",
     },
     {
       id: "business-automation",
@@ -295,29 +315,47 @@ export const siteContent: SiteContent = {
       description:
         "Practical automation pipelines that connect internal tools, reduce manual data entry, and speed up turnaround times.",
       highlights: ["System Integration", "Notification Pipelines", "Reduced Data Entry", "Audit Logging"],
+      linkUrl: "/projects#goalflow",
+      linkText: "See Automation Tools",
     },
     {
       id: "exam-admissions",
       number: "05",
       name: "Exam Portals & Admissions Systems",
       description:
-        "Online test-prep and student intake platforms configured to follow regulatory exam patterns and institutional admissions steps.", // VERIFY: Configured for pilot mock exams and academy admissions
+        "Online test-prep and student intake platforms configured to follow regulatory exam patterns and institutional admissions steps.", // VERIFY: Pilot mock exam portals and academy admissions deployments
       highlights: ["Regulatory Exam Patterns", "Timed Simulations", "Enquiry Pipeline", "Student Performance Logs"],
+      linkUrl: "/aviation-academy-software",
+      linkText: "View Aviation & Exam Systems",
     },
     {
       id: "erp-finance",
       number: "06",
       name: "ERP, Finance & Fee Management",
       description:
-        "Centralized systems for fee collection, student billing, quotation generation, inventory sync, and GST-ready invoicing.", // VERIFY: Fee collection and quotation system implementation
+        "Centralized systems for fee collection, student billing, quotation generation, inventory sync, and GST-ready invoicing.", // VERIFY: Academy fee collection and quotation system implementation
       highlights: ["Student Fee Ledgers", "GST Invoicing", "Stock & Inventory", "Audit Trail"],
+      linkUrl: "/aviation-academy-software",
+      linkText: "View Fee & ERP Modules",
     },
   ],
+  projectGroups: {
+    aviation: {
+      title: "For Aviation Academies and Institutes",
+      subtitle: "Dedicated testing engines, fee management, student pipelines, and multi-branch operations.",
+    },
+    business: {
+      title: "For Businesses",
+      subtitle: "Operations software, task execution, invoicing systems, batch tracking, and interactive web presences.",
+    },
+  },
   projects: [
     {
       id: "exam-portals",
       name: "Exam Portals",
-      tagline: "Mock exam and test-prep engine for pilot-licence training", // VERIFY: Configured to follow syllabus mapping and negative marking rules for an aviation academy client
+      tagline: "Mock exam and test-prep engine for pilot-licence training", // VERIFY: Configured for pilot mock exams at an aviation academy client
+      group: "aviation",
+      badge: "Aviation Academy",
       features: [
         "syllabus mapping per authority",
         "timed simulation",
@@ -329,48 +367,64 @@ export const siteContent: SiteContent = {
       id: "finance-fee",
       name: "Finance & Fee System",
       tagline: "Fees, quotations, invoices, payslips and student billing for academies", // VERIFY: Implemented student fee management for an aviation academy client
+      group: "aviation",
+      badge: "Aviation Academy",
       features: ["ledger", "invoicing", "audit trail"],
     },
     {
       id: "admissions",
       name: "Admissions System",
       tagline: "Enquiry-to-enrolment tracking for institutes", // VERIFY: Deployed for enquiry and enrolment pipeline tracking
+      group: "aviation",
+      badge: "Academy & Institute",
       features: ["applications", "status pipeline", "reports"],
     },
     {
       id: "erp-platform",
       name: "ERP Platform",
       tagline: "One system for sales, stock and accounts",
+      group: "aviation",
+      badge: "Institute ERP",
       features: ["multi-unit", "roles", "inventory sync"],
     },
     {
       id: "zyops",
       name: "ZyOps",
       tagline: "Sales and operations management",
+      group: "business",
+      badge: "Operations Tool",
       features: ["invoices", "work-in-progress board", "quotations", "accounts"],
     },
     {
       id: "goalflow",
       name: "GoalFlow",
       tagline: "Milestone and team execution tracking",
+      group: "business",
+      badge: "Team Execution",
       features: ["goals", "progress analytics", "tasks"],
     },
     {
       id: "quotation-invoice",
       name: "Quotation & Invoice Generator",
       tagline: "GST-ready quotes and invoices for SMEs",
+      group: "business",
+      badge: "Billing System",
       features: ["PDF", "tax calculation", "follow-ups"],
     },
     {
       id: "production-management",
       name: "Production Management",
       tagline: "Batch tracking and raw-material control for pharma and chemical manufacturing", // VERIFY: Configured with batch deduction and FEFO logic for small pharma manufacturing
+      group: "business",
+      badge: "Manufacturing ERP",
       features: ["batch deduction", "FEFO", "audit trail", "low-stock alerts"],
     },
     {
       id: "interactive-websites",
       name: "Interactive Websites",
       tagline: "High-performance Next.js sites with 3D and motion",
+      group: "business",
+      badge: "Web presences",
       features: ["fast loading", "SEO-first"],
     },
   ],
@@ -566,23 +620,35 @@ export const siteContent: SiteContent = {
     },
   },
   technology: {
-    headline: "THE ENGINE",
-    subHeadline: "Built with modern, production-tested software standards.",
-    cardHeading: "Engineering Principles",
+    headline: "HOW WE BUILD",
+    subHeadline: "Modern engineering focused on performance, security, and long-term maintainability.",
+    cardHeading: "Engineering Standards",
     cardDescription:
-      "We build with Next.js, TypeScript, PostgreSQL, and reliable cloud infrastructure. Every platform is designed for predictable uptime, fast response times, and clear data models rather than fragile experimental setups.",
-    stack: [
+      "Every platform we develop is built with proven production technologies. We prioritize clean architectures, structured databases, and mobile-first design so your software remains fast, dependable, and easy to maintain as your business grows.",
+    principles: [
       {
-        title: "Frontend & Interfaces",
-        description: "Next.js App Router, React 19, TypeScript, Tailwind CSS, and WebGL/Three.js.",
+        tag: "Framework",
+        title: "Next.js & Modern Frontend",
+        description:
+          "Server-side rendering, static generation, and TypeScript for rapid page loads, search visibility, and predictable behavior.",
       },
       {
-        title: "Backend & Systems",
-        description: "Node.js, structured relational databases, authenticated REST APIs, and role-based access.",
+        tag: "Speed",
+        title: "Performance-First Architecture",
+        description:
+          "Optimized asset pipelines, lightweight motion components, and clean code paths designed to run smoothly on mobile networks and desktop browsers alike.",
       },
       {
-        title: "Reliability & Hosting",
-        description: "Cloud edge deployment, automated builds, SSL by default, and continuous monitoring.",
+        tag: "Security",
+        title: "Security & Data Integrity",
+        description:
+          "Strict authenticated endpoints, role-based user permissions, relational database integrity with PostgreSQL, and automated backup routines.",
+      },
+      {
+        tag: "Mobile",
+        title: "Mobile-First Usability",
+        description:
+          "Responsive interfaces structured so pilots, students, administrative staff, and managers can complete tasks seamlessly from any smartphone, tablet, or workstation.",
       },
     ],
   },

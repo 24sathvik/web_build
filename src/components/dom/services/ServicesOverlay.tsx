@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { siteContent } from "@/content/site";
@@ -16,12 +17,12 @@ export function ServicesOverlay() {
       const texts = section.querySelectorAll(".reveal-text");
       gsap.fromTo(
         texts,
-        { x: -50, opacity: 0 },
+        { x: -40, opacity: 0 },
         {
           x: 0,
           opacity: 1,
           duration: 1,
-          stagger: 0.2,
+          stagger: 0.15,
           ease: "power3.out",
           scrollTrigger: {
             trigger: section,
@@ -56,7 +57,7 @@ export function ServicesOverlay() {
   return (
     <div id="overlay-container-services" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       <section className="services-section w-full h-[100vh] flex flex-col items-center justify-center text-center px-4">
-        <p className="reveal-text text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-bold mb-4 pointer-events-auto">
+        <p className="reveal-text text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           Our Services
         </p>
         <h1 className="reveal-text text-5xl md:text-8xl font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto">
@@ -72,21 +73,37 @@ export function ServicesOverlay() {
         return (
           <section
             key={service.id}
-            className={`services-section w-full h-[100vh] flex flex-col ${isRight ? "items-end" : "items-start"} justify-center px-8 md:px-24`}
+            className={`services-section w-full h-[100vh] flex flex-col ${isRight ? "items-end" : "items-start"} justify-center px-6 md:px-24`}
           >
-            <div className={`max-w-xl pointer-events-auto glass-panel p-8 rounded-2xl ${borderClasses[idx % borderClasses.length]}`}>
-              <p className={`reveal-text text-sm font-bold ${numberColors[idx % numberColors.length]} mb-2 tracking-widest`}>
+            <div className={`max-w-xl w-full pointer-events-auto glass-panel p-8 md:p-10 rounded-2xl ${borderClasses[idx % borderClasses.length]} backdrop-blur-md`}>
+              <p className={`reveal-text text-sm font-bold font-mono ${numberColors[idx % numberColors.length]} mb-2 tracking-widest`}>
                 {service.number}
               </p>
               <h2 className="reveal-text text-3xl md:text-5xl font-bold mb-4 text-[#FFFFFF]">
                 {service.name}
               </h2>
-              <p className="reveal-text text-[#BFC7D5] text-lg leading-relaxed mb-6">
+              <p className="reveal-text text-[#BFC7D5] text-base md:text-lg leading-relaxed mb-6">
                 {service.description}
               </p>
-              <p className="reveal-text text-xs text-white/50 font-mono tracking-widest uppercase">
-                {service.highlights.join(" • ")}
-              </p>
+              <div className={`reveal-text flex flex-wrap gap-2 mb-6 ${isRight ? "justify-end" : "justify-start"}`}>
+                {service.highlights.map((highlight) => (
+                  <span
+                    key={highlight}
+                    className="text-xs uppercase font-mono tracking-wider px-2.5 py-1 rounded bg-white/5 text-white/70 border border-white/10"
+                  >
+                    {highlight}
+                  </span>
+                ))}
+              </div>
+              <div className={`reveal-text pt-4 border-t border-white/10 flex ${isRight ? "justify-end" : "justify-start"}`}>
+                <Link
+                  href={service.linkUrl}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-white/90 transition-colors shadow-md"
+                >
+                  <span>{service.linkText}</span>
+                  <span>&rarr;</span>
+                </Link>
+              </div>
             </div>
           </section>
         );
