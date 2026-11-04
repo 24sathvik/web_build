@@ -253,7 +253,7 @@ export const siteContent: SiteContent = {
       "ZYXEN is an independent web development and software engineering agency based in Hyderabad, Telangana. We build custom software, pilot exam portals, fee and finance systems, admissions pipelines, and interactive websites for aviation academies, growing manufacturers, and modern businesses.", // VERIFY: Hyderabad base and agency scope
     storyTitle: "How We Work",
     storyBody:
-      "We founded ZYXEN in Hyderabad to give organizations software that matches their real day-to-day operations. Too many teams are forced to choose between rigid subscription tools and bloated custom enterprise software that never quite fits. We design and build focused systems where every screen, workflow, and report is built around your team's specific requirements.", // VERIFY: Agency philosophy and operational focus in Hyderabad
+      "ZYXEN develops pilot exam portals, fee and finance systems, admissions pipelines, and operations software for aviation academies and institutes. We also engineer custom web applications, workflow automation tools, and high-performance websites for growing businesses.", // VERIFY: What ZYXEN builds and for whom
     quote: "Clear specifications, focused software, and direct engineering support.",
     pillarsTitle: "Our Working Principles",
     pillars: [
