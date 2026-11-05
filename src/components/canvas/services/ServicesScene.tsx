@@ -1,19 +1,24 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { Float, Box, Sphere, Torus, Cone } from "@react-three/drei";
 import { EffectComposer, Bloom, ChromaticAberration } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import SceneShell, { useQualityTierContext } from "../SceneShell";
+import { isReducedMotion } from "@/lib/motion";
 
 function Carousel() {
   const groupRef = useRef<THREE.Group>(null);
+  const tier = useQualityTierContext();
+  const isLite = tier === "lite";
 
   useGSAP(() => {
     if (!groupRef.current) return;
+    if (isReducedMotion()) return;
     
     // Rotate the entire carousel based on scroll
     gsap.to(groupRef.current.rotation, {
@@ -29,43 +34,81 @@ function Carousel() {
     });
   });
 
-  const material = new THREE.MeshPhysicalMaterial({
-    color: "#050505",
-    metalness: 0.9,
-    roughness: 0.1,
-    transmission: 0.9,
-    thickness: 1,
-    envMapIntensity: 2,
-    emissive: "#6E5BFF",
-    emissiveIntensity: 0.2,
-    wireframe: true,
-  });
+  const material = useMemo(() => {
+    if (isLite) {
+      return new THREE.MeshStandardMaterial({
+        color: "#050505",
+        metalness: 0.8,
+        roughness: 0.2,
+        emissive: "#6E5BFF",
+        emissiveIntensity: 0.2,
+        wireframe: true,
+      });
+    }
+
+    return new THREE.MeshPhysicalMaterial({
+      color: "#050505",
+      metalness: 0.9,
+      roughness: 0.1,
+      transmission: 0.9,
+      thickness: 1,
+      envMapIntensity: 2,
+      emissive: "#6E5BFF",
+      emissiveIntensity: 0.2,
+      wireframe: true,
+    });
+  }, [isLite]);
 
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
       {/* Service 1 */}
-      <Float speed={2} floatIntensity={2} position={[0, 0, 5]}>
+      <Float speed={isLite ? 1 : 2} floatIntensity={isLite ? 1 : 2} position={[0, 0, 5]}>
         <Box args={[1.5, 1.5, 1.5]} material={material} />
       </Float>
       {/* Service 2 */}
-      <Float speed={1.5} floatIntensity={1.5} position={[5, 0, 0]}>
-        <Sphere args={[1, 32, 32]} material={material} />
+      <Float speed={isLite ? 1 : 1.5} floatIntensity={isLite ? 1 : 1.5} position={[5, 0, 0]}>
+        <Sphere args={[1, isLite ? 16 : 32, isLite ? 16 : 32]} material={material} />
       </Float>
       {/* Service 3 */}
-      <Float speed={2.5} floatIntensity={1} position={[0, 0, -5]}>
-        <Torus args={[1, 0.4, 16, 100]} material={material} />
+      <Float speed={isLite ? 1.5 : 2.5} floatIntensity={1} position={[0, 0, -5]}>
+        <Torus args={[1, 0.4, 16, isLite ? 40 : 100]} material={material} />
       </Float>
       {/* Service 4 */}
-      <Float speed={1.8} floatIntensity={2} position={[-5, 0, 0]}>
-        <Cone args={[1, 2, 32]} material={material} />
+      <Float speed={isLite ? 1 : 1.8} floatIntensity={isLite ? 1 : 2} position={[-5, 0, 0]}>
+        <Cone args={[1, 2, isLite ? 16 : 32]} material={material} />
       </Float>
     </group>
   );
 }
 
+function ServicesEffects() {
+  const tier = useQualityTierContext();
+  const isLite = tier === "lite";
+
+  if (isLite) {
+    return (
+      <EffectComposer multisampling={0}>
+        <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={1.2} mipmapBlur />
+      </EffectComposer>
+    );
+  }
+
+  return (
+    <EffectComposer multisampling={0}>
+      <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={1.5} mipmapBlur />
+      <ChromaticAberration
+        blendFunction={BlendFunction.NORMAL}
+        offset={new THREE.Vector2(0.005, 0.005)}
+        radialModulation={false}
+        modulationOffset={0}
+      />
+    </EffectComposer>
+  );
+}
+
 export default function ServicesScene() {
   return (
-    <Canvas
+    <SceneShell
       camera={{ position: [0, 2, 10], fov: 45 }}
       gl={{ powerPreference: "high-performance", antialias: false }}
     >
@@ -76,15 +119,7 @@ export default function ServicesScene() {
 
       <Carousel />
 
-      <EffectComposer multisampling={0}>
-        <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={1.5} mipmapBlur />
-        <ChromaticAberration
-          blendFunction={BlendFunction.NORMAL}
-          offset={new THREE.Vector2(0.005, 0.005)}
-          radialModulation={false}
-          modulationOffset={0}
-        />
-      </EffectComposer>
-    </Canvas>
+      <ServicesEffects />
+    </SceneShell>
   );
 }

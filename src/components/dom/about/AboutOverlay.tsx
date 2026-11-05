@@ -12,9 +12,14 @@ export function AboutOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sections = gsap.utils.toArray(".about-section") as HTMLElement[];
     sections.forEach((section) => {
       const texts = section.querySelectorAll(".reveal-text");
+      if (prefersReducedMotion) {
+        gsap.set(texts, { scale: 1, opacity: 1, filter: "none" });
+        return;
+      }
       gsap.fromTo(
         texts,
         { scale: 0.8, opacity: 0, filter: "blur(10px)" },

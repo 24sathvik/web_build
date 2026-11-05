@@ -1,7 +1,6 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
-import { Environment, Preload } from "@react-three/drei";
+import { Environment, Lightformer, Preload } from "@react-three/drei";
 import { EffectComposer, Bloom, Noise, ChromaticAberration, Vignette } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
@@ -12,20 +11,48 @@ import Chapter3 from "./chapters/Chapter3";
 import Chapter4 from "./chapters/Chapter4";
 import Chapter5 from "./chapters/Chapter5";
 import CameraRig from "./CameraRig";
+import SceneShell, { useQualityTierContext } from "./SceneShell";
 
-export default function Scene() {
+function SceneEffects() {
+  const tier = useQualityTierContext();
+  const isLite = tier === "lite";
+
+  if (isLite) {
+    return (
+      <EffectComposer multisampling={0}>
+        <Bloom 
+          luminanceThreshold={0.2} 
+          luminanceSmoothing={0.9} 
+          intensity={1.2} 
+          mipmapBlur 
+        />
+      </EffectComposer>
+    );
+  }
+
   return (
-    <Canvas
-      shadows
-      camera={{ position: [0, 0, 5], fov: 45, near: 0.1, far: 1000 }}
-      gl={{
-        powerPreference: "high-performance",
-        antialias: false, // Disabled because of post-processing
-        stencil: false,
-        depth: true,
-      }}
-      dpr={[1, 2]} // Support high-DPI displays
-    >
+    <EffectComposer multisampling={0}>
+      <Bloom 
+        luminanceThreshold={0.2} 
+        luminanceSmoothing={0.9} 
+        intensity={1.5} 
+        mipmapBlur 
+      />
+      <ChromaticAberration
+        blendFunction={BlendFunction.NORMAL}
+        offset={new THREE.Vector2(0.002, 0.002)}
+        radialModulation={false}
+        modulationOffset={0}
+      />
+      <Noise opacity={0.02} blendFunction={BlendFunction.OVERLAY} />
+      <Vignette eskil={false} offset={0.1} darkness={1.1} />
+    </EffectComposer>
+  );
+}
+
+function SceneContent() {
+  return (
+    <>
       <color attach="background" args={["#050505"]} />
       <fog attach="fog" args={["#050505", 5, 30]} />
 
@@ -34,8 +61,12 @@ export default function Scene() {
       <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
       <spotLight position={[-10, 10, -5]} intensity={2} color="#00D9FF" angle={0.5} penumbra={1} />
       
-      {/* Environment for Reflections */}
-      <Environment preset="city" />
+      {/* Local Environment: no external HDR download */}
+      <Environment resolution={128}>
+        <Lightformer form="rect" intensity={1.5} position={[10, 5, 0]} scale={[10, 5, 1]} target={[0, 0, 0]} />
+        <Lightformer form="rect" intensity={2} color="#00D9FF" position={[-10, 5, 0]} scale={[10, 5, 1]} target={[0, 0, 0]} />
+        <Lightformer form="ring" color="#6E5BFF" intensity={1} position={[0, -5, 5]} scale={10} />
+      </Environment>
 
       {/* GSAP Controlled Camera Rig */}
       <CameraRig />
@@ -58,24 +89,26 @@ export default function Scene() {
       </group>
 
       {/* Post Processing */}
-      <EffectComposer multisampling={0}>
-        <Bloom 
-          luminanceThreshold={0.2} 
-          luminanceSmoothing={0.9} 
-          intensity={1.5} 
-          mipmapBlur 
-        />
-        <ChromaticAberration
-          blendFunction={BlendFunction.NORMAL}
-          offset={new THREE.Vector2(0.002, 0.002)}
-          radialModulation={false}
-          modulationOffset={0}
-        />
-        <Noise opacity={0.02} blendFunction={BlendFunction.OVERLAY} />
-        <Vignette eskil={false} offset={0.1} darkness={1.1} />
-      </EffectComposer>
+      <SceneEffects />
 
       <Preload all />
-    </Canvas>
+    </>
+  );
+}
+
+export default function Scene() {
+  return (
+    <SceneShell
+      shadows
+      camera={{ position: [0, 0, 5], fov: 45, near: 0.1, far: 1000 }}
+      gl={{
+        powerPreference: "high-performance",
+        antialias: false,
+        stencil: false,
+        depth: true,
+      }}
+    >
+      <SceneContent />
+    </SceneShell>
   );
 }

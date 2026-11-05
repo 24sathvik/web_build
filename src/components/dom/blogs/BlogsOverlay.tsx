@@ -23,9 +23,14 @@ export function BlogsOverlay({ posts }: { posts: BlogCard[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sections = gsap.utils.toArray(".blog-section") as HTMLElement[];
     sections.forEach((section) => {
       const elements = section.querySelectorAll(".reveal-blog");
+      if (prefersReducedMotion) {
+        gsap.set(elements, { opacity: 1, y: 0 });
+        return;
+      }
       gsap.fromTo(
         elements,
         { opacity: 0, y: 50 },

@@ -12,9 +12,14 @@ export function AviationOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sections = gsap.utils.toArray(".aviation-section") as HTMLElement[];
     sections.forEach((section) => {
       const texts = section.querySelectorAll(".reveal-text");
+      if (prefersReducedMotion) {
+        gsap.set(texts, { y: 0, opacity: 1 });
+        return;
+      }
       gsap.fromTo(
         texts,
         { y: 40, opacity: 0 },

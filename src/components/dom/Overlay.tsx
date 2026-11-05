@@ -12,10 +12,14 @@ export function Overlay() {
   const [isContactOpen, setIsContactOpen] = useState(false);
 
   useEffect(() => {
-    // Reveal animations for text on scroll
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sections = gsap.utils.toArray(".chapter-section") as HTMLElement[];
     sections.forEach((section) => {
       const texts = section.querySelectorAll(".reveal-text");
+      if (prefersReducedMotion) {
+        gsap.set(texts, { y: 0, opacity: 1 });
+        return;
+      }
       gsap.fromTo(
         texts,
         { y: 50, opacity: 0 },

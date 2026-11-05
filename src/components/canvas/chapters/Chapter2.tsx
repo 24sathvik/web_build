@@ -4,10 +4,13 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Float, Sphere, Trail } from "@react-three/drei";
 import * as THREE from "three";
+import { useQualityTierContext } from "../SceneShell";
 
 export default function Chapter2() {
   const coreRef = useRef<THREE.Group>(null);
   const shellRef = useRef<THREE.Mesh>(null);
+  const tier = useQualityTierContext();
+  const isLite = tier === "lite";
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
@@ -26,7 +29,7 @@ export default function Chapter2() {
       <Float speed={1.5} rotationIntensity={1} floatIntensity={2}>
         <group ref={coreRef}>
           {/* Inner Energy Core */}
-          <Sphere args={[1, 32, 32]}>
+          <Sphere args={[1, isLite ? 16 : 32, isLite ? 16 : 32]}>
             <meshStandardMaterial
               color="#00D9FF"
               emissive="#00D9FF"
@@ -37,27 +40,29 @@ export default function Chapter2() {
           </Sphere>
           
           {/* Orbiting Energy Particles */}
-          <Trail width={5} length={8} color={new THREE.Color(2, 10, 10)} attenuation={(t) => t * t}>
+          <Trail width={isLite ? 3 : 5} length={isLite ? 4 : 8} color={new THREE.Color(2, 10, 10)} attenuation={(t) => t * t}>
             <mesh position={[1.5, 0, 0]}>
               <sphereGeometry args={[0.05]} />
               <meshBasicMaterial color="#ffffff" />
             </mesh>
           </Trail>
-          <Trail width={5} length={8} color={new THREE.Color(10, 2, 10)} attenuation={(t) => t * t}>
-            <mesh position={[-1.5, 0, 0]}>
-              <sphereGeometry args={[0.05]} />
-              <meshBasicMaterial color="#ffffff" />
-            </mesh>
-          </Trail>
+          {!isLite && (
+            <Trail width={5} length={8} color={new THREE.Color(10, 2, 10)} attenuation={(t) => t * t}>
+              <mesh position={[-1.5, 0, 0]}>
+                <sphereGeometry args={[0.05]} />
+                <meshBasicMaterial color="#ffffff" />
+              </mesh>
+            </Trail>
+          )}
         </group>
 
-        {/* Outer Tech Shell */}
+        {/* Outer Tech Shell: simple standard material on lite */}
         <mesh ref={shellRef}>
           <icosahedronGeometry args={[2, 1]} />
-          <meshPhysicalMaterial
+          <meshStandardMaterial
             color="#050505"
             metalness={0.9}
-            roughness={0.1}
+            roughness={0.2}
             wireframe
             transparent
             opacity={0.3}

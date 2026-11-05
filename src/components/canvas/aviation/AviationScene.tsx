@@ -1,21 +1,26 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { Float, Stars, Torus } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import SceneShell, { useQualityTierContext } from "../SceneShell";
+import { isReducedMotion } from "@/lib/motion";
 
 function FlightRadarMesh() {
   const groupRef = useRef<THREE.Group>(null);
   const ringRef1 = useRef<THREE.Mesh>(null);
   const ringRef2 = useRef<THREE.Mesh>(null);
+  const tier = useQualityTierContext();
+  const isLite = tier === "lite";
 
   useGSAP(() => {
     if (!groupRef.current) return;
     if (typeof window !== "undefined" && !document.querySelector("#overlay-container-aviation")) return;
+    if (isReducedMotion()) return;
 
     // As user scrolls through aviation page, rotate radar rings and push scene forward
     gsap.to(groupRef.current.rotation, {
@@ -47,49 +52,50 @@ function FlightRadarMesh() {
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (ringRef1.current) {
-      ringRef1.current.rotation.z = t * 0.2;
+      ringRef1.current.rotation.z = t * (isLite ? 0.1 : 0.2);
     }
     if (ringRef2.current) {
-      ringRef2.current.rotation.z = -t * 0.15;
+      ringRef2.current.rotation.z = -t * (isLite ? 0.08 : 0.15);
     }
   });
 
   return (
     <group ref={groupRef} position={[0, 0, -2]}>
-      <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
+      <Float speed={isLite ? 1 : 1.5} rotationIntensity={isLite ? 0.3 : 0.5} floatIntensity={isLite ? 0.5 : 1}>
         {/* Central navigational compass rings */}
         <mesh ref={ringRef1}>
-          <torusGeometry args={[4, 0.03, 16, 100]} />
+          <torusGeometry args={[4, 0.03, 16, isLite ? 40 : 100]} />
           <meshBasicMaterial color="#00D9FF" transparent opacity={0.6} />
         </mesh>
 
         <mesh ref={ringRef2} rotation={[Math.PI / 4, 0, 0]}>
-          <torusGeometry args={[5.5, 0.02, 16, 100]} />
+          <torusGeometry args={[5.5, 0.02, 16, isLite ? 40 : 100]} />
           <meshBasicMaterial color="#6E5BFF" transparent opacity={0.4} />
         </mesh>
 
-        <Torus args={[2.5, 0.04, 16, 80]} rotation={[0, Math.PI / 3, 0]}>
+        <Torus args={[2.5, 0.04, 16, isLite ? 32 : 80]} rotation={[0, Math.PI / 3, 0]}>
           <meshStandardMaterial color="#00D9FF" emissive="#00D9FF" emissiveIntensity={0.8} />
         </Torus>
 
         {/* Core marker */}
         <mesh position={[0, 0, 0]}>
-          <sphereGeometry args={[0.3, 16, 16]} />
-          <meshStandardMaterial color="#FFFFFF" emissive="#00D9FF" emissiveIntensity={2} />
+          <sphereGeometry args={[0.3, isLite ? 8 : 16, isLite ? 8 : 16]} />
+          <meshStandardMaterial color="#FFFFFF" emissive="#00D9FF" emissiveIntensity={isLite ? 1.5 : 2} />
         </mesh>
       </Float>
     </group>
   );
 }
 
-export default function AviationScene() {
+function AviationContent() {
+  const tier = useQualityTierContext();
+  const isLite = tier === "lite";
+  const starCount = isLite ? 625 : 2500;
+
   return (
-    <Canvas
-      camera={{ position: [0, 0, 10], fov: 45 }}
-      gl={{ powerPreference: "high-performance", antialias: false }}
-    >
+    <>
       <color attach="background" args={["#050505"]} />
-      <Stars radius={80} depth={40} count={2500} factor={3} saturation={1} fade speed={1.5} />
+      <Stars key={starCount} radius={80} depth={40} count={starCount} factor={3} saturation={1} fade speed={isLite ? 1 : 1.5} />
       <ambientLight intensity={1} />
       <directionalLight position={[5, 10, 5]} intensity={2} color="#00D9FF" />
       <pointLight position={[0, 0, 4]} intensity={5} color="#6E5BFF" distance={15} />
@@ -97,8 +103,19 @@ export default function AviationScene() {
       <FlightRadarMesh />
 
       <EffectComposer multisampling={0}>
-        <Bloom luminanceThreshold={0.3} luminanceSmoothing={0.9} intensity={2} mipmapBlur />
+        <Bloom luminanceThreshold={0.3} luminanceSmoothing={0.9} intensity={isLite ? 1.5 : 2} mipmapBlur />
       </EffectComposer>
-    </Canvas>
+    </>
+  );
+}
+
+export default function AviationScene() {
+  return (
+    <SceneShell
+      camera={{ position: [0, 0, 10], fov: 45 }}
+      gl={{ powerPreference: "high-performance", antialias: false }}
+    >
+      <AviationContent />
+    </SceneShell>
   );
 }

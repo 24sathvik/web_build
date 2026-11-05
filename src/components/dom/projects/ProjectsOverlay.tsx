@@ -316,9 +316,14 @@ export function ProjectsOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sections = gsap.utils.toArray(".projects-section") as HTMLElement[];
     sections.forEach((section) => {
       const texts = section.querySelectorAll(".reveal-text");
+      if (prefersReducedMotion) {
+        gsap.set(texts, { opacity: 1, y: 0 });
+        return;
+      }
       gsap.fromTo(
         texts,
         { opacity: 0, y: 35 },

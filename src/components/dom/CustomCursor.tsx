@@ -2,19 +2,25 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import clsx from "clsx";
 
 export function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
 
   useEffect(() => {
-    // Hide default cursor globally
-    document.body.style.cursor = 'none';
+    // Only activate custom cursor on fine pointer (mouse/trackpad) devices
+    const finePointer = window.matchMedia("(pointer: fine)");
+    if (!finePointer.matches) {
+      setIsEnabled(false);
+      return;
+    }
+
+    setIsEnabled(true);
+    document.body.style.cursor = "none";
 
     const onMouseMove = (e: MouseEvent) => {
-      // Instant small dot
       if (dotRef.current) {
         gsap.to(dotRef.current, {
           x: e.clientX,
@@ -23,7 +29,6 @@ export function CustomCursor() {
         });
       }
       
-      // Trailing tech ring
       if (cursorRef.current) {
         gsap.to(cursorRef.current, {
           x: e.clientX,
@@ -44,15 +49,28 @@ export function CustomCursor() {
       if (dotRef.current) gsap.to(dotRef.current, { scale: 1, duration: 0.2 });
     };
 
-    // Detect hover on interactive elements
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (target.closest('a, button, input, [role="button"]')) {
         setIsHovering(true);
-        if (cursorRef.current) gsap.to(cursorRef.current, { scale: 1.5, backgroundColor: "rgba(0, 217, 255, 0.1)", borderColor: "rgba(0, 217, 255, 0.5)", duration: 0.3 });
+        if (cursorRef.current) {
+          gsap.to(cursorRef.current, {
+            scale: 1.5,
+            backgroundColor: "rgba(0, 217, 255, 0.1)",
+            borderColor: "rgba(0, 217, 255, 0.5)",
+            duration: 0.3,
+          });
+        }
       } else {
         setIsHovering(false);
-        if (cursorRef.current) gsap.to(cursorRef.current, { scale: 1, backgroundColor: "transparent", borderColor: "rgba(255, 255, 255, 0.2)", duration: 0.3 });
+        if (cursorRef.current) {
+          gsap.to(cursorRef.current, {
+            scale: 1,
+            backgroundColor: "transparent",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+            duration: 0.3,
+          });
+        }
       }
     };
 
@@ -61,51 +79,50 @@ export function CustomCursor() {
     window.addEventListener("mouseup", onMouseUp);
     window.addEventListener("mouseover", handleMouseOver);
 
-    // Continuous rotation for the outer tech ring
+    // Continuous rotation for outer tech ring
+    let rotateTween: gsap.core.Tween | null = null;
     if (cursorRef.current) {
-      gsap.to(cursorRef.current, {
+      rotateTween = gsap.to(cursorRef.current, {
         rotation: 360,
         duration: 10,
         repeat: -1,
-        ease: "linear"
+        ease: "linear",
       });
     }
 
     return () => {
+      document.body.style.cursor = "";
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
       window.removeEventListener("mouseover", handleMouseOver);
-      document.body.style.cursor = 'auto';
+      if (rotateTween) rotateTween.kill();
     };
   }, [isHovering]);
 
+  if (!isEnabled) return null;
+
   return (
     <>
-      {/* Outer Quantum Lens */}
-      <div 
-        ref={cursorRef} 
-        className={clsx(
-          "fixed top-0 left-0 w-12 h-12 rounded-full border border-white/20 backdrop-blur-[2px] pointer-events-none z-[100] hidden md:flex items-center justify-center transition-opacity duration-300",
-          "origin-center -translate-x-1/2 -translate-y-1/2"
-        )}
+      {/* Precision Core Dot */}
+      <div
+        ref={dotRef}
+        className="fixed top-0 left-0 pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
+        style={{ willChange: "transform" }}
       >
-        {/* Tech crosshair markings */}
-        <div className="absolute top-0 w-[2px] h-2 bg-[#00D9FF]" />
-        <div className="absolute bottom-0 w-[2px] h-2 bg-[#00D9FF]" />
-        <div className="absolute left-0 w-2 h-[2px] bg-[#00D9FF]" />
-        <div className="absolute right-0 w-2 h-[2px] bg-[#00D9FF]" />
+        <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full shadow-[0_0_8px_#00D9FF]" />
       </div>
 
-      {/* Inner precise dot */}
-      <div 
-        ref={dotRef} 
-        className={clsx(
-          "fixed top-0 left-0 w-1.5 h-1.5 pointer-events-none z-[100] hidden md:block",
-          "origin-center -translate-x-1/2 -translate-y-1/2 transition-all duration-200"
-        )}
+      {/* Outer Tactical Crosshair Ring */}
+      <div
+        ref={cursorRef}
+        className="fixed top-0 left-0 pointer-events-none z-[9998] -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full border border-white/20 transition-colors duration-200"
+        style={{ willChange: "transform" }}
       >
-        <div className={clsx("w-full h-full rotate-45 transition-colors duration-300", isHovering ? "bg-[#6E5BFF]" : "bg-[#00D9FF]")} />
+        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-[1px] h-1 bg-[#00D9FF]/60" />
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-[1px] h-1 bg-[#00D9FF]/60" />
+        <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-1 h-[1px] bg-[#00D9FF]/60" />
+        <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-1 h-[1px] bg-[#00D9FF]/60" />
       </div>
     </>
   );

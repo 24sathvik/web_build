@@ -12,9 +12,14 @@ export function TechOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sections = gsap.utils.toArray(".tech-section") as HTMLElement[];
     sections.forEach((section) => {
       const texts = section.querySelectorAll(".reveal-text");
+      if (prefersReducedMotion) {
+        gsap.set(texts, { scale: 1, opacity: 1, y: 0 });
+        return;
+      }
       gsap.fromTo(
         texts,
         { scale: 1.05, opacity: 0, y: 30 },

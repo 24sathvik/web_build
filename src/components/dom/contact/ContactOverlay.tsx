@@ -24,8 +24,14 @@ export function ContactOverlay() {
   useEffect(() => {
     // Reveal animation on load
     if (containerRef.current) {
+      const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const elements = containerRef.current.querySelectorAll(".reveal-elem");
+      if (prefersReducedMotion) {
+        gsap.set(elements, { opacity: 1, y: 0 });
+        return;
+      }
       gsap.fromTo(
-        containerRef.current.querySelectorAll(".reveal-elem"),
+        elements,
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: "power3.out" }
       );

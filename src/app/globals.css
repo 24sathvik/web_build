@@ -21,6 +21,19 @@ body {
   overscroll-behavior: none;
 }
 
+/* Custom cursor visibility: only hide native cursor on devices with fine pointer */
+@media (pointer: coarse) {
+  html, body, main, .cursor-none {
+    cursor: auto !important;
+  }
+}
+
+@media (pointer: fine) {
+  .cursor-none {
+    cursor: none;
+  }
+}
+
 /* Custom scrollbar for WebKit */
 ::-webkit-scrollbar {
   width: 8px;
