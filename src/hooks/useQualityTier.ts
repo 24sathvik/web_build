@@ -9,6 +9,18 @@ export function useQualityTier(): QualityTier {
   const [tier, setTier] = useState<QualityTier>("static");
 
   useEffect(() => {
+    // 0. Check URL query override for testing: ?tier=static|lite|full
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const urlTier = params.get("tier");
+      if (urlTier === "static" || urlTier === "lite" || urlTier === "full") {
+        setTier(urlTier);
+        return;
+      }
+    } catch {
+      // Ignore if URLSearchParams is unavailable
+    }
+
     // 1. Check "static" conditions
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
