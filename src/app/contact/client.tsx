@@ -6,10 +6,13 @@ import { Header } from "@/components/dom/Header";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { ContactOverlay } from "@/components/dom/contact/ContactOverlay";
+import { useQualityTier } from "@/hooks/useQualityTier";
 
 const ContactScene = dynamic(() => import("@/components/canvas/contact/ContactScene"), { ssr: false });
 
 export default function Contact() {
+  const tier = useQualityTier();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -21,9 +24,16 @@ export default function Contact() {
       <Header />
       
       <div className="absolute inset-0 z-0">
-        <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
-          <ContactScene />
-        </Suspense>
+        {tier !== "static" ? (
+          <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
+            <ContactScene />
+          </Suspense>
+        ) : (
+          <div
+            className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(110,91,255,0.18),rgba(5,5,5,1))]"
+            aria-hidden="true"
+          />
+        )}
       </div>
 
       <div className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden" id="scroll-container-contact">

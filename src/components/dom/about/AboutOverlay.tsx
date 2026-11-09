@@ -63,7 +63,7 @@ export function AboutOverlay() {
         </p>
       </section>
 
-      <section className="about-section w-full h-[100vh] flex flex-col items-start justify-center px-8 md:px-24">
+      <section className="about-section content-visibility-auto w-full h-[100vh] flex flex-col items-start justify-center px-8 md:px-24">
         <div className="max-w-2xl pointer-events-auto glass-panel p-8 md:p-12 rounded-2xl border border-white/10">
           <h2 className="reveal-text text-3xl md:text-5xl font-bold mb-6 text-[#6E5BFF]">
             {siteContent.about.storyTitle}
@@ -77,7 +77,7 @@ export function AboutOverlay() {
         </div>
       </section>
 
-      <section className="about-section w-full min-h-[100vh] flex flex-col items-center justify-center text-center px-4 py-24">
+      <section className="about-section content-visibility-auto w-full min-h-[100vh] flex flex-col items-center justify-center text-center px-4 py-24">
         <h2 className="reveal-text text-4xl md:text-6xl font-bold mb-16 text-[#FFFFFF] pointer-events-auto">
           {siteContent.about.pillarsTitle}
         </h2>

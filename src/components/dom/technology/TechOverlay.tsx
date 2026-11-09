@@ -65,7 +65,7 @@ export function TechOverlay() {
       </section>
 
       {/* Engineering Standards Section */}
-      <section className="tech-section w-full min-h-[100vh] flex flex-col items-center justify-center px-6 md:px-20 py-20">
+      <section className="tech-section content-visibility-auto w-full min-h-[100vh] flex flex-col items-center justify-center px-6 md:px-20 py-20">
         <div className="max-w-5xl w-full pointer-events-auto glass-panel p-8 md:p-12 rounded-3xl border border-[#00D9FF]/30">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="reveal-text text-3xl md:text-5xl font-bold mb-4 text-[#FFFFFF]">

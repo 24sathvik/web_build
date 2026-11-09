@@ -92,15 +92,7 @@ function CameraRig() {
 
 function AboutEffects() {
   const tier = useQualityTierContext();
-  const isLite = tier === "lite";
-
-  if (isLite) {
-    return (
-      <EffectComposer multisampling={0}>
-        <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={1.5} mipmapBlur />
-      </EffectComposer>
-    );
-  }
+  if (tier !== "full") return null;
 
   return (
     <EffectComposer multisampling={0}>

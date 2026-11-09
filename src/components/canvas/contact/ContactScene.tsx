@@ -54,15 +54,7 @@ function BlackHole() {
 
 function ContactEffects() {
   const tier = useQualityTierContext();
-  const isLite = tier === "lite";
-
-  if (isLite) {
-    return (
-      <EffectComposer multisampling={0}>
-        <Bloom luminanceThreshold={0.1} luminanceSmoothing={0.9} intensity={2} mipmapBlur />
-      </EffectComposer>
-    );
-  }
+  if (tier !== "full") return null;
 
   return (
     <EffectComposer multisampling={0}>

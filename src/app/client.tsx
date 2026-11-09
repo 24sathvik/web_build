@@ -8,9 +8,11 @@ import { Overlay } from "@/components/dom/Overlay";
 import { Header } from "@/components/dom/Header";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { CustomCursor } from "@/components/dom/CustomCursor";
+import { useQualityTier } from "@/hooks/useQualityTier";
 
-// Register ScrollTrigger
+// Register ScrollTrigger & ignore mobile address bar resize re-measures
 gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 // Dynamically import the Canvas to prevent SSR issues with Three.js
 const Scene = dynamic(() => import("@/components/canvas/Scene"), {
@@ -18,6 +20,8 @@ const Scene = dynamic(() => import("@/components/canvas/Scene"), {
 });
 
 export default function Home() {
+  const tier = useQualityTier();
+
   useEffect(() => {
     // Scroll to top on load
     window.scrollTo(0, 0);
@@ -29,11 +33,18 @@ export default function Home() {
       <AudioToggle />
       <Header />
       
-      {/* 3D WebGL Background */}
+      {/* 3D WebGL Background: gated by tier so static tier never downloads the 3D bundle */}
       <div className="absolute inset-0 z-0">
-        <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
-          <Scene />
-        </Suspense>
+        {tier !== "static" ? (
+          <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
+            <Scene />
+          </Suspense>
+        ) : (
+          <div
+            className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(110,91,255,0.18),rgba(5,5,5,1))]"
+            aria-hidden="true"
+          />
+        )}
       </div>
 
       {/* DOM Overlay for Scroll and UI */}

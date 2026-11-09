@@ -91,9 +91,11 @@ function TechContent() {
 
       <CircuitBoard />
 
-      <EffectComposer multisampling={0}>
-        <Bloom luminanceThreshold={0.1} luminanceSmoothing={0.9} intensity={isLite ? 1.8 : 2.5} mipmapBlur />
-      </EffectComposer>
+      {tier === "full" && (
+        <EffectComposer multisampling={0}>
+          <Bloom luminanceThreshold={0.1} luminanceSmoothing={0.9} intensity={2.5} mipmapBlur />
+        </EffectComposer>
+      )}
     </>
   );
 }

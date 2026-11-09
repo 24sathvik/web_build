@@ -378,7 +378,7 @@ export function ProjectsOverlay() {
       </section>
 
       {/* GROUP 1: Aviation Academies & Institutes */}
-      <section id="aviation-systems" className="projects-section w-full min-h-[50vh] flex flex-col items-center justify-center text-center px-6 py-16">
+      <section id="aviation-systems" className="projects-section content-visibility-auto w-full min-h-[50vh] flex flex-col items-center justify-center text-center px-6 py-16">
         <span className="reveal-text text-xs font-mono uppercase tracking-[0.25em] text-[#00D9FF] px-3 py-1 rounded-full bg-[#00D9FF]/10 border border-[#00D9FF]/30 mb-4 pointer-events-auto">
           Group 01 &bull; Aviation &amp; Academies
         </span>
@@ -397,7 +397,7 @@ export function ProjectsOverlay() {
           <section
             key={project.id}
             id={project.id}
-            className="projects-section w-full min-h-[100vh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
+            className="projects-section content-visibility-auto w-full min-h-[100vh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
           >
             <div className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center ${isEven ? "" : "lg:[&>*:first-child]:order-2"}`}>
               {/* Left Column: Project Info */}
@@ -447,7 +447,7 @@ export function ProjectsOverlay() {
       })}
 
       {/* GROUP 2: Businesses */}
-      <section id="business-systems" className="projects-section w-full min-h-[50vh] flex flex-col items-center justify-center text-center px-6 py-16">
+      <section id="business-systems" className="projects-section content-visibility-auto w-full min-h-[50vh] flex flex-col items-center justify-center text-center px-6 py-16">
         <span className="reveal-text text-xs font-mono uppercase tracking-[0.25em] text-[#6E5BFF] px-3 py-1 rounded-full bg-[#6E5BFF]/10 border border-[#6E5BFF]/30 mb-4 pointer-events-auto">
           Group 02 &bull; Enterprise &amp; SMEs
         </span>
@@ -466,7 +466,7 @@ export function ProjectsOverlay() {
           <section
             key={project.id}
             id={project.id}
-            className="projects-section w-full min-h-[100vh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
+            className="projects-section content-visibility-auto w-full min-h-[100vh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
           >
             <div className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center ${isEven ? "" : "lg:[&>*:first-child]:order-2"}`}>
               {/* Left Column: Project Info */}
@@ -511,7 +511,7 @@ export function ProjectsOverlay() {
       })}
 
       {/* CTA Section */}
-      <section className="projects-section w-full min-h-[60vh] flex flex-col items-center justify-center text-center px-6 py-24">
+      <section className="projects-section content-visibility-auto w-full min-h-[60vh] flex flex-col items-center justify-center text-center px-6 py-24">
         <h2 className="reveal-text text-4xl md:text-6xl font-bold text-white mb-6 pointer-events-auto">
           Need a Custom Platform?
         </h2>

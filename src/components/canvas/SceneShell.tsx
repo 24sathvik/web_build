@@ -27,11 +27,12 @@ export function SceneShell({
 }: SceneShellProps) {
   const tier = useQualityTier();
   const [mounted, setMounted] = useState(false);
+  const [canvasVisible, setCanvasVisible] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isInView, setIsInView] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Dynamic DPR: [1, 1.5] for lite and [1, 2] for full
+  // Dynamic DPR: [1, 1.25] for lite and [1, 1.75] for full
   const [dpr, setDpr] = useState<number>(tier === "lite" ? 1.25 : 1.75);
 
   useEffect(() => {
@@ -42,35 +43,104 @@ export function SceneShell({
     }
   }, [tier]);
 
-  // Mount after first paint using requestIdleCallback with timeout fallback
+  // Mount rule:
+  // 1. Wait for window "load" AND React hydration to finish.
+  // 2. full tier: mount via requestIdleCallback with a 2000 ms timeout.
+  // 3. lite tier: mount on the first pointerdown, touchstart, wheel, scroll or keydown,
+  //    OR after 5000 ms of idle post-load, whichever comes first.
+  // 4. Until then show the CSS gradient. Fade canvas in when ready.
   useEffect(() => {
     if (tier === "static") return;
 
-    let handle: any = null;
-    let isIdle = false;
+    let isDisposed = false;
+    let cleanupListeners: (() => void) | null = null;
 
+    const mountCanvas = () => {
+      if (isDisposed) return;
+      setMounted(true);
+    };
+
+    const scheduleAfterLoad = () => {
+      if (isDisposed) return;
+
+      if (tier === "full") {
+        const win = window as any;
+        let idleId: any = null;
+        let timeoutId: any = null;
+
+        if (typeof win.requestIdleCallback === "function") {
+          idleId = win.requestIdleCallback(() => mountCanvas(), { timeout: 2000 });
+        } else {
+          timeoutId = setTimeout(() => mountCanvas(), 500);
+        }
+
+        cleanupListeners = () => {
+          if (idleId && typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(idleId);
+          if (timeoutId) clearTimeout(timeoutId);
+        };
+      } else if (tier === "lite") {
+        const win = window as any;
+        let idleId: any = null;
+        let timeoutId: any = null;
+        let triggered = false;
+
+        const events = ["pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
+
+        const onInteraction = () => {
+          if (triggered || isDisposed) return;
+          triggered = true;
+          cleanup();
+          mountCanvas();
+        };
+
+        const cleanup = () => {
+          events.forEach((evt) => {
+            window.removeEventListener(evt, onInteraction, { capture: true } as any);
+          });
+          if (idleId && typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(idleId);
+          if (timeoutId) clearTimeout(timeoutId);
+        };
+
+        cleanupListeners = cleanup;
+
+        events.forEach((evt) => {
+          window.addEventListener(evt, onInteraction, { once: true, passive: true, capture: true });
+        });
+
+        // 5000 ms idle post-load fallback: wait 5000ms, then mount on idle
+        timeoutId = setTimeout(() => {
+          if (triggered || isDisposed) return;
+          if (typeof win.requestIdleCallback === "function") {
+            idleId = win.requestIdleCallback(() => {
+              if (!triggered && !isDisposed) {
+                triggered = true;
+                cleanup();
+                mountCanvas();
+              }
+            });
+          } else {
+            triggered = true;
+            cleanup();
+            mountCanvas();
+          }
+        }, 5000);
+      }
+    };
+
+    let loadHandler: (() => void) | null = null;
     if (typeof window !== "undefined") {
-      const win = window as any;
-      if (typeof win.requestIdleCallback === "function") {
-        isIdle = true;
-        handle = win.requestIdleCallback(
-          () => setMounted(true),
-          { timeout: 800 }
-        );
+      if (document.readyState === "complete") {
+        scheduleAfterLoad();
       } else {
-        handle = setTimeout(() => setMounted(true), 120);
+        loadHandler = () => scheduleAfterLoad();
+        window.addEventListener("load", loadHandler, { once: true });
       }
     }
 
     return () => {
-      if (typeof window !== "undefined" && handle !== null) {
-        const win = window as any;
-        if (isIdle && typeof win.cancelIdleCallback === "function") {
-          win.cancelIdleCallback(handle);
-        } else {
-          clearTimeout(handle);
-        }
-      }
+      isDisposed = true;
+      if (loadHandler) window.removeEventListener("load", loadHandler);
+      if (cleanupListeners) cleanupListeners();
     };
   }, [tier]);
 
@@ -114,37 +184,49 @@ export function SceneShell({
     return <div ref={containerRef} className={className}>{fallbackBg}</div>;
   }
 
-  // Before idle callback mounts, show fallback background so text paints first
-  if (!mounted) {
-    return <div ref={containerRef} className={className}>{fallbackBg}</div>;
-  }
-
   // Frameloop is paused when hidden or offscreen
   const shouldRender = isVisible && isInView;
 
   return (
-    <div ref={containerRef} className={className}>
-      <QualityTierContext.Provider value={tier}>
-        <Canvas
-          camera={camera}
-          shadows={shadows}
-          gl={{
-            powerPreference: "high-performance",
-            antialias: false,
-            stencil: false,
-            depth: true,
-            ...gl,
-          }}
-          dpr={dpr}
-          frameloop={shouldRender ? "always" : "never"}
+    <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
+      {/* Background gradient: always present underneath so text paints first and canvas fades in */}
+      <div className="absolute inset-0 z-0">
+        {fallbackBg}
+      </div>
+
+      {/* Canvas container: mounts lazily and fades in once ready */}
+      {mounted && (
+        <div
+          className={`relative z-10 w-full h-full transition-opacity duration-700 ease-out ${
+            canvasVisible ? "opacity-100" : "opacity-0"
+          }`}
         >
-          <PerformanceMonitor
-            onDecline={() => setDpr(1)}
-            onIncline={() => setDpr(tier === "lite" ? 1.5 : 2)}
-          />
-          {children}
-        </Canvas>
-      </QualityTierContext.Provider>
+          <QualityTierContext.Provider value={tier}>
+            <Canvas
+              camera={camera}
+              shadows={shadows}
+              gl={{
+                powerPreference: "high-performance",
+                antialias: false,
+                stencil: false,
+                depth: true,
+                ...gl,
+              }}
+              dpr={dpr}
+              frameloop={shouldRender ? "always" : "never"}
+              onCreated={() => {
+                requestAnimationFrame(() => setCanvasVisible(true));
+              }}
+            >
+              <PerformanceMonitor
+                onDecline={() => setDpr(1)}
+                onIncline={() => setDpr(tier === "lite" ? 1.5 : 2)}
+              />
+              {children}
+            </Canvas>
+          </QualityTierContext.Provider>
+        </div>
+      )}
     </div>
   );
 }

@@ -74,7 +74,7 @@ export function Overlay() {
       </section>
 
       {/* Chapter 2: The Mission */}
-      <section className="chapter-section w-full h-[100vh] flex flex-col items-start justify-center px-8 md:px-24">
+      <section className="chapter-section content-visibility-auto w-full h-[100vh] flex flex-col items-start justify-center px-8 md:px-24">
         <div className="max-w-2xl pointer-events-auto glass-panel p-8 rounded-2xl">
           <p className="reveal-text text-xs text-[#00D9FF] uppercase tracking-[0.3em] font-bold mb-4">
             {siteContent.home.mission.tag}
@@ -89,7 +89,7 @@ export function Overlay() {
       </section>
 
       {/* Chapter 3: Core Capabilities */}
-      <section className="chapter-section w-full h-[100vh] flex flex-col justify-center px-8 md:px-24">
+      <section className="chapter-section content-visibility-auto w-full h-[100vh] flex flex-col justify-center px-8 md:px-24">
         <div className="pointer-events-auto">
           <h2 className="reveal-text text-4xl md:text-6xl font-bold mb-12 text-[#6E5BFF]">
             {siteContent.home.capabilities.heading}
@@ -120,7 +120,7 @@ export function Overlay() {
       </section>
 
       {/* Chapter 4: Future Vision & Contact */}
-      <section className="chapter-section w-full h-[100vh] flex flex-col items-center justify-center px-4">
+      <section className="chapter-section content-visibility-auto w-full h-[100vh] flex flex-col items-center justify-center px-4">
         <div className="pointer-events-auto text-center bg-[#050505]/80 p-12 rounded-3xl backdrop-blur-md border border-[#00D9FF]/20 max-w-3xl">
           <h2 className="reveal-text text-4xl md:text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-[#00D9FF]">
             {siteContent.home.cta.heading}

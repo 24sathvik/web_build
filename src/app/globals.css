@@ -34,6 +34,12 @@ body {
   }
 }
 
+/* Content visibility optimization for below-the-fold sections */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1000px 100vh;
+}
+
 /* Custom scrollbar for WebKit */
 ::-webkit-scrollbar {
   width: 8px;

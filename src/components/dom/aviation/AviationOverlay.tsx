@@ -76,7 +76,7 @@ export function AviationOverlay() {
       </section>
 
       {/* (2) The Four Core Modules */}
-      <section id="modules" className="aviation-section w-full min-h-[100vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
+      <section id="modules" className="aviation-section content-visibility-auto w-full min-h-[100vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
         <div className="max-w-6xl w-full text-center mb-16 pointer-events-auto">
           <p className="reveal-text text-xs text-[#00D9FF] uppercase tracking-widest font-mono mb-2">Systems Architecture</p>
           <h2 className="reveal-text text-3xl sm:text-5xl font-bold text-white mb-4">
@@ -126,7 +126,7 @@ export function AviationOverlay() {
       </section>
 
       {/* (3) Built for Each Authority's Rules */}
-      <section className="aviation-section w-full min-h-[100vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
+      <section className="aviation-section content-visibility-auto w-full min-h-[100vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
         <div className="max-w-6xl w-full text-center mb-16 pointer-events-auto">
           <p className="reveal-text text-xs text-[#6E5BFF] uppercase tracking-widest font-mono mb-2">Regulatory Rule Sets</p>
           <h2 className="reveal-text text-3xl sm:text-5xl font-bold text-white mb-4">
@@ -188,7 +188,7 @@ export function AviationOverlay() {
       </section>
 
       {/* (4) For Other Institutes */}
-      <section className="aviation-section w-full min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
+      <section className="aviation-section content-visibility-auto w-full min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
         <div className="max-w-4xl w-full glass-panel p-8 md:p-12 rounded-3xl border border-[#00D9FF]/20 backdrop-blur-xl bg-[#050505]/80 pointer-events-auto text-center">
           <h2 className="reveal-text text-2xl sm:text-4xl font-bold text-white mb-4">
             {aviation.otherInstitutes.title}
@@ -208,7 +208,7 @@ export function AviationOverlay() {
       </section>
 
       {/* (5) Call to Action to /contact */}
-      <section className="aviation-section w-full min-h-[70vh] flex flex-col items-center justify-center px-6 text-center">
+      <section className="aviation-section content-visibility-auto w-full min-h-[70vh] flex flex-col items-center justify-center px-6 text-center">
         <div className="max-w-3xl pointer-events-auto bg-[#050505]/90 p-10 md:p-14 rounded-3xl border border-[#6E5BFF]/30 backdrop-blur-2xl">
           <h2 className="reveal-text text-3xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#00D9FF] mb-4">
             {aviation.cta.heading}

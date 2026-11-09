@@ -78,7 +78,7 @@ export function ServicesOverlay() {
         return (
           <section
             key={service.id}
-            className={`services-section w-full h-[100vh] flex flex-col ${isRight ? "items-end" : "items-start"} justify-center px-6 md:px-24`}
+            className={`services-section content-visibility-auto w-full h-[100vh] flex flex-col ${isRight ? "items-end" : "items-start"} justify-center px-6 md:px-24`}
           >
             <div className={`max-w-xl w-full pointer-events-auto glass-panel p-8 md:p-10 rounded-2xl ${borderClasses[idx % borderClasses.length]} backdrop-blur-md`}>
               <p className={`reveal-text text-sm font-bold font-mono ${numberColors[idx % numberColors.length]} mb-2 tracking-widest`}>

@@ -102,9 +102,11 @@ function AviationContent() {
 
       <FlightRadarMesh />
 
-      <EffectComposer multisampling={0}>
-        <Bloom luminanceThreshold={0.3} luminanceSmoothing={0.9} intensity={isLite ? 1.5 : 2} mipmapBlur />
-      </EffectComposer>
+      {tier === "full" && (
+        <EffectComposer multisampling={0}>
+          <Bloom luminanceThreshold={0.3} luminanceSmoothing={0.9} intensity={2} mipmapBlur />
+        </EffectComposer>
+      )}
     </>
   );
 }
