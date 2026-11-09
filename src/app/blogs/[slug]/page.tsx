@@ -56,7 +56,7 @@ export default async function BlogPostPage({ params }: Params) {
   };
 
   return (
-    <main className="relative min-h-screen w-full bg-[#050505] text-white pb-40">
+    <main className="relative min-h-[100svh] w-full bg-[#050505] text-white pb-40">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-[60vh]"

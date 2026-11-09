@@ -351,26 +351,26 @@ export function ProjectsOverlay() {
   return (
     <div id="overlay-container-projects" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       {/* Intro Header Section with Single H1 */}
-      <section className="projects-section w-full h-[100vh] flex flex-col items-center justify-center text-center px-4">
+      <section className="projects-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
         <p className="reveal-text text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           Portfolio &amp; Selected Systems
         </p>
-        <h1 className="reveal-text text-5xl md:text-8xl font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto">
+        <h1 className="reveal-text text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto leading-tight">
           SYSTEMS &amp; SITES.
         </h1>
-        <p className="reveal-text text-xl md:text-2xl text-[#BFC7D5] max-w-2xl font-light pointer-events-auto leading-relaxed mb-8">
+        <p className="reveal-text text-base md:text-xl text-[#BFC7D5] max-w-2xl font-light pointer-events-auto leading-relaxed mb-8">
           Specialized software and high-performance websites engineered for aviation training academies, growing manufacturers, and modern service businesses.
         </p>
         <div className="reveal-text flex flex-wrap gap-4 justify-center pointer-events-auto">
           <a
             href="#aviation-systems"
-            className="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-mono uppercase tracking-wider text-white transition-colors"
+            className="min-h-[44px] inline-flex items-center px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-mono uppercase tracking-wider text-white transition-colors"
           >
             Aviation Systems ({aviationProjects.length}) &darr;
           </a>
           <a
             href="#business-systems"
-            className="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-mono uppercase tracking-wider text-white transition-colors"
+            className="min-h-[44px] inline-flex items-center px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-mono uppercase tracking-wider text-white transition-colors"
           >
             Business Systems ({businessProjects.length}) &darr;
           </a>
@@ -397,7 +397,7 @@ export function ProjectsOverlay() {
           <section
             key={project.id}
             id={project.id}
-            className="projects-section content-visibility-auto w-full min-h-[100vh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
+            className="projects-section content-visibility-auto w-full min-h-[100svh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
           >
             <div className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center ${isEven ? "" : "lg:[&>*:first-child]:order-2"}`}>
               {/* Left Column: Project Info */}
@@ -466,7 +466,7 @@ export function ProjectsOverlay() {
           <section
             key={project.id}
             id={project.id}
-            className="projects-section content-visibility-auto w-full min-h-[100vh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
+            className="projects-section content-visibility-auto w-full min-h-[100svh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
           >
             <div className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center ${isEven ? "" : "lg:[&>*:first-child]:order-2"}`}>
               {/* Left Column: Project Info */}

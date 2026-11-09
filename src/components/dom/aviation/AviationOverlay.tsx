@@ -46,14 +46,14 @@ export function AviationOverlay() {
   return (
     <div id="overlay-container-aviation" ref={containerRef} className="w-full relative z-10 pointer-events-none pb-32">
       {/* (1) Hero & One-Paragraph Pitch */}
-      <section className="aviation-section w-full min-h-[100vh] flex flex-col items-center justify-center text-center px-6 pt-28 md:pt-36">
+      <section className="aviation-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-6 pt-24 pb-20">
         <p className="reveal-text text-xs md:text-sm text-[#00D9FF] uppercase tracking-[0.3em] font-bold mb-4 pointer-events-auto">
           {aviation.badge}
         </p>
-        <h1 className="reveal-text text-4xl sm:text-6xl md:text-8xl font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto max-w-5xl leading-tight">
+        <h1 className="reveal-text text-[clamp(2.25rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto max-w-5xl leading-tight">
           {aviation.headline}
         </h1>
-        <p className="reveal-text text-lg sm:text-xl md:text-2xl text-[#6E5BFF] font-mono tracking-wide mb-6 pointer-events-auto">
+        <p className="reveal-text text-[clamp(1.125rem,2vw,1.5rem)] text-[#6E5BFF] font-mono tracking-wide mb-6 pointer-events-auto">
           {aviation.subHeadline}
         </p>
         <p className="reveal-text text-base sm:text-lg text-[#BFC7D5] max-w-3xl font-light pointer-events-auto leading-relaxed mb-10">
@@ -62,13 +62,13 @@ export function AviationOverlay() {
         <div className="reveal-text flex flex-wrap gap-4 justify-center pointer-events-auto">
           <Link
             href="/contact"
-            className="px-8 py-3.5 bg-[#00D9FF] text-black font-bold uppercase tracking-widest text-xs md:text-sm rounded-full hover:bg-white hover:scale-105 transition-all shadow-lg shadow-[#00D9FF]/20"
+            className="min-h-[44px] px-8 py-3.5 bg-[#00D9FF] text-black font-bold uppercase tracking-widest text-xs md:text-sm rounded-full hover:bg-white hover:scale-105 transition-all shadow-lg shadow-[#00D9FF]/20 inline-flex items-center"
           >
             Request Academy Demo
           </Link>
           <a
             href="#modules"
-            className="px-8 py-3.5 border border-white/20 text-white font-bold uppercase tracking-widest text-xs md:text-sm rounded-full hover:bg-white/10 transition-all"
+            className="min-h-[44px] px-8 py-3.5 border border-white/20 text-white font-bold uppercase tracking-widest text-xs md:text-sm rounded-full hover:bg-white/10 transition-all inline-flex items-center"
           >
             Explore 4 Modules
           </a>
@@ -76,13 +76,13 @@ export function AviationOverlay() {
       </section>
 
       {/* (2) The Four Core Modules */}
-      <section id="modules" className="aviation-section content-visibility-auto w-full min-h-[100vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
+      <section id="modules" className="aviation-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
         <div className="max-w-6xl w-full text-center mb-16 pointer-events-auto">
           <p className="reveal-text text-xs text-[#00D9FF] uppercase tracking-widest font-mono mb-2">Systems Architecture</p>
-          <h2 className="reveal-text text-3xl sm:text-5xl font-bold text-white mb-4">
+          <h2 className="reveal-text text-[clamp(2rem,5vw,3.75rem)] font-bold text-white mb-4">
             {aviation.modulesTitle}
           </h2>
-          <p className="reveal-text text-[#BFC7D5] max-w-2xl mx-auto text-sm sm:text-base">
+          <p className="reveal-text text-[#BFC7D5] max-w-2xl mx-auto text-base">
             {aviation.modulesSubtitle}
           </p>
         </div>
@@ -94,7 +94,7 @@ export function AviationOverlay() {
             return (
               <div
                 key={mod.id}
-                className={`reveal-text glass-panel p-8 rounded-2xl border ${accents[idx % accents.length]} backdrop-blur-xl bg-[#050505]/70 flex flex-col justify-between`}
+                className={`reveal-text glass-panel p-6 sm:p-8 rounded-2xl border ${accents[idx % accents.length]} backdrop-blur-xl bg-[#050505]/70 flex flex-col justify-between`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -103,8 +103,8 @@ export function AviationOverlay() {
                       {mod.subtitle}
                     </span>
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">{mod.title}</h3>
-                  <p className="text-[#BFC7D5] text-sm sm:text-base leading-relaxed mb-6">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">{mod.title}</h3>
+                  <p className="text-[#BFC7D5] text-base leading-relaxed mb-6">
                     {mod.description}
                   </p>
                 </div>
@@ -126,7 +126,7 @@ export function AviationOverlay() {
       </section>
 
       {/* (3) Built for Each Authority's Rules */}
-      <section className="aviation-section content-visibility-auto w-full min-h-[100vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
+      <section className="aviation-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
         <div className="max-w-6xl w-full text-center mb-16 pointer-events-auto">
           <p className="reveal-text text-xs text-[#6E5BFF] uppercase tracking-widest font-mono mb-2">Regulatory Rule Sets</p>
           <h2 className="reveal-text text-3xl sm:text-5xl font-bold text-white mb-4">

@@ -54,13 +54,13 @@ export function BlogsOverlay({ posts }: { posts: BlogCard[] }) {
 
   return (
     <div id="overlay-container-blogs" ref={containerRef} className="w-full relative z-10 pointer-events-none pb-32">
-      <div className="w-full min-h-screen pt-32 px-8 md:px-24 flex flex-col items-center">
+      <div className="w-full min-h-[100svh] pt-28 px-4 sm:px-8 md:px-24 flex flex-col items-center">
         
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-[#FFFFFF] mb-16 pointer-events-auto text-center">
+        <h1 className="text-[clamp(2.25rem,6vw,5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-12 pointer-events-auto text-center leading-tight">
           LATEST IN <span className="text-[#6E5BFF]">INTELLIGENCE</span>
         </h1>
 
-        <div className="w-full max-w-4xl flex flex-col gap-12">
+        <div className="w-full max-w-4xl flex flex-col gap-8 md:gap-12">
           {posts.map((post) => (
             <section key={post.id} className="blog-section w-full pointer-events-auto">
               <Link href={`/blogs/${post.slug}`} className="block" aria-label={post.title}>
@@ -91,7 +91,7 @@ export function BlogsOverlay({ posts }: { posts: BlogCard[] }) {
                     {post.title}
                   </h2>
                   
-                  <p className="text-[#BFC7D5] text-sm md:text-base line-clamp-3">
+                  <p className="text-[#BFC7D5] text-base line-clamp-3 leading-relaxed">
                     {post.excerpt}
                   </p>
                 </div>

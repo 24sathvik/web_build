@@ -52,23 +52,23 @@ export function TechOverlay() {
   return (
     <div id="overlay-container-tech" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       {/* Hero Section */}
-      <section className="tech-section w-full h-[100vh] flex flex-col items-center justify-center text-center px-4">
+      <section className="tech-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
         <p className="reveal-text text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           Architecture &amp; Quality
         </p>
-        <h1 className="reveal-text text-5xl md:text-8xl font-bold tracking-tighter text-[#FFFFFF] mb-4 pointer-events-auto">
+        <h1 className="reveal-text text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-4 pointer-events-auto leading-tight">
           {siteContent.technology.headline}
         </h1>
-        <p className="reveal-text text-xl md:text-2xl text-[#6E5BFF] font-mono tracking-wide pointer-events-auto max-w-2xl">
+        <p className="reveal-text text-lg md:text-xl text-[#6E5BFF] font-mono tracking-wide pointer-events-auto max-w-2xl">
           {siteContent.technology.subHeadline}
         </p>
       </section>
 
       {/* Engineering Standards Section */}
-      <section className="tech-section content-visibility-auto w-full min-h-[100vh] flex flex-col items-center justify-center px-6 md:px-20 py-20">
-        <div className="max-w-5xl w-full pointer-events-auto glass-panel p-8 md:p-12 rounded-3xl border border-[#00D9FF]/30">
+      <section className="tech-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-center justify-center px-6 md:px-20 py-20">
+        <div className="max-w-5xl w-full pointer-events-auto glass-panel p-6 sm:p-8 md:p-12 rounded-3xl border border-[#00D9FF]/30">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="reveal-text text-3xl md:text-5xl font-bold mb-4 text-[#FFFFFF]">
+            <h2 className="reveal-text text-[clamp(1.75rem,4vw,3rem)] font-bold mb-4 text-[#FFFFFF] leading-tight">
               {siteContent.technology.cardHeading}
             </h2>
             <p className="reveal-text text-[#BFC7D5] text-base md:text-lg leading-relaxed">

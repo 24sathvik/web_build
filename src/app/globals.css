@@ -37,7 +37,7 @@ body {
 /* Content visibility optimization for below-the-fold sections */
 .content-visibility-auto {
   content-visibility: auto;
-  contain-intrinsic-size: 1000px 100vh;
+  contain-intrinsic-size: 1000px 100svh;
 }
 
 /* Custom scrollbar for WebKit */

@@ -36,12 +36,12 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
         />
 
         <div className={clsx(
-          "relative w-full max-w-2xl bg-[#0D0D0D]/95 border border-[#BFC7D5]/20 p-6 md:p-10 rounded-3xl shadow-2xl transition-all duration-500 transform max-h-[90vh] overflow-y-auto",
+          "relative w-full max-w-2xl bg-[#0D0D0D]/95 border border-[#BFC7D5]/20 p-6 md:p-10 rounded-3xl shadow-2xl transition-all duration-500 transform max-h-[90svh] overflow-y-auto",
           isOpen ? "translate-y-0 scale-100" : "translate-y-12 scale-95"
         )}>
           <button
             onClick={handleClose}
-            className="absolute top-6 right-6 text-[#BFC7D5] hover:text-[#00D9FF] transition-colors p-1"
+            className="absolute top-5 right-5 text-[#BFC7D5] hover:text-[#00D9FF] transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Close"
             type="button"
           >
@@ -49,7 +49,7 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
           </button>
 
           <h2 className="text-2xl md:text-4xl font-bold mb-2 text-[#FFFFFF]">{siteContent.form.heading}</h2>
-          <p className="text-[#BFC7D5] mb-6 text-sm">{siteContent.form.subtitle}</p>
+          <p className="text-[#BFC7D5] mb-6 text-sm md:text-base">{siteContent.form.subtitle}</p>
 
               {isSuccess ? (
                 <div className="py-12 flex flex-col items-center justify-center text-center px-4">
@@ -112,7 +112,7 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           value={formData.name}
                           onChange={handleChange}
                           className={clsx(
-                            "w-full bg-[#050505] border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none transition-colors",
+                            "w-full min-h-[44px] bg-[#050505] border rounded-lg px-4 py-2.5 text-base text-white focus:outline-none transition-colors",
                             errors.name ? "border-red-500/60 focus:border-red-500" : "border-[#BFC7D5]/20 focus:border-[#00D9FF]"
                           )}
                           placeholder={siteContent.form.placeholders.name}
@@ -130,7 +130,7 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           value={formData.email}
                           onChange={handleChange}
                           className={clsx(
-                            "w-full bg-[#050505] border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none transition-colors",
+                            "w-full min-h-[44px] bg-[#050505] border rounded-lg px-4 py-2.5 text-base text-white focus:outline-none transition-colors",
                             errors.email ? "border-red-500/60 focus:border-red-500" : "border-[#BFC7D5]/20 focus:border-[#00D9FF]"
                           )}
                           placeholder={siteContent.form.placeholders.email}
@@ -148,7 +148,7 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
-                          className="w-full bg-[#050505] border border-[#BFC7D5]/20 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00D9FF] transition-colors"
+                          className="w-full min-h-[44px] bg-[#050505] border border-[#BFC7D5]/20 rounded-lg px-4 py-2.5 text-base text-white focus:outline-none focus:border-[#00D9FF] transition-colors"
                           placeholder={siteContent.form.placeholders.phone}
                         />
                       </div>
@@ -159,7 +159,7 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           name="organisation"
                           value={formData.organisation}
                           onChange={handleChange}
-                          className="w-full bg-[#050505] border border-[#BFC7D5]/20 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00D9FF] transition-colors"
+                          className="w-full min-h-[44px] bg-[#050505] border border-[#BFC7D5]/20 rounded-lg px-4 py-2.5 text-base text-white focus:outline-none focus:border-[#00D9FF] transition-colors"
                           placeholder={siteContent.form.placeholders.organisation}
                         />
                       </div>
@@ -173,7 +173,7 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             name="service"
                             value={formData.service}
                             onChange={handleChange}
-                            className="w-full bg-[#050505] border border-[#BFC7D5]/20 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00D9FF] transition-colors appearance-none"
+                            className="w-full min-h-[44px] bg-[#050505] border border-[#BFC7D5]/20 rounded-lg px-4 py-2.5 text-base text-white focus:outline-none focus:border-[#00D9FF] transition-colors appearance-none"
                           >
                             <option value="" className="bg-[#050505] text-white/50">Select a capability / service</option>
                             {siteContent.services.map((svc) => (
@@ -191,7 +191,7 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             name="budget"
                             value={formData.budget}
                             onChange={handleChange}
-                            className="w-full bg-[#050505] border border-[#BFC7D5]/20 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#00D9FF] transition-colors appearance-none"
+                            className="w-full min-h-[44px] bg-[#050505] border border-[#BFC7D5]/20 rounded-lg px-4 py-2.5 text-base text-white focus:outline-none focus:border-[#00D9FF] transition-colors appearance-none"
                           >
                             <option value="" className="bg-[#050505] text-white/50">{siteContent.form.placeholders.budget}</option>
                             {siteContent.budgetOptions.map((opt) => (
@@ -214,7 +214,7 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           value={formData.message}
                           onChange={handleChange}
                           className={clsx(
-                            "w-full bg-[#050505] border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none transition-colors resize-none",
+                            "w-full bg-[#050505] border rounded-lg px-4 py-2.5 text-base text-white focus:outline-none transition-colors resize-none",
                             errors.message ? "border-red-500/60 focus:border-red-500" : "border-[#BFC7D5]/20 focus:border-[#00D9FF]"
                           )}
                           placeholder={siteContent.form.placeholders.message}
@@ -226,7 +226,7 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                       <button
                         disabled={isSubmitting}
                         type="submit"
-                        className="w-full py-3.5 bg-[#6E5BFF] hover:bg-[#00D9FF] text-white hover:text-black font-bold tracking-wider uppercase text-sm rounded-lg transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="w-full min-h-[44px] py-3.5 bg-[#6E5BFF] hover:bg-[#00D9FF] text-white hover:text-black font-bold tracking-wider uppercase text-sm rounded-lg transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
                       >
                         {isSubmitting ? (
                           <>

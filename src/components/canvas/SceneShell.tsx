@@ -1,9 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { PerformanceMonitor } from "@react-three/drei";
 import { useQualityTier, QualityTier } from "@/hooks/useQualityTier";
+import { debugStore } from "@/lib/debugState";
 
 export const QualityTierContext = createContext<QualityTier>("full");
 export const useQualityTierContext = () => useContext(QualityTierContext);
@@ -17,6 +18,44 @@ interface SceneShellProps {
   shadows?: boolean;
 }
 
+// Requirement B.4: QualitySupervisor steps the tier down live (full -> lite)
+// when the average FPS stays under 40 for 2 seconds; never steps back up in the same session.
+function QualitySupervisor({
+  tier,
+  onStepDown,
+}: {
+  tier: QualityTier;
+  onStepDown: () => void;
+}) {
+  const frameCountRef = useRef(0);
+  const lowFpsCountRef = useRef(0);
+  const lastSecRef = useRef(performance.now());
+
+  useFrame(() => {
+    if (tier !== "full") return;
+
+    frameCountRef.current++;
+    const now = performance.now();
+    const elapsed = now - lastSecRef.current;
+    if (elapsed >= 1000) {
+      const fps = (frameCountRef.current * 1000) / elapsed;
+      frameCountRef.current = 0;
+      lastSecRef.current = now;
+
+      if (fps < 40) {
+        lowFpsCountRef.current += 1;
+        if (lowFpsCountRef.current >= 2) {
+          onStepDown();
+        }
+      } else {
+        lowFpsCountRef.current = 0;
+      }
+    }
+  });
+
+  return null;
+}
+
 export function SceneShell({
   children,
   fallbackClassName,
@@ -25,7 +64,10 @@ export function SceneShell({
   gl,
   shadows,
 }: SceneShellProps) {
-  const tier = useQualityTier();
+  const detectedTier = useQualityTier();
+  const [activeTier, setActiveTier] = useState<QualityTier>(detectedTier);
+  const downgradedInSession = useRef(false);
+
   const [mounted, setMounted] = useState(false);
   const [canvasVisible, setCanvasVisible] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -33,15 +75,49 @@ export function SceneShell({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Dynamic DPR: [1, 1.25] for lite and [1, 1.75] for full
-  const [dpr, setDpr] = useState<number>(tier === "lite" ? 1.25 : 1.75);
+  const [dpr, setDpr] = useState<number>(activeTier === "lite" ? 1.25 : 1.75);
 
+  // Synchronize tier with session downgrade state
   useEffect(() => {
-    if (tier === "lite") {
-      setDpr(1.25);
-    } else if (tier === "full") {
-      setDpr(1.75);
+    try {
+      if (sessionStorage.getItem("zyxen_session_downgraded") === "true") {
+        downgradedInSession.current = true;
+        setActiveTier("lite");
+        setDpr(1.25);
+        debugStore.set({ tier: "lite", dpr: 1.25 });
+        return;
+      }
+    } catch {}
+
+    if (!downgradedInSession.current) {
+      setActiveTier(detectedTier);
+      const targetDpr = detectedTier === "lite" ? 1.25 : 1.75;
+      setDpr(targetDpr);
+      debugStore.set({ tier: detectedTier, dpr: targetDpr });
     }
-  }, [tier]);
+  }, [detectedTier]);
+
+  const handleStepDown = () => {
+    if (downgradedInSession.current || activeTier !== "full") return;
+    downgradedInSession.current = true;
+    try {
+      sessionStorage.setItem("zyxen_session_downgraded", "true");
+    } catch {}
+    setActiveTier("lite");
+    setDpr(1.25);
+    debugStore.set({ tier: "lite", dpr: 1.25 });
+  };
+
+  const handleDecline = () => {
+    setDpr(1);
+    debugStore.set({ dpr: 1 });
+  };
+
+  const handleIncline = () => {
+    const targetDpr = activeTier === "lite" ? 1.25 : 1.75;
+    setDpr(targetDpr);
+    debugStore.set({ dpr: targetDpr });
+  };
 
   // Mount rule:
   // 1. Wait for window "load" AND React hydration to finish.
@@ -50,7 +126,7 @@ export function SceneShell({
   //    OR after 5000 ms of idle post-load, whichever comes first.
   // 4. Until then show the CSS gradient. Fade canvas in when ready.
   useEffect(() => {
-    if (tier === "static") return;
+    if (activeTier === "static") return;
 
     let isDisposed = false;
     let cleanupListeners: (() => void) | null = null;
@@ -58,12 +134,13 @@ export function SceneShell({
     const mountCanvas = () => {
       if (isDisposed) return;
       setMounted(true);
+      debugStore.set({ canvasMounted: true });
     };
 
     const scheduleAfterLoad = () => {
       if (isDisposed) return;
 
-      if (tier === "full") {
+      if (activeTier === "full") {
         const win = window as any;
         let idleId: any = null;
         let timeoutId: any = null;
@@ -78,7 +155,7 @@ export function SceneShell({
           if (idleId && typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(idleId);
           if (timeoutId) clearTimeout(timeoutId);
         };
-      } else if (tier === "lite") {
+      } else if (activeTier === "lite") {
         const win = window as any;
         let idleId: any = null;
         let timeoutId: any = null;
@@ -142,7 +219,7 @@ export function SceneShell({
       if (loadHandler) window.removeEventListener("load", loadHandler);
       if (cleanupListeners) cleanupListeners();
     };
-  }, [tier]);
+  }, [activeTier]);
 
   // Pause rendering when document is hidden
   useEffect(() => {
@@ -180,7 +257,7 @@ export function SceneShell({
   );
 
   // For static tier, do not render canvas at all
-  if (tier === "static") {
+  if (activeTier === "static") {
     return <div ref={containerRef} className={className}>{fallbackBg}</div>;
   }
 
@@ -201,7 +278,7 @@ export function SceneShell({
             canvasVisible ? "opacity-100" : "opacity-0"
           }`}
         >
-          <QualityTierContext.Provider value={tier}>
+          <QualityTierContext.Provider value={activeTier}>
             <Canvas
               camera={camera}
               shadows={shadows}
@@ -218,10 +295,8 @@ export function SceneShell({
                 requestAnimationFrame(() => setCanvasVisible(true));
               }}
             >
-              <PerformanceMonitor
-                onDecline={() => setDpr(1)}
-                onIncline={() => setDpr(tier === "lite" ? 1.5 : 2)}
-              />
+              <PerformanceMonitor onDecline={handleDecline} onIncline={handleIncline} />
+              <QualitySupervisor tier={activeTier} onStepDown={handleStepDown} />
               {children}
             </Canvas>
           </QualityTierContext.Provider>

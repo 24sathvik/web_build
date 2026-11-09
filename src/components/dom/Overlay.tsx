@@ -44,29 +44,29 @@ export function Overlay() {
   return (
     <div id="overlay-container" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       {/* Chapter 1: Arrival / Hero */}
-      <section className="chapter-section w-full h-[100vh] flex flex-col items-center justify-center text-center px-4">
-        <h1 className="reveal-text text-5xl md:text-7xl lg:text-9xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#FFFFFF] to-[#BFC7D5] mb-6 pointer-events-auto">
+      <section className="chapter-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
+        <h1 className="reveal-text text-[clamp(2.25rem,6vw,6.5rem)] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#FFFFFF] to-[#BFC7D5] mb-6 pointer-events-auto leading-[1.05]">
           {siteContent.home.hero.headline}
         </h1>
-        <p className="reveal-text mt-4 text-[#BFC7D5] max-w-2xl text-base md:text-lg font-light tracking-wide pointer-events-auto mx-auto leading-relaxed">
+        <p className="reveal-text mt-4 text-[#BFC7D5] max-w-2xl text-[clamp(1rem,1.2vw,1.125rem)] font-light tracking-wide pointer-events-auto mx-auto leading-relaxed">
           {siteContent.home.hero.subHeadline}
         </p>
         <div className="reveal-text mt-10 flex gap-4 md:gap-6 justify-center pointer-events-auto flex-wrap">
           <button 
             onClick={() => setIsContactOpen(true)}
-            className="px-8 py-3 bg-[#00D9FF] text-black font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white hover:scale-105 transition-all"
+            className="min-h-[44px] px-8 py-3 bg-[#00D9FF] text-black font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white hover:scale-105 transition-all"
           >
             {siteContent.home.hero.primaryCta}
           </button>
           <a 
             href="/aviation-academy-software" 
-            className="px-8 py-3 bg-white/10 border border-[#00D9FF]/40 text-[#00D9FF] font-bold uppercase tracking-widest text-sm rounded-full hover:bg-[#00D9FF]/20 hover:scale-105 transition-all"
+            className="min-h-[44px] px-8 py-3 bg-white/10 border border-[#00D9FF]/40 text-[#00D9FF] font-bold uppercase tracking-widest text-sm rounded-full hover:bg-[#00D9FF]/20 hover:scale-105 transition-all inline-flex items-center"
           >
             {siteContent.home.hero.aviationCta}
           </a>
           <a 
             href="/projects" 
-            className="px-8 py-3 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all"
+            className="min-h-[44px] px-8 py-3 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all inline-flex items-center"
           >
             {siteContent.home.hero.secondaryCta}
           </a>
@@ -74,24 +74,24 @@ export function Overlay() {
       </section>
 
       {/* Chapter 2: The Mission */}
-      <section className="chapter-section content-visibility-auto w-full h-[100vh] flex flex-col items-start justify-center px-8 md:px-24">
-        <div className="max-w-2xl pointer-events-auto glass-panel p-8 rounded-2xl">
+      <section className="chapter-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-start justify-center px-6 md:px-24 py-20">
+        <div className="max-w-2xl pointer-events-auto glass-panel p-6 md:p-8 rounded-2xl">
           <p className="reveal-text text-xs text-[#00D9FF] uppercase tracking-[0.3em] font-bold mb-4">
             {siteContent.home.mission.tag}
           </p>
-          <h2 className="reveal-text text-3xl md:text-5xl font-bold mb-6">
+          <h2 className="reveal-text text-[clamp(1.75rem,4vw,3rem)] font-bold mb-6 leading-tight">
             {siteContent.home.mission.heading}
           </h2>
-          <p className="reveal-text text-[#BFC7D5] text-lg leading-relaxed">
+          <p className="reveal-text text-[#BFC7D5] text-[clamp(1rem,1.2vw,1.125rem)] leading-relaxed">
             {siteContent.home.mission.description}
           </p>
         </div>
       </section>
 
       {/* Chapter 3: Core Capabilities */}
-      <section className="chapter-section content-visibility-auto w-full h-[100vh] flex flex-col justify-center px-8 md:px-24">
+      <section className="chapter-section content-visibility-auto w-full min-h-[100svh] flex flex-col justify-center px-6 md:px-24 py-20">
         <div className="pointer-events-auto">
-          <h2 className="reveal-text text-4xl md:text-6xl font-bold mb-12 text-[#6E5BFF]">
+          <h2 className="reveal-text text-[clamp(2rem,5vw,3.75rem)] font-bold mb-12 text-[#6E5BFF] leading-tight">
             {siteContent.home.capabilities.heading}
           </h2>
           
@@ -101,8 +101,8 @@ export function Overlay() {
               const margins = ["", "ml-0 md:ml-12", "ml-0 md:ml-24"];
               return (
                 <div key={item.title} className={`reveal-text border-l-2 ${borderColors[idx % borderColors.length]} pl-6 ${margins[idx % margins.length]}`}>
-                  <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
-                  <p className="text-[#BFC7D5]">{item.description}</p>
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{item.title}</h3>
+                  <p className="text-[#BFC7D5] text-[clamp(1rem,1.1vw,1.125rem)]">{item.description}</p>
                 </div>
               );
             })}
@@ -111,7 +111,7 @@ export function Overlay() {
           <div className="reveal-text mt-10">
             <a 
               href="/aviation-academy-software" 
-              className="text-sm font-semibold text-[#00D9FF] hover:underline inline-flex items-center gap-1.5"
+              className="text-base font-semibold text-[#00D9FF] hover:underline inline-flex items-center gap-1.5"
             >
               Explore Aviation Academy Software Modules &rarr;
             </a>
@@ -120,24 +120,24 @@ export function Overlay() {
       </section>
 
       {/* Chapter 4: Future Vision & Contact */}
-      <section className="chapter-section content-visibility-auto w-full h-[100vh] flex flex-col items-center justify-center px-4">
-        <div className="pointer-events-auto text-center bg-[#050505]/80 p-12 rounded-3xl backdrop-blur-md border border-[#00D9FF]/20 max-w-3xl">
-          <h2 className="reveal-text text-4xl md:text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-[#00D9FF]">
+      <section className="chapter-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-center justify-center px-4 py-20">
+        <div className="pointer-events-auto text-center bg-[#050505]/80 p-8 md:p-12 rounded-3xl backdrop-blur-md border border-[#00D9FF]/20 max-w-3xl">
+          <h2 className="reveal-text text-[clamp(2rem,5vw,3.75rem)] font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-[#00D9FF] leading-tight">
             {siteContent.home.cta.heading}
           </h2>
-          <p className="reveal-text text-[#BFC7D5] text-lg mb-10">
+          <p className="reveal-text text-[#BFC7D5] text-[clamp(1rem,1.2vw,1.125rem)] mb-10 leading-relaxed">
             {siteContent.home.cta.description}
           </p>
-          <div className="reveal-text flex flex-col md:flex-row gap-4 justify-center">
+          <div className="reveal-text flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => setIsContactOpen(true)}
-              className="px-8 py-4 bg-[#FFFFFF] text-[#050505] font-bold tracking-widest uppercase text-sm rounded-full hover:bg-[#BFC7D5] hover:scale-105 transition-all duration-300"
+              className="min-h-[44px] px-8 py-3.5 bg-[#FFFFFF] text-[#050505] font-bold tracking-widest uppercase text-sm rounded-full hover:bg-[#BFC7D5] hover:scale-105 transition-all duration-300"
             >
               {siteContent.home.cta.primaryButton}
             </button>
             <a 
               href="/services"
-              className="px-8 py-4 border border-white/20 text-white font-bold tracking-widest uppercase text-sm rounded-full hover:bg-white/10 transition-all duration-300 inline-block"
+              className="min-h-[44px] px-8 py-3.5 border border-white/20 text-white font-bold tracking-widest uppercase text-sm rounded-full hover:bg-white/10 transition-all duration-300 inline-flex items-center justify-center"
             >
               {siteContent.home.cta.secondaryButton}
             </a>

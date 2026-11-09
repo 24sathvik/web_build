@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useThree } from "@react-three/fiber";
-import { Environment, Lightformer, Preload } from "@react-three/drei";
-import { EffectComposer, Bloom, Noise, ChromaticAberration, Vignette } from "@react-three/postprocessing";
+import { Environment, Lightformer } from "@react-three/drei";
+import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
+import { debugStore } from "@/lib/debugState";
 
 import Chapter1 from "./chapters/Chapter1";
 import Chapter2 from "./chapters/Chapter2";
@@ -18,11 +19,11 @@ import SceneShell, { useQualityTierContext } from "./SceneShell";
 function SceneEffects() {
   const tier = useQualityTierContext();
   // Requirement 5: Lite tier removes the postprocessing composer entirely.
-  // Full tier keeps current effects.
+  // Full tier keeps current effects with optimized resolutionScale and multisampling 0.
   if (tier !== "full") return null;
 
   return (
-    <EffectComposer multisampling={0}>
+    <EffectComposer multisampling={0} resolutionScale={0.75}>
       <Bloom 
         luminanceThreshold={0.2} 
         luminanceSmoothing={0.9} 
@@ -35,7 +36,6 @@ function SceneEffects() {
         radialModulation={false}
         modulationOffset={0}
       />
-      <Noise opacity={0.02} blendFunction={BlendFunction.OVERLAY} />
       <Vignette eskil={false} offset={0.1} darkness={1.1} />
     </EffectComposer>
   );
@@ -116,6 +116,10 @@ function SceneContent() {
     }
   }, []);
 
+  useEffect(() => {
+    debugStore.set({ mountedChapters });
+  }, [mountedChapters]);
+
   return (
     <>
       <color attach="background" args={["#050505"]} />
@@ -126,9 +130,9 @@ function SceneContent() {
       <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
       <spotLight position={[-10, 10, -5]} intensity={2} color="#00D9FF" angle={0.5} penumbra={1} />
       
-      {/* Local Environment: full tier only; on lite, ambient/directional lights + emissive suffice */}
+      {/* Local Environment: full tier only; generated once at resolution 64 with frames=1 */}
       {tier === "full" && (
-        <Environment resolution={128}>
+        <Environment resolution={64} frames={1}>
           <Lightformer form="rect" intensity={1.5} position={[10, 5, 0]} scale={[10, 5, 1]} target={[0, 0, 0]} />
           <Lightformer form="rect" intensity={2} color="#00D9FF" position={[-10, 5, 0]} scale={[10, 5, 1]} target={[0, 0, 0]} />
           <Lightformer form="ring" color="#6E5BFF" intensity={1} position={[0, -5, 5]} scale={10} />
@@ -167,8 +171,6 @@ function SceneContent() {
 
       {/* Post Processing: only active on full tier */}
       <SceneEffects />
-
-      {tier === "full" && <Preload all />}
     </>
   );
 }

@@ -42,7 +42,7 @@ export function ContactOverlay() {
       <div
         id="overlay-container-contact"
         ref={containerRef}
-        className="w-full min-h-screen flex flex-col lg:flex-row items-center justify-between px-6 md:px-16 lg:px-24 pointer-events-none pb-24 lg:pb-12 pt-28 lg:pt-16 gap-12"
+        className="w-full min-h-[100svh] flex flex-col lg:flex-row items-center justify-between px-6 md:px-16 lg:px-24 pointer-events-none pb-28 lg:pb-16 pt-24 lg:pt-16 gap-10"
       >
         {/* Left side text */}
             <div className="w-full lg:w-1/2 mb-6 lg:mb-0">
@@ -153,7 +153,7 @@ export function ContactOverlay() {
                                           value={formData.name}
                                           onChange={handleChange}
                                           className={clsx(
-                                            "w-full bg-[#050505]/60 border rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none transition-colors",
+                                            "w-full min-h-[44px] bg-[#050505]/60 border rounded-lg px-3.5 py-2.5 text-base text-white focus:outline-none transition-colors",
                                             errors.name ? "border-red-500/60 focus:border-red-500" : "border-[#BFC7D5]/20 focus:border-[#00D9FF]"
                                           )}
                                           placeholder={siteContent.form.placeholders.name}
@@ -171,7 +171,7 @@ export function ContactOverlay() {
                                           value={formData.email}
                                           onChange={handleChange}
                                           className={clsx(
-                                            "w-full bg-[#050505]/60 border rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none transition-colors",
+                                            "w-full min-h-[44px] bg-[#050505]/60 border rounded-lg px-3.5 py-2.5 text-base text-white focus:outline-none transition-colors",
                                             errors.email ? "border-red-500/60 focus:border-red-500" : "border-[#BFC7D5]/20 focus:border-[#00D9FF]"
                                           )}
                                           placeholder={siteContent.form.placeholders.email}
@@ -189,7 +189,7 @@ export function ContactOverlay() {
                                           name="phone"
                                           value={formData.phone}
                                           onChange={handleChange}
-                                          className="w-full bg-[#050505]/60 border border-[#BFC7D5]/20 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#00D9FF] transition-colors"
+                                          className="w-full min-h-[44px] bg-[#050505]/60 border border-[#BFC7D5]/20 rounded-lg px-3.5 py-2.5 text-base text-white focus:outline-none focus:border-[#00D9FF] transition-colors"
                                           placeholder={siteContent.form.placeholders.phone}
                                         />
                                       </div>
@@ -200,7 +200,7 @@ export function ContactOverlay() {
                                           name="organisation"
                                           value={formData.organisation}
                                           onChange={handleChange}
-                                          className="w-full bg-[#050505]/60 border border-[#BFC7D5]/20 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#00D9FF] transition-colors"
+                                          className="w-full min-h-[44px] bg-[#050505]/60 border border-[#BFC7D5]/20 rounded-lg px-3.5 py-2.5 text-base text-white focus:outline-none focus:border-[#00D9FF] transition-colors"
                                           placeholder={siteContent.form.placeholders.organisation}
                                         />
                                       </div>
@@ -214,7 +214,7 @@ export function ContactOverlay() {
                                           name="service"
                                           value={formData.service}
                                           onChange={handleChange}
-                                          className="w-full bg-[#050505]/60 border border-[#BFC7D5]/20 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#00D9FF] transition-colors appearance-none"
+                                          className="w-full min-h-[44px] bg-[#050505]/60 border border-[#BFC7D5]/20 rounded-lg px-3.5 py-2.5 text-base text-white focus:outline-none focus:border-[#00D9FF] transition-colors appearance-none"
                                         >
                                           <option value="" className="bg-[#050505] text-white/50">Select a capability</option>
                                           {siteContent.services.map((svc) => (
@@ -232,7 +232,7 @@ export function ContactOverlay() {
                                           name="budget"
                                           value={formData.budget}
                                           onChange={handleChange}
-                                          className="w-full bg-[#050505]/60 border border-[#BFC7D5]/20 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#00D9FF] transition-colors appearance-none"
+                                          className="w-full min-h-[44px] bg-[#050505]/60 border border-[#BFC7D5]/20 rounded-lg px-3.5 py-2.5 text-base text-white focus:outline-none focus:border-[#00D9FF] transition-colors appearance-none"
                                         >
                                           <option value="" className="bg-[#050505] text-white/50">{siteContent.form.placeholders.budget}</option>
                                           {siteContent.budgetOptions.map((opt) => (
@@ -255,7 +255,7 @@ export function ContactOverlay() {
                                         value={formData.message}
                                         onChange={handleChange}
                                         className={clsx(
-                                          "w-full bg-[#050505]/60 border rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none transition-colors resize-none",
+                                          "w-full bg-[#050505]/60 border rounded-lg px-3.5 py-2.5 text-base text-white focus:outline-none transition-colors resize-none",
                                           errors.message ? "border-red-500/60 focus:border-red-500" : "border-[#BFC7D5]/20 focus:border-[#00D9FF]"
                                         )}
                                         placeholder={siteContent.form.placeholders.message}

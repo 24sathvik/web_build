@@ -61,14 +61,14 @@ export function ServicesOverlay() {
 
   return (
     <div id="overlay-container-services" ref={containerRef} className="w-full relative z-10 pointer-events-none">
-      <section className="services-section w-full h-[100vh] flex flex-col items-center justify-center text-center px-4">
+      <section className="services-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
         <p className="reveal-text text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           Our Services
         </p>
-        <h1 className="reveal-text text-5xl md:text-8xl font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto">
+        <h1 className="reveal-text text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto leading-tight">
           SOFTWARE &amp; WEB.
         </h1>
-        <p className="reveal-text text-xl md:text-2xl text-[#BFC7D5] max-w-2xl font-light pointer-events-auto leading-relaxed">
+        <p className="reveal-text text-base md:text-xl text-[#BFC7D5] max-w-2xl font-light pointer-events-auto leading-relaxed">
           Custom software, exam engines, fee systems, and high-performance websites built for aviation academies and growing businesses.
         </p>
       </section>
@@ -78,13 +78,13 @@ export function ServicesOverlay() {
         return (
           <section
             key={service.id}
-            className={`services-section content-visibility-auto w-full h-[100vh] flex flex-col ${isRight ? "items-end" : "items-start"} justify-center px-6 md:px-24`}
+            className={`services-section content-visibility-auto w-full min-h-[100svh] flex flex-col ${isRight ? "items-end" : "items-start"} justify-center px-6 md:px-24 py-16`}
           >
-            <div className={`max-w-xl w-full pointer-events-auto glass-panel p-8 md:p-10 rounded-2xl ${borderClasses[idx % borderClasses.length]} backdrop-blur-md`}>
+            <div className={`max-w-xl w-full pointer-events-auto glass-panel p-6 sm:p-8 md:p-10 rounded-2xl ${borderClasses[idx % borderClasses.length]} backdrop-blur-md`}>
               <p className={`reveal-text text-sm font-bold font-mono ${numberColors[idx % numberColors.length]} mb-2 tracking-widest`}>
                 {service.number}
               </p>
-              <h2 className="reveal-text text-3xl md:text-5xl font-bold mb-4 text-[#FFFFFF]">
+              <h2 className="reveal-text text-[clamp(1.75rem,4vw,3rem)] font-bold mb-4 text-[#FFFFFF] leading-tight">
                 {service.name}
               </h2>
               <p className="reveal-text text-[#BFC7D5] text-base md:text-lg leading-relaxed mb-6">
@@ -103,7 +103,7 @@ export function ServicesOverlay() {
               <div className={`reveal-text pt-4 border-t border-white/10 flex ${isRight ? "justify-end" : "justify-start"}`}>
                 <Link
                   href={service.linkUrl}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-white/90 transition-colors shadow-md"
+                  className="min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-white/90 transition-colors shadow-md"
                 >
                   <span>{service.linkText}</span>
                   <span>&rarr;</span>

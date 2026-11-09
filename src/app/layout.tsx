@@ -3,6 +3,7 @@ import { Exo, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
 import { CONTACT_EMAIL, SITE_NAME, SITE_URL, SOCIALS } from "@/lib/site";
+import { DebugOverlay } from "@/components/dom/DebugOverlay";
 
 const exo = Exo({
   variable: "--font-exo",
@@ -102,6 +103,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <DebugOverlay />
         {children}
       </body>
     </html>

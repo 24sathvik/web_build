@@ -18,7 +18,7 @@ export default function About() {
   }, []);
 
   return (
-    <main className="relative w-full h-screen overflow-hidden cursor-none">
+    <main className="relative w-full h-[100svh] overflow-hidden cursor-none">
       <CustomCursor />
       <AudioToggle />
       <Header />
