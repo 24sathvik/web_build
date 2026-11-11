@@ -102,9 +102,10 @@ function AboutEffects() {
   );
 }
 
-export default function AboutScene() {
+export default function AboutScene({ triggerTime }: { triggerTime?: number | null }) {
   return (
     <SceneShell
+      triggerTime={triggerTime}
       camera={{ position: [0, 40, 0], fov: 60, near: 0.1, far: 200 }}
       gl={{ powerPreference: "high-performance", antialias: false }}
     >

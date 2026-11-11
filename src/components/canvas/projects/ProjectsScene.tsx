@@ -157,13 +157,16 @@ function ProjectsContent({
 
 export default function ProjectsScene({ 
   triggerId = "#overlay-container-projects", 
-  scrollerId = "#scroll-container-projects" 
+  scrollerId = "#scroll-container-projects",
+  triggerTime,
 }: { 
   triggerId?: string; 
   scrollerId?: string; 
+  triggerTime?: number | null;
 }) {
   return (
     <SceneShell
+      triggerTime={triggerTime}
       camera={{ position: [0, 0, 12], fov: 45 }}
       gl={{ powerPreference: "high-performance", antialias: false }}
     >

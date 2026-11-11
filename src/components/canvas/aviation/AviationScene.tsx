@@ -111,9 +111,10 @@ function AviationContent() {
   );
 }
 
-export default function AviationScene() {
+export default function AviationScene({ triggerTime }: { triggerTime?: number | null }) {
   return (
     <SceneShell
+      triggerTime={triggerTime}
       camera={{ position: [0, 0, 10], fov: 45 }}
       gl={{ powerPreference: "high-performance", antialias: false }}
     >

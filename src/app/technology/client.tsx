@@ -7,11 +7,13 @@ import { CustomCursor } from "@/components/dom/CustomCursor";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { TechOverlay } from "@/components/dom/technology/TechOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
+import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
 
 const TechScene = dynamic(() => import("@/components/canvas/technology/TechScene"), { ssr: false });
 
 export default function Technology() {
   const tier = useQualityTier();
+  const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/technology");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -24,9 +26,9 @@ export default function Technology() {
       <Header />
       
       <div className="absolute inset-0 z-0">
-        {tier !== "static" ? (
+        {shouldMount ? (
           <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
-            <TechScene />
+            <TechScene triggerTime={triggerTime} />
           </Suspense>
         ) : (
           <div

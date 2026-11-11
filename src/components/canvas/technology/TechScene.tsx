@@ -100,9 +100,10 @@ function TechContent() {
   );
 }
 
-export default function TechScene() {
+export default function TechScene({ triggerTime }: { triggerTime?: number | null }) {
   return (
     <SceneShell
+      triggerTime={triggerTime}
       camera={{ position: [0, 5, 10], fov: 60 }}
       gl={{ powerPreference: "high-performance", antialias: false }}
     >

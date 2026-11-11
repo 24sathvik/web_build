@@ -7,11 +7,13 @@ import { CustomCursor } from "@/components/dom/CustomCursor";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { ContactOverlay } from "@/components/dom/contact/ContactOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
+import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
 
 const ContactScene = dynamic(() => import("@/components/canvas/contact/ContactScene"), { ssr: false });
 
 export default function Contact() {
   const tier = useQualityTier();
+  const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/contact");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -24,9 +26,9 @@ export default function Contact() {
       <Header />
       
       <div className="absolute inset-0 z-0">
-        {tier !== "static" ? (
+        {shouldMount ? (
           <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
-            <ContactScene />
+            <ContactScene triggerTime={triggerTime} />
           </Suspense>
         ) : (
           <div

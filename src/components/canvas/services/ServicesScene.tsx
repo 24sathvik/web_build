@@ -98,9 +98,10 @@ function ServicesEffects() {
   );
 }
 
-export default function ServicesScene() {
+export default function ServicesScene({ triggerTime }: { triggerTime?: number | null }) {
   return (
     <SceneShell
+      triggerTime={triggerTime}
       camera={{ position: [0, 2, 10], fov: 45 }}
       gl={{ powerPreference: "high-performance", antialias: false }}
     >

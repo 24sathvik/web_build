@@ -7,11 +7,13 @@ import { CustomCursor } from "@/components/dom/CustomCursor";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { AviationOverlay } from "@/components/dom/aviation/AviationOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
+import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
 
 const AviationScene = dynamic(() => import("@/components/canvas/aviation/AviationScene"), { ssr: false });
 
 export default function AviationClient() {
   const tier = useQualityTier();
+  const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/aviation-academy-software");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -24,9 +26,9 @@ export default function AviationClient() {
       <Header />
       
       <div className="absolute inset-0 z-0">
-        {tier !== "static" ? (
+        {shouldMount ? (
           <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
-            <AviationScene />
+            <AviationScene triggerTime={triggerTime} />
           </Suspense>
         ) : (
           <div

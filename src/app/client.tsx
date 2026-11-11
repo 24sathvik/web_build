@@ -9,6 +9,7 @@ import { Header } from "@/components/dom/Header";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { useQualityTier } from "@/hooks/useQualityTier";
+import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
 
 // Register ScrollTrigger & ignore mobile address bar resize re-measures
 gsap.registerPlugin(ScrollTrigger);
@@ -21,6 +22,7 @@ const Scene = dynamic(() => import("@/components/canvas/Scene"), {
 
 export default function Home() {
   const tier = useQualityTier();
+  const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/");
 
   useEffect(() => {
     // Scroll to top on load
@@ -35,9 +37,9 @@ export default function Home() {
       
       {/* 3D WebGL Background: gated by tier so static tier never downloads the 3D bundle */}
       <div className="absolute inset-0 z-0">
-        {tier !== "static" ? (
+        {shouldMount ? (
           <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
-            <Scene />
+            <Scene triggerTime={triggerTime} />
           </Suspense>
         ) : (
           <div

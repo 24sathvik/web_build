@@ -16,6 +16,20 @@ interface SceneShellProps {
   camera?: any;
   gl?: any;
   shadows?: boolean;
+  triggerTime?: number | null;
+}
+
+// Requirement 1: Measure time from trigger to first rendered frame
+function FirstFrameNotifier({ triggerTime }: { triggerTime?: number | null }) {
+  const recorded = useRef(false);
+  useFrame(() => {
+    if (!recorded.current && triggerTime && triggerTime > 0) {
+      recorded.current = true;
+      const duration = Math.round(performance.now() - triggerTime);
+      debugStore.set({ triggerToFirstFrame: duration });
+    }
+  });
+  return null;
 }
 
 // Requirement B.4: QualitySupervisor steps the tier down live (full -> lite)
@@ -63,12 +77,16 @@ export function SceneShell({
   camera,
   gl,
   shadows,
+  triggerTime,
 }: SceneShellProps) {
   const detectedTier = useQualityTier();
   const [activeTier, setActiveTier] = useState<QualityTier>(detectedTier);
   const downgradedInSession = useRef(false);
 
-  const [mounted, setMounted] = useState(false);
+  // If triggerTime is provided from lazy trigger, mount canvas immediately.
+  // Otherwise fall back to local schedule.
+  const [mounted, setMounted] = useState(triggerTime ? true : false);
+  const [localTriggerTime, setLocalTriggerTime] = useState<number | null>(triggerTime || null);
   const [canvasVisible, setCanvasVisible] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isInView, setIsInView] = useState(true);
@@ -119,20 +137,25 @@ export function SceneShell({
     debugStore.set({ dpr: targetDpr });
   };
 
-  // Mount rule:
-  // 1. Wait for window "load" AND React hydration to finish.
-  // 2. full tier: mount via requestIdleCallback with a 2000 ms timeout.
-  // 3. lite tier: mount on the first pointerdown, touchstart, wheel, scroll or keydown,
-  //    OR after 5000 ms of idle post-load, whichever comes first.
-  // 4. Until then show the CSS gradient. Fade canvas in when ready.
   useEffect(() => {
-    if (activeTier === "static") return;
+    if (triggerTime) {
+      setMounted(true);
+      setLocalTriggerTime(triggerTime);
+      debugStore.set({ canvasMounted: true });
+    }
+  }, [triggerTime]);
+
+  // Mount rule fallback when triggerTime is not externally provided:
+  useEffect(() => {
+    if (activeTier === "static" || mounted) return;
 
     let isDisposed = false;
     let cleanupListeners: (() => void) | null = null;
 
     const mountCanvas = () => {
       if (isDisposed) return;
+      const t = performance.now();
+      setLocalTriggerTime(t);
       setMounted(true);
       debugStore.set({ canvasMounted: true });
     };
@@ -184,7 +207,7 @@ export function SceneShell({
           window.addEventListener(evt, onInteraction, { once: true, passive: true, capture: true });
         });
 
-        // 5000 ms idle post-load fallback: wait 5000ms, then mount on idle
+        // 5000 ms idle post-load fallback
         timeoutId = setTimeout(() => {
           if (triggered || isDisposed) return;
           if (typeof win.requestIdleCallback === "function") {
@@ -219,7 +242,7 @@ export function SceneShell({
       if (loadHandler) window.removeEventListener("load", loadHandler);
       if (cleanupListeners) cleanupListeners();
     };
-  }, [activeTier]);
+  }, [activeTier, mounted]);
 
   // Pause rendering when document is hidden
   useEffect(() => {
@@ -297,6 +320,7 @@ export function SceneShell({
             >
               <PerformanceMonitor onDecline={handleDecline} onIncline={handleIncline} />
               <QualitySupervisor tier={activeTier} onStepDown={handleStepDown} />
+              <FirstFrameNotifier triggerTime={localTriggerTime} />
               {children}
             </Canvas>
           </QualityTierContext.Provider>
@@ -305,4 +329,5 @@ export function SceneShell({
     </div>
   );
 }
+
 export default SceneShell;

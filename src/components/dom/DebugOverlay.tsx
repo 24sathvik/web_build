@@ -21,6 +21,41 @@ export function DebugOverlay() {
     } catch {}
   }, []);
 
+  // PerformanceObserver for Longest Long Task
+  useEffect(() => {
+    if (typeof PerformanceObserver === "undefined") return;
+
+    let maxDuration = 0;
+    let observer: PerformanceObserver | null = null;
+
+    const handleEntries = (entries: PerformanceEntryList) => {
+      for (const entry of entries) {
+        if (entry.duration > maxDuration) {
+          maxDuration = Math.round(entry.duration);
+          debugStore.set({ longestLongTask: maxDuration });
+        }
+      }
+    };
+
+    try {
+      observer = new PerformanceObserver((list) => {
+        handleEntries(list.getEntries());
+      });
+      observer.observe({ type: "longtask", buffered: true });
+    } catch {
+      try {
+        observer = new PerformanceObserver((list) => {
+          handleEntries(list.getEntries());
+        });
+        observer.observe({ entryTypes: ["longtask"] });
+      } catch {}
+    }
+
+    return () => {
+      if (observer) observer.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     if (!enabled) return;
 
@@ -47,7 +82,7 @@ export function DebugOverlay() {
 
   return (
     <div
-      className="fixed top-4 right-4 z-[9999] bg-black/85 backdrop-blur-md border border-cyan-500/40 text-cyan-400 font-mono text-[11px] p-2.5 rounded-lg shadow-[0_0_15px_rgba(0,217,255,0.2)] pointer-events-none select-none flex flex-col gap-1 min-w-[125px]"
+      className="fixed top-4 right-4 z-[9999] bg-black/85 backdrop-blur-md border border-cyan-500/40 text-cyan-400 font-mono text-[11px] p-2.5 rounded-lg shadow-[0_0_15px_rgba(0,217,255,0.2)] pointer-events-none select-none flex flex-col gap-1 min-w-[145px]"
       aria-hidden="true"
     >
       <div className="text-[10px] uppercase tracking-wider text-white/50 border-b border-white/10 pb-1 font-semibold">
@@ -68,6 +103,16 @@ export function DebugOverlay() {
       <div className="flex justify-between gap-3">
         <span className="text-white/70">Chapters:</span>
         <span className="font-bold text-purple-400">{debugData.mountedChapters}</span>
+      </div>
+      <div className="flex justify-between gap-3">
+        <span className="text-white/70">Longest Task:</span>
+        <span className="font-bold text-rose-400">{debugData.longestLongTask}ms</span>
+      </div>
+      <div className="flex justify-between gap-3">
+        <span className="text-white/70">First Frame:</span>
+        <span className="font-bold text-cyan-300">
+          {debugData.triggerToFirstFrame !== null ? `${debugData.triggerToFirstFrame}ms` : "—"}
+        </span>
       </div>
     </div>
   );

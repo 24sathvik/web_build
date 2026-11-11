@@ -7,11 +7,13 @@ import { CustomCursor } from "@/components/dom/CustomCursor";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { ServicesOverlay } from "@/components/dom/services/ServicesOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
+import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
 
 const ServicesScene = dynamic(() => import("@/components/canvas/services/ServicesScene"), { ssr: false });
 
 export default function Services() {
   const tier = useQualityTier();
+  const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/services");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -24,9 +26,9 @@ export default function Services() {
       <Header />
       
       <div className="absolute inset-0 z-0">
-        {tier !== "static" ? (
+        {shouldMount ? (
           <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
-            <ServicesScene />
+            <ServicesScene triggerTime={triggerTime} />
           </Suspense>
         ) : (
           <div

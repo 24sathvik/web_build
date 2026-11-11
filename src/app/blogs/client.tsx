@@ -7,11 +7,13 @@ import { CustomCursor } from "@/components/dom/CustomCursor";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { BlogsOverlay, type BlogCard } from "@/components/dom/blogs/BlogsOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
+import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
 
 const ProjectsScene = dynamic(() => import("@/components/canvas/projects/ProjectsScene"), { ssr: false });
 
 export default function Blogs({ posts }: { posts: BlogCard[] }) {
   const tier = useQualityTier();
+  const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/blogs");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -24,11 +26,12 @@ export default function Blogs({ posts }: { posts: BlogCard[] }) {
       <Header />
       
       <div className="absolute inset-0 z-0">
-        {tier !== "static" ? (
+        {shouldMount ? (
           <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
             <ProjectsScene 
               triggerId="#overlay-container-blogs" 
               scrollerId="#scroll-container-blogs" 
+              triggerTime={triggerTime}
             />
           </Suspense>
         ) : (

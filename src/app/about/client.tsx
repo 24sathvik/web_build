@@ -7,11 +7,13 @@ import { CustomCursor } from "@/components/dom/CustomCursor";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { AboutOverlay } from "@/components/dom/about/AboutOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
+import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
 
 const AboutScene = dynamic(() => import("@/components/canvas/about/AboutScene"), { ssr: false });
 
 export default function About() {
   const tier = useQualityTier();
+  const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/about");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -24,9 +26,9 @@ export default function About() {
       <Header />
       
       <div className="absolute inset-0 z-0">
-        {tier !== "static" ? (
+        {shouldMount ? (
           <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
-            <AboutScene />
+            <AboutScene triggerTime={triggerTime} />
           </Suspense>
         ) : (
           <div

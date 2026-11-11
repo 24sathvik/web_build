@@ -175,9 +175,10 @@ function SceneContent() {
   );
 }
 
-export default function Scene() {
+export default function Scene({ triggerTime }: { triggerTime?: number | null }) {
   return (
     <SceneShell
+      triggerTime={triggerTime}
       shadows
       camera={{ position: [0, 0, 5], fov: 45, near: 0.1, far: 1000 }}
       gl={{

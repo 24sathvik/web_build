@@ -6,6 +6,8 @@ export interface DebugState {
   dpr: number;
   mountedChapters: number;
   canvasMounted: boolean;
+  longestLongTask: number;
+  triggerToFirstFrame: number | null;
 }
 
 let state: DebugState = {
@@ -13,6 +15,8 @@ let state: DebugState = {
   dpr: 1,
   mountedChapters: 1,
   canvasMounted: false,
+  longestLongTask: 0,
+  triggerToFirstFrame: null,
 };
 
 const listeners = new Set<Listener>();
@@ -28,4 +32,3 @@ export const debugStore = {
     return () => listeners.delete(listener);
   },
 };
-
