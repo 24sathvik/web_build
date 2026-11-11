@@ -8,11 +8,14 @@ import { DebugOverlay } from "@/components/dom/DebugOverlay";
 const exo = Exo({
   variable: "--font-exo",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const robotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {

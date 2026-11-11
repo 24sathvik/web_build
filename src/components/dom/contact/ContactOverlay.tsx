@@ -46,16 +46,16 @@ export function ContactOverlay() {
       >
         {/* Left side text */}
             <div className="w-full lg:w-1/2 mb-6 lg:mb-0">
-              <p className="reveal-elem text-xs md:text-sm text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-3 pointer-events-auto">
+              <p className="hero-entrance text-xs md:text-sm text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-3 pointer-events-auto">
                 Direct Engineering Inquiry
               </p>
-              <h1 className="reveal-elem text-5xl md:text-7xl font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto leading-tight">
+              <h1 className="hero-entrance-delay text-5xl md:text-7xl font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto leading-tight">
                 START A <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00D9FF] to-[#6E5BFF]">
                   PROJECT
                 </span>
               </h1>
-                <p className="reveal-elem text-base md:text-lg text-[#BFC7D5] max-w-lg mb-8 pointer-events-auto leading-relaxed">
+                <p className="hero-entrance-delay-2 text-base md:text-lg text-[#BFC7D5] max-w-lg mb-8 pointer-events-auto leading-relaxed">
                   Tell us about your requirements for an exam portal, fee system, ERP or website. We build software fitted to your business.
                 </p>
 

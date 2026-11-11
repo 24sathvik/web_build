@@ -14,7 +14,7 @@ export function TechOverlay() {
   useEffect(() => {
     const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sections = gsap.utils.toArray(".tech-section") as HTMLElement[];
-    sections.forEach((section) => {
+    sections.slice(1).forEach((section) => {
       const texts = section.querySelectorAll(".reveal-text");
       if (prefersReducedMotion) {
         gsap.set(texts, { scale: 1, opacity: 1, y: 0 });
@@ -53,13 +53,13 @@ export function TechOverlay() {
     <div id="overlay-container-tech" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       {/* Hero Section */}
       <section className="tech-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
-        <p className="reveal-text text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
+        <p className="hero-entrance text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           Architecture &amp; Quality
         </p>
-        <h1 className="reveal-text text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-4 pointer-events-auto leading-tight">
+        <h1 className="hero-entrance-delay text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-4 pointer-events-auto leading-tight">
           {siteContent.technology.headline}
         </h1>
-        <p className="reveal-text text-lg md:text-xl text-[#6E5BFF] font-mono tracking-wide pointer-events-auto max-w-2xl">
+        <p className="hero-entrance-delay-2 text-lg md:text-xl text-[#6E5BFF] font-mono tracking-wide pointer-events-auto max-w-2xl">
           {siteContent.technology.subHeadline}
         </p>
       </section>

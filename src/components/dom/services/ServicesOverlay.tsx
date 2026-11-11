@@ -14,7 +14,7 @@ export function ServicesOverlay() {
   useEffect(() => {
     const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sections = gsap.utils.toArray(".services-section") as HTMLElement[];
-    sections.forEach((section) => {
+    sections.slice(1).forEach((section) => {
       const texts = section.querySelectorAll(".reveal-text");
       if (prefersReducedMotion) {
         gsap.set(texts, { x: 0, opacity: 1 });
@@ -62,13 +62,13 @@ export function ServicesOverlay() {
   return (
     <div id="overlay-container-services" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       <section className="services-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
-        <p className="reveal-text text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
+        <p className="hero-entrance text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           Our Services
         </p>
-        <h1 className="reveal-text text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto leading-tight">
+        <h1 className="hero-entrance-delay text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto leading-tight">
           SOFTWARE &amp; WEB.
         </h1>
-        <p className="reveal-text text-base md:text-xl text-[#BFC7D5] max-w-2xl font-light pointer-events-auto leading-relaxed">
+        <p className="hero-entrance-delay-2 text-base md:text-xl text-[#BFC7D5] max-w-2xl font-light pointer-events-auto leading-relaxed">
           Custom software, exam engines, fee systems, and high-performance websites built for aviation academies and growing businesses.
         </p>
       </section>

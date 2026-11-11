@@ -72,7 +72,7 @@ export function AudioToggle() {
   return (
     <button
       onClick={toggleAudio}
-      className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 p-4 rounded-full bg-[#050505]/50 backdrop-blur-md border border-[#BFC7D5]/20 text-[#BFC7D5] hover:text-[#00D9FF] transition-colors pointer-events-auto"
+      className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 p-4 rounded-full bg-[#050505]/90 md:bg-[#050505]/50 md:backdrop-blur-md border border-[#BFC7D5]/20 text-[#BFC7D5] hover:text-[#00D9FF] transition-colors pointer-events-auto"
       aria-label="Toggle Audio"
     >
       {isPlaying ? <Volume2 size={24} /> : <VolumeX size={24} />}

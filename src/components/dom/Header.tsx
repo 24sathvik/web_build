@@ -70,6 +70,10 @@ export function Header() {
           <img
             src="/images/logo-top.png"
             alt="Zyxen Logo"
+            width={52}
+            height={40}
+            decoding="async"
+            fetchPriority="low"
             className="h-7 sm:h-8 md:h-10 w-auto object-contain cursor-pointer"
           />
         </Link>
@@ -206,7 +210,7 @@ export function Header() {
         {/* Fixed Mobile Bottom Bar */}
         <nav
           aria-label="Mobile Navigation"
-          className="fixed bottom-0 left-0 right-0 z-50 bg-[#090a10]/90 backdrop-blur-xl border-t border-white/10 shadow-[0_-5px_30px_rgba(0,0,0,0.7)] px-2 pt-1 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))]"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-[#090a10]/95 border-t border-white/10 shadow-[0_-5px_30px_rgba(0,0,0,0.7)] px-2 pt-1 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))]"
         >
           <div className="flex items-center justify-around max-w-lg mx-auto">
             {mobilePrimaryItems.map((item) => {

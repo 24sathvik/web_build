@@ -1,0 +1,37 @@
+{
+  "/": [
+    "static/chunks/39s6ser-k-c7a.js",
+    "static/chunks/2ae1iwi73ni0t.js",
+    "static/chunks/32_-f3kvirmsg.js",
+    "static/chunks/0vau4yyompjmw.js",
+    "static/chunks/22p6qhk01cot0.js"
+  ],
+  "/about": [
+    "static/chunks/29rmrr-q5tu0a.js",
+    "static/chunks/225502-xmmxqj.js"
+  ],
+  "/aviation-academy-software": [
+    "static/chunks/23ai0rwfy7mz1.js",
+    "static/chunks/1pbwx1afkx40z.js"
+  ],
+  "/blogs": [
+    "static/chunks/2cdv46cmcu4yc.js",
+    "static/chunks/1pbwx1afkx40z.js"
+  ],
+  "/contact": [
+    "static/chunks/22_h8z-qzwnwi.js",
+    "static/chunks/1pbwx1afkx40z.js"
+  ],
+  "/projects": [
+    "static/chunks/2cdv46cmcu4yc.js",
+    "static/chunks/1pbwx1afkx40z.js"
+  ],
+  "/services": [
+    "static/chunks/1irpbd4n_6ojo.js",
+    "static/chunks/1pbwx1afkx40z.js"
+  ],
+  "/technology": [
+    "static/chunks/1ym2r93loxsdj.js",
+    "static/chunks/1odn9gqn7zd3x.js"
+  ]
+}

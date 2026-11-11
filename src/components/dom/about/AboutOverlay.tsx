@@ -14,7 +14,7 @@ export function AboutOverlay() {
   useEffect(() => {
     const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sections = gsap.utils.toArray(".about-section") as HTMLElement[];
-    sections.forEach((section) => {
+    sections.slice(1).forEach((section) => {
       const texts = section.querySelectorAll(".reveal-text");
       if (prefersReducedMotion) {
         gsap.set(texts, { scale: 1, opacity: 1, filter: "none" });
@@ -52,13 +52,13 @@ export function AboutOverlay() {
   return (
     <div id="overlay-container-about" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       <section className="about-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
-        <p className="reveal-text text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
+        <p className="hero-entrance text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           {siteContent.about.tag}
         </p>
-        <h1 className="reveal-text text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto leading-tight">
+        <h1 className="hero-entrance-delay text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto leading-tight">
           {siteContent.about.headline}
         </h1>
-        <p className="reveal-text text-[clamp(1rem,1.3vw,1.25rem)] text-[#BFC7D5] max-w-2xl font-light pointer-events-auto leading-relaxed">
+        <p className="hero-entrance-delay-2 text-[clamp(1rem,1.3vw,1.25rem)] text-[#BFC7D5] max-w-2xl font-light pointer-events-auto leading-relaxed">
           {siteContent.about.intro}
         </p>
       </section>

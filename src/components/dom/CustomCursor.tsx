@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
 
 export function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
-  const [isHovering, setIsHovering] = useState(false);
+  const isHoveringRef = useRef(false);
   const [isEnabled, setIsEnabled] = useState(false);
 
   useEffect(() => {
@@ -20,85 +19,96 @@ export function CustomCursor() {
     setIsEnabled(true);
     document.body.style.cursor = "none";
 
-    const onMouseMove = (e: MouseEvent) => {
-      if (dotRef.current) {
-        gsap.to(dotRef.current, {
-          x: e.clientX,
-          y: e.clientY,
-          duration: 0,
-        });
-      }
-      
+    let disposed = false;
+    let cleanupListeners: (() => void) | null = null;
+
+    import("gsap").then(({ default: gsap }) => {
+      if (disposed) return;
+
+      const onMouseMove = (e: MouseEvent) => {
+        if (dotRef.current) {
+          gsap.to(dotRef.current, {
+            x: e.clientX,
+            y: e.clientY,
+            duration: 0,
+          });
+        }
+
+        if (cursorRef.current) {
+          gsap.to(cursorRef.current, {
+            x: e.clientX,
+            y: e.clientY,
+            duration: 0.6,
+            ease: "expo.out",
+          });
+        }
+      };
+
+      const onMouseDown = () => {
+        if (cursorRef.current) gsap.to(cursorRef.current, { scale: 0.5, duration: 0.2 });
+        if (dotRef.current) gsap.to(dotRef.current, { scale: 2, duration: 0.2 });
+      };
+
+      const onMouseUp = () => {
+        if (cursorRef.current) gsap.to(cursorRef.current, { scale: isHoveringRef.current ? 1.5 : 1, duration: 0.2 });
+        if (dotRef.current) gsap.to(dotRef.current, { scale: 1, duration: 0.2 });
+      };
+
+      const handleMouseOver = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('a, button, input, [role="button"]')) {
+          isHoveringRef.current = true;
+          if (cursorRef.current) {
+            gsap.to(cursorRef.current, {
+              scale: 1.5,
+              backgroundColor: "rgba(0, 217, 255, 0.1)",
+              borderColor: "rgba(0, 217, 255, 0.5)",
+              duration: 0.3,
+            });
+          }
+        } else {
+          isHoveringRef.current = false;
+          if (cursorRef.current) {
+            gsap.to(cursorRef.current, {
+              scale: 1,
+              backgroundColor: "transparent",
+              borderColor: "rgba(255, 255, 255, 0.2)",
+              duration: 0.3,
+            });
+          }
+        }
+      };
+
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mousedown", onMouseDown);
+      window.addEventListener("mouseup", onMouseUp);
+      window.addEventListener("mouseover", handleMouseOver);
+
+      let rotateTween: { kill: () => void } | null = null;
       if (cursorRef.current) {
-        gsap.to(cursorRef.current, {
-          x: e.clientX,
-          y: e.clientY,
-          duration: 0.6,
-          ease: "expo.out",
+        rotateTween = gsap.to(cursorRef.current, {
+          rotation: 360,
+          duration: 10,
+          repeat: -1,
+          ease: "linear",
         });
       }
-    };
 
-    const onMouseDown = () => {
-      if (cursorRef.current) gsap.to(cursorRef.current, { scale: 0.5, duration: 0.2 });
-      if (dotRef.current) gsap.to(dotRef.current, { scale: 2, duration: 0.2 });
-    };
-
-    const onMouseUp = () => {
-      if (cursorRef.current) gsap.to(cursorRef.current, { scale: isHovering ? 1.5 : 1, duration: 0.2 });
-      if (dotRef.current) gsap.to(dotRef.current, { scale: 1, duration: 0.2 });
-    };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('a, button, input, [role="button"]')) {
-        setIsHovering(true);
-        if (cursorRef.current) {
-          gsap.to(cursorRef.current, {
-            scale: 1.5,
-            backgroundColor: "rgba(0, 217, 255, 0.1)",
-            borderColor: "rgba(0, 217, 255, 0.5)",
-            duration: 0.3,
-          });
-        }
-      } else {
-        setIsHovering(false);
-        if (cursorRef.current) {
-          gsap.to(cursorRef.current, {
-            scale: 1,
-            backgroundColor: "transparent",
-            borderColor: "rgba(255, 255, 255, 0.2)",
-            duration: 0.3,
-          });
-        }
-      }
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("mouseover", handleMouseOver);
-
-    // Continuous rotation for outer tech ring
-    let rotateTween: gsap.core.Tween | null = null;
-    if (cursorRef.current) {
-      rotateTween = gsap.to(cursorRef.current, {
-        rotation: 360,
-        duration: 10,
-        repeat: -1,
-        ease: "linear",
-      });
-    }
+      cleanupListeners = () => {
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mousedown", onMouseDown);
+        window.removeEventListener("mouseup", onMouseUp);
+        window.removeEventListener("mouseover", handleMouseOver);
+        if (rotateTween) rotateTween.kill();
+      };
+    });
 
     return () => {
+      disposed = true;
       document.body.style.cursor = "";
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("mouseover", handleMouseOver);
-      if (rotateTween) rotateTween.kill();
+      if (cleanupListeners) cleanupListeners();
     };
-  }, [isHovering]);
+  }, []);
 
   if (!isEnabled) return null;
 

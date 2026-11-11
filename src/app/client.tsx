@@ -2,18 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { Suspense, useEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Overlay } from "@/components/dom/Overlay";
 import { Header } from "@/components/dom/Header";
 import { AudioToggle } from "@/components/dom/AudioToggle";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { useQualityTier } from "@/hooks/useQualityTier";
 import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
-
-// Register ScrollTrigger & ignore mobile address bar resize re-measures
-gsap.registerPlugin(ScrollTrigger);
-ScrollTrigger.config({ ignoreMobileResize: true });
 
 // Dynamically import the Canvas to prevent SSR issues with Three.js
 const Scene = dynamic(() => import("@/components/canvas/Scene"), {

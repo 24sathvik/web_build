@@ -27,13 +27,29 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
       debugStore.set({ canvasMounted: true });
     };
 
+    // Requirement 4: Never prefetch on Save-Data or slow connections (2g, slow-2g, 3g)
+    const isConnectionSlowOrSaveData = () => {
+      if (typeof navigator === "undefined") return false;
+      const nav = navigator as any;
+      if (nav.connection) {
+        if (nav.connection.saveData === true) return true;
+        const eff = nav.connection.effectiveType;
+        if (eff === "2g" || eff === "slow-2g" || eff === "3g") return true;
+      }
+      return false;
+    };
+
+    // Requirement 3 & 4: Fetch static /chunks-manifest.json (pure static build, zero server runtime)
     const prefetchChunks = () => {
+      if (isConnectionSlowOrSaveData()) return;
+
       try {
-        fetch(`/api/chunks?route=${encodeURIComponent(routePath)}`)
+        fetch("/chunks-manifest.json")
           .then((r) => r.json())
           .then((data) => {
-            if (isDisposed || !data?.files || !Array.isArray(data.files)) return;
-            data.files.forEach((file: string) => {
+            if (isDisposed || !data || !Array.isArray(data[routePath])) return;
+            const files: string[] = data[routePath];
+            files.forEach((file: string) => {
               const fullHref = `/_next/${file}`;
               if (!document.querySelector(`link[href="${fullHref}"]`)) {
                 const link = document.createElement("link");
@@ -68,12 +84,15 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
           if (timeoutId) clearTimeout(timeoutId);
         };
       } else if (tier === "lite") {
-        // Pre-fetch 3D chunk during idle after load (no execution)
-        if (typeof win.requestIdleCallback === "function") {
-          win.requestIdleCallback(() => prefetchChunks(), { timeout: 3000 });
-        } else {
-          setTimeout(() => prefetchChunks(), 1000);
-        }
+        // Requirement 4: Start prefetch only after "load" event PLUS an additional 1500 ms idle
+        let prefetchTimer: any = setTimeout(() => {
+          if (isDisposed || hasTriggered.current) return;
+          if (typeof win.requestIdleCallback === "function") {
+            win.requestIdleCallback(() => prefetchChunks(), { timeout: 3000 });
+          } else {
+            prefetchChunks();
+          }
+        }, 1500);
 
         let idleId: any = null;
         let timeoutId: any = null;
@@ -89,6 +108,7 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
           events.forEach((evt) => {
             window.removeEventListener(evt, onInteraction, { capture: true } as any);
           });
+          if (prefetchTimer) clearTimeout(prefetchTimer);
           if (idleId && typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(idleId);
           if (timeoutId) clearTimeout(timeoutId);
         };
