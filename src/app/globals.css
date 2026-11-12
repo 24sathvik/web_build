@@ -29,8 +29,30 @@ body {
 }
 
 @media (pointer: fine) {
-  .cursor-none {
+  .cursor-none,
+  .cursor-none a,
+  .cursor-none button,
+  .cursor-none [role="button"] {
     cursor: none;
+  }
+
+  .cursor-none input,
+  .cursor-none select,
+  .cursor-none textarea,
+  .cursor-none option,
+  .cursor-none [contenteditable="true"],
+  .cursor-none [contenteditable=""] {
+    cursor: auto !important;
+  }
+
+  .cursor-none input[type="text"],
+  .cursor-none input[type="email"],
+  .cursor-none input[type="tel"],
+  .cursor-none input[type="search"],
+  .cursor-none input[type="url"],
+  .cursor-none input[type="password"],
+  .cursor-none textarea {
+    cursor: text !important;
   }
 }
 

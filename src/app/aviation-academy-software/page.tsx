@@ -1,6 +1,7 @@
 import { pageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 import { siteContent } from "@/content/site";
+import { SiteFooter } from "@/components/dom/SiteFooter";
 import AviationClient from "./client";
 
 export const metadata = pageMetadata({
@@ -50,7 +51,7 @@ export default function AviationAcademyPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <AviationClient />
+      <AviationClient footer={<SiteFooter />} />
     </>
   );
 }

@@ -93,9 +93,11 @@ function SceneContent() {
     const updateChapters = () => {
       const scrollEl = document.getElementById("scroll-container");
       if (!scrollEl) return;
-      const maxScroll = scrollEl.scrollHeight - scrollEl.clientHeight;
+      const overlayEl = document.getElementById("overlay-container");
+      const contentHeight = overlayEl ? overlayEl.offsetHeight : scrollEl.scrollHeight;
+      const maxScroll = contentHeight - scrollEl.clientHeight;
       if (maxScroll <= 0) return;
-      const progress = scrollEl.scrollTop / maxScroll;
+      const progress = Math.min(1, Math.max(0, scrollEl.scrollTop / maxScroll));
 
       let target = 1;
       if (progress > 0.01) {

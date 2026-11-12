@@ -223,12 +223,17 @@ export function AviationOverlay() {
             >
               {aviation.cta.buttonText}
             </Link>
-            <a
-              href={`tel:${siteContent.contact.phone.replace(/\s+/g, '')}`}
-              className="px-8 py-4 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all"
-            >
-              Call {siteContent.contact.phone}
-            </a>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {siteContent.contact.phones.map((phone) => (
+                <a
+                  key={phone}
+                  href={`tel:${phone.replace(/\s+/g, "")}`}
+                  className="px-7 py-4 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all"
+                >
+                  Call {phone}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </section>

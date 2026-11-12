@@ -172,6 +172,33 @@ function ProjectPlaceholder({ project }: { project: ProjectItem }) {
         </div>
       )}
 
+      {project.id === "raise-lab-equipment" && (
+        <div className="space-y-4">
+          <div className="bg-white/[0.03] p-3 rounded-xl border border-white/5 flex justify-between items-center">
+            <div>
+              <p className="text-[10px] font-mono text-white/40">ENQUIRY &amp; QUOTATION DESK</p>
+              <p className="text-xs font-mono font-bold text-white">Pharmaceutical Lab Equipment</p>
+            </div>
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#00D9FF]/15 text-[#00D9FF] font-bold">
+              RFQ FLOW
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-3 text-xs font-mono">
+            <div className="bg-white/[0.02] p-2.5 rounded-xl border border-white/5">
+              <p className="text-[10px] text-white/40">PORTAL</p>
+              <p className="text-white/90 font-bold">Company Website</p>
+              <p className="text-[10px] text-white/40 mt-1">Product Catalog</p>
+            </div>
+            <div className="bg-white/[0.02] p-2.5 rounded-xl border border-white/5">
+              <p className="text-[10px] text-white/40">WORKFLOW</p>
+              <p className="text-emerald-400 font-bold">Quote Builder</p>
+              <p className="text-[10px] text-white/40 mt-1">Structured Enquiries</p>
+            </div>
+          </div>
+          <p className="text-[11px] font-mono text-white/40">Company Website &bull; Product Enquiries &bull; Quotation System</p>
+        </div>
+      )}
+
       {project.id === "zyops" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between bg-white/[0.03] p-3 rounded-xl border border-white/5">
@@ -492,7 +519,7 @@ export function ProjectsOverlay() {
                 </div>
                 <div className="reveal-text pt-2">
                   <Link
-                    href="/contact"
+                    href={project.href || "/contact"}
                     className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider px-5 py-2.5 rounded-full bg-white text-black hover:bg-white/90 transition-colors shadow-md"
                   >
                     <span>Inquire About System</span>

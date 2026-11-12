@@ -3,6 +3,7 @@ import { Exo, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
 import { CONTACT_EMAIL, SITE_NAME, SITE_URL, SOCIALS } from "@/lib/site";
+import { siteContent } from "@/content/site";
 import { DebugOverlay } from "@/components/dom/DebugOverlay";
 
 const exo = Exo({
@@ -64,7 +65,14 @@ const jsonLd = {
       url: SITE_URL,
       logo: { "@type": "ImageObject", url: `${SITE_URL}/previews/logo.png` },
       sameAs: SOCIALS,
-      contactPoint: { "@type": "ContactPoint", email: CONTACT_EMAIL, contactType: "customer service" },
+      telephone: siteContent.contact.phones,
+      contactPoint: siteContent.contact.phones.map((phone) => ({
+        "@type": "ContactPoint",
+        telephone: phone,
+        email: CONTACT_EMAIL,
+        contactType: "customer service",
+        areaServed: "IN",
+      })),
     },
     {
       "@type": "WebSite",
@@ -79,6 +87,20 @@ const jsonLd = {
       name: SITE_NAME,
       url: SITE_URL,
       email: CONTACT_EMAIL,
+      telephone: siteContent.contact.phones,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: siteContent.contact.city,
+        addressRegion: siteContent.contact.state,
+        addressCountry: "IN",
+      },
+      contactPoint: siteContent.contact.phones.map((phone) => ({
+        "@type": "ContactPoint",
+        telephone: phone,
+        email: CONTACT_EMAIL,
+        contactType: "customer service",
+        areaServed: "IN",
+      })),
       description:
         "ZYXEN is a digital solutions and creative agency building high-performance websites, branding, and software products.",
       priceRange: "$$",

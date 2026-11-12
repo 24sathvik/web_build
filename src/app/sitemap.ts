@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // New in the 3D build
     { url: `${SITE_URL}/projects`, lastModified, changeFrequency: "monthly", priority: 0.8 },
     { url: `${SITE_URL}/technology`, lastModified, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${SITE_URL}/privacy-policy`, lastModified, changeFrequency: "monthly", priority: 0.4 },
   ];
 
   const blogRoutes: MetadataRoute.Sitemap = getAllPosts().map((post) => ({

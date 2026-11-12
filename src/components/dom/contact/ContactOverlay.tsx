@@ -71,12 +71,17 @@ export function ContactOverlay() {
                     </div>
                     <div>
                       <p className="text-xs text-[#00D9FF] tracking-widest uppercase mb-1 font-mono">Phone</p>
-                        <a
-                          href={`tel:${siteContent.contact.phone.replace(/\s+/g, "")}`}
-                          className="text-lg md:text-xl text-white hover:text-[#00D9FF] transition-colors font-medium"
-                        >
-                          {siteContent.contact.phone}
-                        </a>
+                      <div className="flex flex-col gap-1.5">
+                        {siteContent.contact.phones.map((phone) => (
+                          <a
+                            key={phone}
+                            href={`tel:${phone.replace(/\s+/g, "")}`}
+                            className="text-lg md:text-xl text-white hover:text-[#00D9FF] transition-colors font-medium w-fit"
+                          >
+                            {phone}
+                          </a>
+                        ))}
+                      </div>
                     </div>
                     <div>
                       <p className="text-xs text-[#00D9FF] tracking-widest uppercase mb-1 font-mono">Location</p>

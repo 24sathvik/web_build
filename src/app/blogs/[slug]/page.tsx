@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Header } from "@/components/dom/Header";
+import { CustomCursor } from "@/components/dom/CustomCursor";
+import { SiteFooter } from "@/components/dom/SiteFooter";
 import { getAllPosts, getPostBySlug, renderContent, safeImageSrc } from "@/lib/blog";
 import { pageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
@@ -56,16 +58,17 @@ export default async function BlogPostPage({ params }: Params) {
   };
 
   return (
-    <main className="relative min-h-[100svh] w-full bg-[#050505] text-white pb-40">
+    <main className="relative min-h-[100svh] w-full bg-[#050505] text-white cursor-none">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-[60vh]"
         style={{ background: "radial-gradient(60% 60% at 50% 0%, rgba(110,91,255,0.18), transparent 70%)" }}
       />
+      <CustomCursor />
       <Header />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article className="relative z-10 mx-auto w-full max-w-3xl px-5 pt-28 md:pt-36">
+      <article className="relative z-10 mx-auto w-full max-w-3xl px-5 pt-28 md:pt-36 pb-16 md:pb-24">
         <Link href="/blogs" className="text-sm text-[#00D9FF] hover:underline">
           ← All articles
         </Link>
@@ -117,6 +120,7 @@ export default async function BlogPostPage({ params }: Params) {
           </section>
         )}
       </article>
+      <SiteFooter />
     </main>
   );
 }

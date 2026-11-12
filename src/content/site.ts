@@ -5,7 +5,7 @@ export interface NavItem {
 
 export interface ContactInfo {
   email: string;
-  phone: string;
+  phones: string[];
   address: string;
   city: string;
   state: string;
@@ -30,6 +30,7 @@ export interface ProjectItem {
   group: "aviation" | "business";
   features: string[];
   badge: string;
+  href?: string;
 }
 
 export interface RegulatorItem {
@@ -186,7 +187,7 @@ export const siteContent: SiteContent = {
   },
   contact: {
     email: "contact@zyxen.in",
-    phone: "+91 70135 58465",
+    phones: ["+91 70135 58465", "+91 98669 42111"],
     address: "Hyderabad, Telangana, India",
     city: "Hyderabad",
     state: "Telangana",
@@ -386,6 +387,19 @@ export const siteContent: SiteContent = {
       group: "aviation",
       badge: "Institute ERP",
       features: ["multi-unit", "roles", "inventory sync"],
+    },
+    {
+      id: "raise-lab-equipment",
+      name: "Raise Lab Equipment", // VERIFY
+      tagline: "Website and quotation system for a pharmaceutical laboratory equipment manufacturer", // VERIFY
+      group: "business",
+      badge: "Pharma",
+      href: "",
+      features: [
+        "Company website", // VERIFY
+        "Product enquiries", // VERIFY
+        "Quotation system", // VERIFY
+      ],
     },
     {
       id: "zyops",

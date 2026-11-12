@@ -1,4 +1,5 @@
 import { pageMetadata } from "@/lib/seo";
+import { SiteFooter } from "@/components/dom/SiteFooter";
 import Technology from "./client";
 
 export const metadata = pageMetadata({
@@ -9,5 +10,5 @@ export const metadata = pageMetadata({
 });
 
 export default function Page() {
-  return <Technology />;
+  return <Technology footer={<SiteFooter />} />;
 }
