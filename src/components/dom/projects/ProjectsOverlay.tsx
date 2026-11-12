@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { siteContent, ProjectItem } from "@/content/site";
-
-gsap.registerPlugin(ScrollTrigger);
+import { projectStore, useSelectionStore } from "@/lib/sceneSync";
 
 function ProjectPlaceholder({ project }: { project: ProjectItem }) {
   return (
-    <div className="w-full glass-panel rounded-2xl border border-white/10 bg-black/60 p-4 md:p-6 backdrop-blur-xl shadow-2xl overflow-hidden font-sans">
+    <div className="w-full glass-panel rounded-2xl border border-white/10 bg-[#080a10]/90 p-4 md:p-6 shadow-2xl overflow-hidden font-sans">
       {/* Mock Browser/App Header */}
       <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
         <div className="flex items-center gap-2">
@@ -341,36 +338,8 @@ function ProjectPlaceholder({ project }: { project: ProjectItem }) {
 
 export function ProjectsOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const sections = gsap.utils.toArray(".projects-section") as HTMLElement[];
-    sections.slice(1).forEach((section) => {
-      const texts = section.querySelectorAll(".reveal-text");
-      if (prefersReducedMotion) {
-        gsap.set(texts, { opacity: 1, y: 0 });
-        return;
-      }
-      gsap.fromTo(
-        texts,
-        { opacity: 0, y: 35 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          stagger: 0.15,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: section,
-            scroller: "#scroll-container-projects",
-            start: "top 75%",
-            end: "center center",
-            scrub: false,
-          },
-        }
-      );
-    });
-  }, []);
+  const { hoveredId, activeId } = useSelectionStore(projectStore);
+  const highlightedProjectId = hoveredId || activeId;
 
   const aviationProjects = siteContent.projects.filter((p) => p.group === "aviation");
   const businessProjects = siteContent.projects.filter((p) => p.group === "business");
@@ -420,13 +389,26 @@ export function ProjectsOverlay() {
       {/* Aviation Projects List */}
       {aviationProjects.map((project, idx) => {
         const isEven = idx % 2 === 0;
+        const isHighlighted = highlightedProjectId === project.id;
         return (
           <section
             key={project.id}
             id={project.id}
+            onMouseEnter={() => projectStore.set({ domHoveredId: project.id })}
+            onMouseLeave={() => projectStore.set({ domHoveredId: null })}
+            onFocus={() => projectStore.set({ domHoveredId: project.id })}
+            onBlur={() => projectStore.set({ domHoveredId: null })}
             className="projects-section content-visibility-auto w-full min-h-[100svh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
           >
-            <div className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center ${isEven ? "" : "lg:[&>*:first-child]:order-2"}`}>
+            <div
+              className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center rounded-3xl p-4 md:p-6 transition-all duration-300 ${
+                isEven ? "" : "lg:[&>*:first-child]:order-2"
+              } ${
+                isHighlighted
+                  ? "ring-2 ring-[#00D9FF]/70 bg-[#00D9FF]/[0.03] shadow-[0_0_32px_rgba(0,217,255,0.12)]"
+                  : ""
+              }`}
+            >
               {/* Left Column: Project Info */}
               <div className="lg:col-span-5 pointer-events-auto">
                 <span className="inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#00D9FF]/10 border border-[#00D9FF]/30 text-[#00D9FF] mb-4">
@@ -489,13 +471,29 @@ export function ProjectsOverlay() {
       {/* Business Projects List */}
       {businessProjects.map((project, idx) => {
         const isEven = idx % 2 === 0;
+        const isHighlighted = highlightedProjectId === project.id;
+        const isRaiseLab = project.id === "raise-lab-equipment";
         return (
           <section
             key={project.id}
             id={project.id}
+            onMouseEnter={() => projectStore.set({ domHoveredId: project.id })}
+            onMouseLeave={() => projectStore.set({ domHoveredId: null })}
+            onFocus={() => projectStore.set({ domHoveredId: project.id })}
+            onBlur={() => projectStore.set({ domHoveredId: null })}
             className="projects-section content-visibility-auto w-full min-h-[100svh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
           >
-            <div className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center ${isEven ? "" : "lg:[&>*:first-child]:order-2"}`}>
+            <div
+              className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center rounded-3xl p-4 md:p-6 transition-all duration-300 ${
+                isEven ? "" : "lg:[&>*:first-child]:order-2"
+              } ${
+                isHighlighted
+                  ? isRaiseLab
+                    ? "ring-2 ring-[#00FFB2]/80 bg-[#00FFB2]/[0.04] shadow-[0_0_32px_rgba(0,255,178,0.14)]"
+                    : "ring-2 ring-[#6E5BFF]/80 bg-[#6E5BFF]/[0.04] shadow-[0_0_32px_rgba(110,91,255,0.14)]"
+                  : ""
+              }`}
+            >
               {/* Left Column: Project Info */}
               <div className="lg:col-span-5 pointer-events-auto">
                 <span className="inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#6E5BFF]/10 border border-[#6E5BFF]/30 text-[#6E5BFF] mb-4">

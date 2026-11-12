@@ -1,45 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { siteContent } from "@/content/site";
-
-gsap.registerPlugin(ScrollTrigger);
+import { aviationStore, useSelectionStore } from "@/lib/sceneSync";
 
 export function AviationOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const sections = gsap.utils.toArray(".aviation-section") as HTMLElement[];
-    sections.slice(1).forEach((section) => {
-      const texts = section.querySelectorAll(".reveal-text");
-      if (prefersReducedMotion) {
-        gsap.set(texts, { y: 0, opacity: 1 });
-        return;
-      }
-      gsap.fromTo(
-        texts,
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            scroller: "#scroll-container-aviation",
-            start: "top 75%",
-            end: "center center",
-            scrub: false,
-          },
-        }
-      );
-    });
-  }, []);
+  const { hoveredCode, selectedCode } = useSelectionStore(aviationStore);
+  const highlightedAuthCode = hoveredCode || selectedCode;
 
   const { aviation } = siteContent;
 
@@ -138,11 +107,23 @@ export function AviationOverlay() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl w-full pointer-events-auto">
-          {aviation.authorities.map((auth) => (
-            <div
-              key={auth.code}
-              className="reveal-text glass-panel p-8 rounded-2xl border border-white/10 backdrop-blur-xl bg-[#050505]/70 flex flex-col justify-between"
-            >
+          {aviation.authorities.map((auth) => {
+            const isHighlighted = highlightedAuthCode === auth.code;
+            return (
+              <div
+                key={auth.code}
+                id={`authority-${auth.code.toLowerCase()}`}
+                tabIndex={0}
+                onMouseEnter={() => aviationStore.set({ domHoveredCode: auth.code })}
+                onMouseLeave={() => aviationStore.set({ domHoveredCode: null })}
+                onFocus={() => aviationStore.set({ domHoveredCode: auth.code })}
+                onBlur={() => aviationStore.set({ domHoveredCode: null })}
+                className={`reveal-text glass-panel p-8 rounded-2xl border backdrop-blur-xl bg-[#050505]/70 flex flex-col justify-between transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${
+                  isHighlighted
+                    ? "border-[#00D9FF]/80 shadow-[0_0_28px_rgba(0,217,255,0.2)]"
+                    : "border-white/10 hover:border-[#00D9FF]/45"
+                }`}
+              >
               <div>
                 <div className="flex items-baseline justify-between mb-4">
                   <span className="text-3xl font-bold text-[#00D9FF]">{auth.code}</span>
@@ -176,8 +157,9 @@ export function AviationOverlay() {
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
 
         <div className="mt-8 text-center max-w-2xl pointer-events-auto">

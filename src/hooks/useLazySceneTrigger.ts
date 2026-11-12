@@ -84,15 +84,15 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
           if (timeoutId) clearTimeout(timeoutId);
         };
       } else if (tier === "lite") {
-        // Requirement 4: Start prefetch only after "load" event PLUS an additional 1500 ms idle
+        // Requirement 4: Start prefetch only after "load" event PLUS an additional 2000 ms idle
         let prefetchTimer: any = setTimeout(() => {
           if (isDisposed || hasTriggered.current) return;
           if (typeof win.requestIdleCallback === "function") {
-            win.requestIdleCallback(() => prefetchChunks(), { timeout: 3000 });
+            win.requestIdleCallback(() => prefetchChunks(), { timeout: 8000 });
           } else {
             prefetchChunks();
           }
-        }, 1500);
+        }, 2000);
 
         let idleId: any = null;
         let timeoutId: any = null;
@@ -128,7 +128,7 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
                 cleanup();
                 fireTrigger();
               }
-            });
+            }, { timeout: 6000 });
           } else {
             cleanup();
             fireTrigger();

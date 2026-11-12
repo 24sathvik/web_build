@@ -45,9 +45,7 @@ function QualitySupervisor({
   const lowFpsCountRef = useRef(0);
   const lastSecRef = useRef(performance.now());
 
-  useFrame(() => {
-    if (tier !== "full") return;
-
+  useFrame((state) => {
     frameCountRef.current++;
     const now = performance.now();
     const elapsed = now - lastSecRef.current;
@@ -55,14 +53,17 @@ function QualitySupervisor({
       const fps = (frameCountRef.current * 1000) / elapsed;
       frameCountRef.current = 0;
       lastSecRef.current = now;
+      debugStore.set({ drawCalls: state.gl.info.render.calls });
 
-      if (fps < 40) {
-        lowFpsCountRef.current += 1;
-        if (lowFpsCountRef.current >= 2) {
-          onStepDown();
+      if (tier === "full") {
+        if (fps < 40) {
+          lowFpsCountRef.current += 1;
+          if (lowFpsCountRef.current >= 2) {
+            onStepDown();
+          }
+        } else {
+          lowFpsCountRef.current = 0;
         }
-      } else {
-        lowFpsCountRef.current = 0;
       }
     }
   });
@@ -88,9 +89,11 @@ export function SceneShell({
   const [mounted, setMounted] = useState(triggerTime ? true : false);
   const [localTriggerTime, setLocalTriggerTime] = useState<number | null>(triggerTime || null);
   const [canvasVisible, setCanvasVisible] = useState(false);
+  const [contextLost, setContextLost] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isInView, setIsInView] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasElRef = useRef<HTMLCanvasElement | null>(null);
 
   // Dynamic DPR: [1, 1.25] for lite and [1, 1.75] for full
   const [dpr, setDpr] = useState<number>(activeTier === "lite" ? 1.25 : 1.75);
@@ -268,6 +271,18 @@ export function SceneShell({
     return () => observer.disconnect();
   }, [mounted]);
 
+  // Clean up WebGL context-loss listeners on unmount
+  useEffect(() => {
+    return () => {
+      const el = canvasElRef.current;
+      if (!el) return;
+      const onLost = (el as HTMLCanvasElement & { __onCtxLost?: EventListener }).__onCtxLost;
+      const onRestored = (el as HTMLCanvasElement & { __onCtxRestored?: EventListener }).__onCtxRestored;
+      if (onLost) el.removeEventListener("webglcontextlost", onLost);
+      if (onRestored) el.removeEventListener("webglcontextrestored", onRestored);
+    };
+  }, []);
+
   // CSS Gradient fallback background for "static" or pre-mount
   const fallbackBg = (
     <div
@@ -281,14 +296,14 @@ export function SceneShell({
 
   // For static tier, do not render canvas at all
   if (activeTier === "static") {
-    return <div ref={containerRef} className={className}>{fallbackBg}</div>;
+    return <div ref={containerRef} className={className} aria-hidden="true">{fallbackBg}</div>;
   }
 
-  // Frameloop is paused when hidden or offscreen
-  const shouldRender = isVisible && isInView;
+  // Frameloop is paused when hidden, offscreen, or during WebGL context loss
+  const shouldRender = isVisible && isInView && !contextLost;
 
   return (
-    <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
+    <div ref={containerRef} className={`relative overflow-hidden ${className}`} aria-hidden="true">
       {/* Background gradient: always present underneath so text paints first and canvas fades in */}
       <div className="absolute inset-0 z-0">
         {fallbackBg}
@@ -298,7 +313,7 @@ export function SceneShell({
       {mounted && (
         <div
           className={`relative z-10 w-full h-full transition-opacity duration-700 ease-out ${
-            canvasVisible ? "opacity-100" : "opacity-0"
+            canvasVisible && !contextLost ? "opacity-100" : "opacity-0"
           }`}
         >
           <QualityTierContext.Provider value={activeTier}>
@@ -314,7 +329,20 @@ export function SceneShell({
               }}
               dpr={dpr}
               frameloop={shouldRender ? "always" : "never"}
-              onCreated={() => {
+              onCreated={({ gl: renderer }) => {
+                const canvas = renderer.domElement;
+                canvasElRef.current = canvas;
+                const onLost = (e: Event) => {
+                  e.preventDefault();
+                  setContextLost(true);
+                };
+                const onRestored = () => {
+                  setContextLost(false);
+                };
+                (canvas as HTMLCanvasElement & { __onCtxLost?: EventListener }).__onCtxLost = onLost;
+                (canvas as HTMLCanvasElement & { __onCtxRestored?: EventListener }).__onCtxRestored = onRestored;
+                canvas.addEventListener("webglcontextlost", onLost, false);
+                canvas.addEventListener("webglcontextrestored", onRestored, false);
                 requestAnimationFrame(() => setCanvasVisible(true));
               }}
             >

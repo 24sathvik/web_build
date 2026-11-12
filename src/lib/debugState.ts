@@ -8,6 +8,7 @@ export interface DebugState {
   canvasMounted: boolean;
   longestLongTask: number;
   triggerToFirstFrame: number | null;
+  drawCalls: number;
 }
 
 let state: DebugState = {
@@ -17,6 +18,7 @@ let state: DebugState = {
   canvasMounted: false,
   longestLongTask: 0,
   triggerToFirstFrame: null,
+  drawCalls: 0,
 };
 
 const listeners = new Set<Listener>();

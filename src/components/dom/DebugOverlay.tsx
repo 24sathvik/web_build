@@ -114,6 +114,10 @@ export function DebugOverlay() {
           {debugData.triggerToFirstFrame !== null ? `${debugData.triggerToFirstFrame}ms` : "—"}
         </span>
       </div>
+      <div className="flex justify-between gap-3">
+        <span className="text-white/70">Draw Calls:</span>
+        <span className="font-bold text-sky-300">{debugData.drawCalls}</span>
+      </div>
     </div>
   );
 }
