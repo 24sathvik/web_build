@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Exo, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
@@ -19,6 +20,8 @@ const robotoMono = Roboto_Mono({
   preload: false,
 });
 
+const allowIndexing = process.env.ALLOW_INDEXING === "true";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -34,7 +37,13 @@ export const metadata: Metadata = {
     "web application development", "enterprise software", "scalable architecture",
     "AI Development Company", "Automation Solutions", "Cloud Engineering",
   ],
-  robots: "index, follow",
+  robots: allowIndexing ? "index, follow" : "noindex, nofollow",
+  verification: {
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined,
+    other: process.env.BING_VERIFICATION
+      ? { "msvalidate.01": process.env.BING_VERIFICATION }
+      : undefined,
+  },
   manifest: "/site.webmanifest",
   icons: {
     icon: [
@@ -124,6 +133,26 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col bg-[#050505] text-white overflow-x-hidden selection:bg-[#00D9FF] selection:text-black">
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            />
+            <Script
+              id="google-analytics"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+                `,
+              }}
+            />
+          </>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

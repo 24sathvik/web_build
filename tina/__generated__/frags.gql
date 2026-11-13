@@ -1,0 +1,18 @@
+fragment PostParts on Post {
+  __typename
+  postId
+  slug
+  title
+  excerpt
+  content
+  author
+  date
+  readTime
+  category
+  featured
+  published
+  coverImage
+  image
+  updatedDate
+  coverImageAlt
+}
