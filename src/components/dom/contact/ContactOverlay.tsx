@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { siteContent } from "@/content/site";
 import { useContactForm } from "@/hooks/useContactForm";
+import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
 
 export function ContactOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,6 +47,9 @@ export function ContactOverlay() {
       >
         {/* Left side text */}
             <div className="w-full lg:w-1/2 mb-6 lg:mb-0">
+              <div className="hero-entrance pointer-events-auto mb-4">
+                <Breadcrumbs items={[{ label: "Contact" }]} />
+              </div>
               <p className="hero-entrance text-xs md:text-sm text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-3 pointer-events-auto">
                 Direct Engineering Inquiry
               </p>

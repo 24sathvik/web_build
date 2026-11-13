@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/dom/SiteFooter";
 import { pageMetadata } from "@/lib/seo";
 import { CONTACT_EMAIL, STATIC_LAST_MODIFIED } from "@/lib/site";
 import { siteContent } from "@/content/site";
+import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
 
 export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy | ZYXEN",
@@ -30,6 +31,7 @@ export default function PrivacyPolicyPage() {
       <Header />
 
       <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pt-28 md:pt-36 pb-16 md:pb-24">
+        <Breadcrumbs items={[{ label: "Privacy Policy" }]} className="mb-6" />
         <p className="text-xs font-mono uppercase tracking-[0.25em] text-[#00D9FF]">
           Legal &amp; Data Handling
         </p>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { siteContent } from "@/content/site";
+import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,6 +54,9 @@ export function TechOverlay() {
     <div id="overlay-container-tech" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       {/* Hero Section */}
       <section className="tech-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
+        <div className="hero-entrance pointer-events-auto mb-6">
+          <Breadcrumbs items={[{ label: "Technology" }]} />
+        </div>
         <p className="hero-entrance text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           Architecture &amp; Quality
         </p>

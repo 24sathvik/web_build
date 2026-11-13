@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { siteContent, ProjectItem } from "@/content/site";
 import { projectStore, useSelectionStore } from "@/lib/sceneSync";
+import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
 
 function ProjectPlaceholder({ project }: { project: ProjectItem }) {
   return (
@@ -348,6 +349,9 @@ export function ProjectsOverlay() {
     <div id="overlay-container-projects" ref={containerRef} className="w-full relative z-10 pointer-events-none">
       {/* Intro Header Section with Single H1 */}
       <section className="projects-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
+        <div className="hero-entrance pointer-events-auto mb-6">
+          <Breadcrumbs items={[{ label: "Projects" }]} />
+        </div>
         <p className="hero-entrance text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           Portfolio &amp; Selected Systems
         </p>

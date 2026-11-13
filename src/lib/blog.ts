@@ -11,12 +11,14 @@ export interface BlogPost {
   content: string;
   author: string;
   date: string;
+  updatedDate?: string;
   readTime: string;
   category: string;
   featured: boolean;
   published: boolean;
   /** Normalised cover image (CMS posts store it as `coverImage`, older posts as `image`). */
   image: string;
+  coverImageAlt?: string;
 }
 
 const blogsDirectory = path.join(process.cwd(), "content", "blog");
@@ -44,11 +46,13 @@ export function getAllPosts(): BlogPost[] {
         content: raw.content ?? "",
         author: raw.author ?? "Zyxen Team",
         date: raw.date ?? "",
+        updatedDate: raw.updatedDate,
         readTime: raw.readTime ?? "",
         category: raw.category ?? "General",
         featured: Boolean(raw.featured),
         published: true,
         image: raw.image || raw.coverImage || FALLBACK_IMAGE,
+        coverImageAlt: raw.coverImageAlt,
       });
     } catch (e) {
       console.error(`Error parsing ${fileName}`, e);
@@ -63,8 +67,29 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
 
 /** Markdown (or HTML from the CMS) -> HTML. Content is authored by the site owner via the CMS. */
 export function renderContent(content: string): string {
-  const withoutComments = content.replace(/<!--[\s\S]*?-->/g, "");
-  return marked.parse(withoutComments, { async: false }) as string;
+  let cleaned = content.replace(/<!--[\s\S]*?-->/g, "");
+
+  // Remove first top-level heading (either markdown '# ' or html '<h1>...</h1>')
+  let firstH1Removed = false;
+  cleaned = cleaned.replace(/<h1(\s[^>]*)?>([\s\S]*?)<\/h1>/i, () => {
+    firstH1Removed = true;
+    return "";
+  });
+
+  if (!firstH1Removed) {
+    cleaned = cleaned.replace(/^[ \t]*#[ \t]+([^\r\n]+)/m, () => {
+      firstH1Removed = true;
+      return "";
+    });
+  }
+
+  // Demote any remaining '# ' to '## '
+  cleaned = cleaned.replace(/^[ \t]*#[ \t]+([^\r\n]+)/gm, "## $1");
+
+  // Demote any remaining <h1> to <h2>
+  cleaned = cleaned.replace(/<h1(\s[^>]*)?>([\s\S]*?)<\/h1>/gi, "<h2$1>$2</h2>");
+
+  return marked.parse(cleaned, { async: false }) as string;
 }
 
 /** Encode local paths that contain unicode/space characters; leave absolute URLs alone. */

@@ -1,0 +1,28 @@
+# ZYXEN
+
+> ZYXEN is a digital solutions and creative engineering agency based in Hyderabad, India. We design and build high-performance web applications, aviation academy mock exam platforms, pharmaceutical production management software, and custom business automation systems.
+
+## Core Capabilities
+- High-Performance Web Engineering: Next.js, React, Tailwind CSS, edge delivery, ultra-fast TTFB, optimized Core Web Vitals, accessible semantic UI.
+- Aviation Academy Software: Pilot mock exam portals configured for DGCA (India), FAA (USA), and EASA (Europe) examination rules, student fee ledgers, admissions CRM, and institute ERP.
+- Production Management Systems: Real-time batch tracking, raw material lot traceability, WHO-GMP and CDSCO Schedule M compliance audit trails, and multi-unit inventory control for pharmaceutical and bulk drug manufacturers.
+- Cloud & Systems Architecture: Scalable microservices, fault-tolerant database design, API engineering, and automated cloud deployments.
+- Custom Software & Workflow Automation: Business process automation, quotation generation engines, client portals, and bespoke administrative dashboards.
+
+## Key URLs
+- Homepage: https://zyxen.in
+- Aviation Academy Software: https://zyxen.in/aviation-academy-software
+- Engineering & Web Services: https://zyxen.in/services
+- Selected Projects & Systems: https://zyxen.in/projects
+- Technology Stack & Architecture: https://zyxen.in/technology
+- About ZYXEN: https://zyxen.in/about
+- Contact & Inquiries: https://zyxen.in/contact
+- Insights & Blog: https://zyxen.in/blogs
+- RSS Feed: https://zyxen.in/blogs/feed.xml
+- Privacy Policy: https://zyxen.in/privacy-policy
+
+## Office & Contact Information
+- Location: Hyderabad, Telangana, India
+- Email: contact@zyxen.in
+- Phone: +91 70135 58465, +91 98669 42111
+

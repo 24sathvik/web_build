@@ -24,7 +24,12 @@ export function pageMetadata({
   return {
     title: { absolute: title },
     description,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: {
+        "en-IN": url,
+      },
+    },
     openGraph: {
       title,
       description,

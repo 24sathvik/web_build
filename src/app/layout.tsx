@@ -38,10 +38,19 @@ export const metadata: Metadata = {
     "AI Development Company", "Automation Solutions", "Cloud Engineering",
   ],
   robots: allowIndexing ? "index, follow" : "noindex, nofollow",
+  alternates: {
+    canonical: SITE_URL,
+    languages: {
+      "en-IN": SITE_URL,
+    },
+    types: {
+      "application/rss+xml": `${SITE_URL}/blogs/feed.xml`,
+    },
+  },
   verification: {
     google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined,
-    other: process.env.BING_VERIFICATION
-      ? { "msvalidate.01": process.env.BING_VERIFICATION }
+    other: (process.env.NEXT_PUBLIC_BING_VERIFICATION || process.env.BING_VERIFICATION)
+      ? { "msvalidate.01": (process.env.NEXT_PUBLIC_BING_VERIFICATION || process.env.BING_VERIFICATION)! }
       : undefined,
   },
   manifest: "/site.webmanifest",
@@ -62,6 +71,7 @@ export const viewport: Viewport = {
   themeColor: "#050505",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 const jsonLd = {
@@ -75,12 +85,20 @@ const jsonLd = {
       logo: { "@type": "ImageObject", url: `${SITE_URL}/previews/logo.png` },
       sameAs: SOCIALS,
       telephone: siteContent.contact.phones,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: siteContent.contact.address,
+        addressLocality: siteContent.contact.city,
+        addressRegion: siteContent.contact.state,
+        addressCountry: "IN",
+      },
+      areaServed: "India",
       contactPoint: siteContent.contact.phones.map((phone) => ({
         "@type": "ContactPoint",
         telephone: phone,
         email: CONTACT_EMAIL,
         contactType: "customer service",
-        areaServed: "IN",
+        areaServed: "India",
       })),
     },
     {
@@ -91,7 +109,7 @@ const jsonLd = {
       publisher: { "@id": `${SITE_URL}/#organization` },
     },
     {
-      "@type": "LocalBusiness",
+      "@type": ["ProfessionalService", "LocalBusiness"],
       "@id": `${SITE_URL}/#localbusiness`,
       name: SITE_NAME,
       url: SITE_URL,
@@ -99,20 +117,22 @@ const jsonLd = {
       telephone: siteContent.contact.phones,
       address: {
         "@type": "PostalAddress",
+        streetAddress: siteContent.contact.address,
         addressLocality: siteContent.contact.city,
         addressRegion: siteContent.contact.state,
         addressCountry: "IN",
       },
+      areaServed: "India",
+      sameAs: SOCIALS,
       contactPoint: siteContent.contact.phones.map((phone) => ({
         "@type": "ContactPoint",
         telephone: phone,
         email: CONTACT_EMAIL,
         contactType: "customer service",
-        areaServed: "IN",
+        areaServed: "India",
       })),
       description:
         "ZYXEN is a digital solutions and creative agency building high-performance websites, branding, and software products.",
-      priceRange: "$$",
       image: `${SITE_URL}/previews/og-image.png`,
     },
   ],
@@ -125,7 +145,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="en-IN"
       className={clsx(
         exo.variable,
         robotoMono.variable,

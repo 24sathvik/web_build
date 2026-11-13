@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { blogStore, useSelectionStore } from "@/lib/sceneSync";
+import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
 
 export interface BlogCard {
   id: string;
@@ -24,6 +25,9 @@ export function BlogsOverlay({ posts }: { posts: BlogCard[] }) {
     <div id="overlay-container-blogs" ref={containerRef} className="w-full relative z-10 pointer-events-none pb-32">
       {/* Full-height Hero Section matching Aviation & Projects architecture */}
       <section className="w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-20">
+        <div className="hero-entrance pointer-events-auto mb-6">
+          <Breadcrumbs items={[{ label: "Blogs" }]} />
+        </div>
         <p className="hero-entrance text-xs md:text-sm text-[#00D9FF] uppercase tracking-[0.3em] font-bold font-mono mb-4 pointer-events-auto">
           The Discourse &bull; Thought Leadership
         </p>

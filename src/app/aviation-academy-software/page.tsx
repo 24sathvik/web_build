@@ -5,9 +5,9 @@ import { SiteFooter } from "@/components/dom/SiteFooter";
 import AviationClient from "./client";
 
 export const metadata = pageMetadata({
-  title: "Aviation Academy Software India | Exam Portal, Fee & ERP | ZYXEN",
+  title: "Aviation Academy Software India | Exam & ERP | ZYXEN",
   description:
-    "Specialized software for aviation academies: pilot mock exam portals configured for DGCA, FAA and EASA, student fee management, admissions pipelines, and institute ERP.",
+    "Software for aviation academies: pilot mock exam portals for DGCA, FAA and EASA, student fee management, admissions pipelines, and academy ERP.",
   path: "/aviation-academy-software",
   absoluteTitle: true,
 });
@@ -28,6 +28,16 @@ export default function AviationAcademyPage() {
           "@type": "Country",
           name: "India",
         },
+        url: `${SITE_URL}/aviation-academy-software`,
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": `${SITE_URL}/aviation-academy-software#app`,
+        name: "ZYXEN Aviation Academy Mock Exam Portal & ERP",
+        applicationCategory: "EducationalApplication",
+        operatingSystem: "Web Browser",
+        description:
+          "Specialized pilot mock exam portal and academy ERP configured for DGCA, FAA, and EASA examination rules, negative marking, and student fee management.",
         url: `${SITE_URL}/aviation-academy-software`,
       },
       {

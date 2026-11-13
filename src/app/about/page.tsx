@@ -3,7 +3,7 @@ import { SiteFooter } from "@/components/dom/SiteFooter";
 import About from "./client";
 
 export const metadata = pageMetadata({
-  title: "About ZYXEN | Digital Solutions & Creative Agency in Hyderabad",
+  title: "About ZYXEN | Digital Solutions & Creative Agency",
   description: "Meet ZYXEN, the Hyderabad team building high-performance websites, software and automation for businesses and aviation academies.",
   path: "/about",
   absoluteTitle: true,

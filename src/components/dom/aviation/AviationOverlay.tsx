@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { siteContent } from "@/content/site";
 import { aviationStore, useSelectionStore } from "@/lib/sceneSync";
+import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
 
 export function AviationOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -16,6 +17,9 @@ export function AviationOverlay() {
     <div id="overlay-container-aviation" ref={containerRef} className="w-full relative z-10 pointer-events-none pb-32">
       {/* (1) Hero & One-Paragraph Pitch */}
       <section className="aviation-section w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-6 pt-24 pb-20">
+        <div className="hero-entrance pointer-events-auto mb-4">
+          <Breadcrumbs items={[{ label: "Aviation Academy Software" }]} />
+        </div>
         <p className="hero-entrance text-xs md:text-sm text-[#00D9FF] uppercase tracking-[0.3em] font-bold mb-4 pointer-events-auto">
           {aviation.badge}
         </p>
@@ -184,6 +188,42 @@ export function AviationOverlay() {
                 <span className="text-[#00D9FF] font-bold mr-2">&#10003;</span>
                 {type}
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Frequently Asked Questions (Visible DOM FAQs matching FAQPage schema) */}
+      <section className="aviation-section content-visibility-auto w-full min-h-[60vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
+        <div className="max-w-4xl w-full pointer-events-auto">
+          <div className="text-center mb-12">
+            <p className="reveal-text text-xs text-[#00D9FF] uppercase tracking-widest font-mono mb-2">
+              Common Inquiries
+            </p>
+            <h2 className="reveal-text text-3xl sm:text-5xl font-bold text-white mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="reveal-text text-[#BFC7D5] max-w-2xl mx-auto text-sm sm:text-base">
+              Everything aviation academies, ground schools, and flight training organizations ask about our software.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {aviation.faqs.map((faq) => (
+              <details
+                key={faq.question}
+                className="group glass-panel p-6 rounded-2xl border border-white/10 bg-[#050505]/70 open:border-[#00D9FF]/40 transition-colors"
+              >
+                <summary className="font-semibold text-base sm:text-lg text-white cursor-pointer list-none flex items-center justify-between gap-4">
+                  <span>{faq.question}</span>
+                  <span className="text-[#00D9FF] font-mono transition-transform duration-200 group-open:rotate-45 shrink-0 text-xl">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-4 text-[#BFC7D5] text-sm sm:text-base leading-relaxed border-t border-white/5 pt-4">
+                  {faq.answer}
+                </p>
+              </details>
             ))}
           </div>
         </div>
