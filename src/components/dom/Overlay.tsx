@@ -158,7 +158,7 @@ export function Overlay() {
           <div className="reveal-text mt-10">
             <a 
               href="/aviation-academy-software" 
-              className="text-base font-semibold text-[#00D9FF] hover:underline inline-flex items-center gap-1.5"
+              className="min-h-[44px] text-base font-semibold text-[#00D9FF] hover:underline inline-flex items-center gap-1.5"
             >
               Explore Aviation Academy Software Modules &rarr;
             </a>

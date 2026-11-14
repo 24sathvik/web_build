@@ -62,14 +62,14 @@ export function ContactForm({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                     <button
                       type="button"
                       onClick={resetForm}
-                      className="px-5 py-2.5 rounded-full border border-white/20 text-xs font-mono uppercase tracking-wider text-white hover:bg-white/10 transition-colors"
+                      className="min-h-[44px] px-5 py-2.5 rounded-full border border-white/20 text-xs font-mono uppercase tracking-wider text-white hover:bg-white/10 transition-colors inline-flex items-center justify-center"
                     >
                       Send Another
                     </button>
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-white/90 transition-colors"
+                      className="min-h-[44px] px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-white/90 transition-colors inline-flex items-center justify-center"
                     >
                       Close
                     </button>

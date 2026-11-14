@@ -442,7 +442,7 @@ export function ProjectsOverlay() {
                 <div className="reveal-text pt-2">
                   <Link
                     href="/aviation-academy-software"
-                    className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider px-5 py-2.5 rounded-full bg-white text-black hover:bg-white/90 transition-colors shadow-md"
+                    className="inline-flex min-h-[44px] items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider px-6 py-3 rounded-full bg-white text-black hover:bg-white/90 transition-colors shadow-md"
                   >
                     <span>View Aviation Module</span>
                     <span>&rarr;</span>
@@ -522,7 +522,7 @@ export function ProjectsOverlay() {
                 <div className="reveal-text pt-2">
                   <Link
                     href={project.href || "/contact"}
-                    className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider px-5 py-2.5 rounded-full bg-white text-black hover:bg-white/90 transition-colors shadow-md"
+                    className="inline-flex min-h-[44px] items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider px-6 py-3 rounded-full bg-white text-black hover:bg-white/90 transition-colors shadow-md"
                   >
                     <span>Inquire About System</span>
                     <span>&rarr;</span>
@@ -550,7 +550,7 @@ export function ProjectsOverlay() {
         <div className="reveal-text pointer-events-auto">
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-black font-semibold text-sm hover:bg-white/90 transition-colors shadow-xl"
+            className="inline-flex min-h-[44px] items-center gap-2 px-8 py-3.5 rounded-full bg-white text-black font-semibold text-sm hover:bg-white/90 transition-colors shadow-xl"
           >
             Start a Project with ZYXEN &rarr;
           </Link>

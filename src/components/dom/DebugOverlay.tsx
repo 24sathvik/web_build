@@ -21,9 +21,9 @@ export function DebugOverlay() {
     } catch {}
   }, []);
 
-  // PerformanceObserver for Longest Long Task
+  // PerformanceObserver for Longest Long Task (only active when debug overlay is enabled)
   useEffect(() => {
-    if (typeof PerformanceObserver === "undefined") return;
+    if (!enabled || typeof PerformanceObserver === "undefined") return;
 
     let maxDuration = 0;
     let observer: PerformanceObserver | null = null;

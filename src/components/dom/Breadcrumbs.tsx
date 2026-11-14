@@ -64,7 +64,8 @@ export function Breadcrumbs({ items, className = "" }: BreadcrumbsProps) {
                 ) : (
                   <Link
                     href={item.href}
-                    className="hover:text-white transition-colors underline-offset-4 hover:underline"
+                    prefetch={false}
+                    className="hover:text-white transition-colors underline-offset-4 hover:underline inline-flex items-center min-h-[44px] py-1"
                   >
                     {item.label}
                   </Link>

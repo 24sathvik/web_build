@@ -100,7 +100,7 @@ export function SiteFooter() {
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00D9FF]/80 to-transparent shadow-[0_0_16px_rgba(0,217,255,0.45)]"
       />
 
-      <div className="mx-auto max-w-7xl px-6 md:px-12 pt-14 md:pt-20 pb-28 md:pb-12">
+      <div className="mx-auto max-w-7xl px-6 md:px-12 pt-14 md:pt-20 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] md:pb-12">
         {/* Start a project CTA band */}
         <div className="mb-14 rounded-2xl border border-white/10 bg-gradient-to-r from-[#00D9FF]/[0.08] via-[#6E5BFF]/[0.06] to-white/[0.02] p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="max-w-xl">
@@ -117,12 +117,14 @@ export function SiteFooter() {
           <div className="flex flex-wrap items-center gap-3 shrink-0">
             <Link
               href="/contact"
+              prefetch={false}
               className="min-h-[44px] inline-flex items-center justify-center rounded-full bg-[#00D9FF] px-6 py-3 text-xs font-bold uppercase tracking-widest text-black hover:bg-white transition-colors"
             >
               Start a project
             </Link>
             <Link
               href="/projects"
+              prefetch={false}
               className="min-h-[44px] inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-colors"
             >
               View work
@@ -137,6 +139,7 @@ export function SiteFooter() {
             <div>
               <Link
                 href="/"
+                prefetch={false}
                 className="inline-block text-4xl sm:text-5xl font-bold tracking-tighter text-white hover:text-[#00D9FF] transition-colors"
               >
                 ZYXEN
@@ -153,7 +156,7 @@ export function SiteFooter() {
                 </p>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="text-white hover:text-[#00D9FF] transition-colors"
+                  className="min-h-[44px] inline-flex items-center text-white hover:text-[#00D9FF] transition-colors"
                 >
                   {CONTACT_EMAIL}
                 </a>
@@ -168,7 +171,7 @@ export function SiteFooter() {
                     <a
                       key={phone}
                       href={`tel:${phone.replace(/\s+/g, "")}`}
-                      className="text-white hover:text-[#00D9FF] transition-colors w-fit"
+                      className="min-h-[44px] inline-flex items-center text-white hover:text-[#00D9FF] transition-colors w-fit"
                     >
                       {phone}
                     </a>
@@ -228,7 +231,8 @@ export function SiteFooter() {
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="text-[#BFC7D5] hover:text-[#00D9FF] transition-colors inline-block py-0.5"
+                        prefetch={false}
+                        className="text-[#BFC7D5] hover:text-[#00D9FF] transition-colors inline-flex items-center min-w-[44px] min-h-[44px] py-1"
                       >
                         {link.label}
                       </Link>

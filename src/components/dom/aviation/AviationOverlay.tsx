@@ -241,7 +241,7 @@ export function AviationOverlay() {
           <div className="reveal-text flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
-              className="px-8 py-4 bg-gradient-to-r from-[#6E5BFF] to-[#00D9FF] text-black font-bold uppercase tracking-widest text-sm rounded-full hover:brightness-110 hover:scale-105 transition-all shadow-lg shadow-[#00D9FF]/25"
+              className="inline-flex min-h-[44px] items-center justify-center px-8 py-4 bg-gradient-to-r from-[#6E5BFF] to-[#00D9FF] text-black font-bold uppercase tracking-widest text-sm rounded-full hover:brightness-110 hover:scale-105 transition-all shadow-lg shadow-[#00D9FF]/25"
             >
               {aviation.cta.buttonText}
             </Link>
@@ -250,7 +250,7 @@ export function AviationOverlay() {
                 <a
                   key={phone}
                   href={`tel:${phone.replace(/\s+/g, "")}`}
-                  className="px-7 py-4 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all"
+                  className="inline-flex min-h-[44px] items-center justify-center px-7 py-4 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all"
                 >
                   Call {phone}
                 </a>

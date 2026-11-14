@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import clsx from "clsx";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   Home, 
@@ -66,14 +67,14 @@ export function Header() {
     <>
       {/* Top Left Logo */}
       <div className="fixed top-0 left-0 w-full z-50 p-4 md:p-8 pointer-events-none flex items-center justify-between">
-        <Link href="/" className="pointer-events-auto inline-block p-1">
-          <img
+        <Link href="/" prefetch={false} aria-label="ZYXEN Home" className="pointer-events-auto inline-flex items-center justify-center min-w-[44px] min-h-[44px]">
+          <Image
             src="/images/logo-top.png"
             alt="Zyxen Logo"
             width={52}
             height={40}
-            decoding="async"
-            fetchPriority="low"
+            priority
+            unoptimized
             className="h-7 sm:h-8 md:h-10 w-auto object-contain cursor-pointer"
           />
         </Link>
@@ -99,6 +100,7 @@ export function Header() {
               <Link
                 key={item.name}
                 href={item.path}
+                prefetch={false}
                 className={clsx(
                   "relative flex flex-col items-center justify-center w-[68px] md:w-[72px] h-[68px] md:h-[72px] rounded-[1.2rem] md:rounded-[1.5rem] transition-all duration-300 overflow-hidden flex-shrink-0",
                   isActive ? "text-[#FFFFFF]" : "text-[#BFC7D5] hover:text-[#FFFFFF]"
@@ -176,6 +178,7 @@ export function Header() {
                   <Link
                     key={item.path}
                     href={item.path}
+                    prefetch={false}
                     onClick={() => setIsSheetOpen(false)}
                     className={clsx(
                       "min-h-[48px] flex items-center gap-3.5 p-3 rounded-xl border transition-all duration-200",
@@ -220,6 +223,7 @@ export function Header() {
                 <Link
                   key={item.path}
                   href={item.path}
+                  prefetch={false}
                   className={clsx(
                     "min-w-[44px] min-h-[44px] flex flex-col items-center justify-center flex-1 py-1 rounded-lg transition-colors",
                     isActive ? "text-[#00D9FF]" : "text-[#8F9CAE] hover:text-white"

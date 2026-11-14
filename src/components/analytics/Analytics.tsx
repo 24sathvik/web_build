@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { useReportWebVitals } from "next/web-vitals";
 import { trackEvent } from "@/lib/analytics";
+import { safeRequestIdleCallback, safeCancelIdleCallback } from "@/lib/browser-compat";
 
 export function Analytics() {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
@@ -48,29 +49,15 @@ export function Analytics() {
     });
 
     let idleId: number | undefined;
-    let timerId: NodeJS.Timeout | undefined;
 
-    type IdleWindow = typeof window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-      cancelIdleCallback?: (id: number) => void;
-    };
-    const idleWin = window as IdleWindow;
-
-    if (typeof idleWin.requestIdleCallback === "function") {
-      idleId = idleWin.requestIdleCallback(triggerLoad, { timeout: 4000 });
-    } else {
-      timerId = setTimeout(triggerLoad, 3500);
-    }
+    idleId = safeRequestIdleCallback(triggerLoad, { timeout: 4000 });
 
     const cleanupInteractionListeners = () => {
       interactionEvents.forEach((evt) => {
         window.removeEventListener(evt, onUserInteraction);
       });
-      if (idleId && typeof idleWin.cancelIdleCallback === "function") {
-        idleWin.cancelIdleCallback(idleId);
-      }
-      if (timerId) {
-        clearTimeout(timerId);
+      if (idleId !== undefined) {
+        safeCancelIdleCallback(idleId);
       }
     };
 

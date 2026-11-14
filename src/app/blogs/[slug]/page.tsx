@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -119,6 +118,16 @@ const DEFAULT_CTA: CategoryCTA = {
   ctaText: "Talk to ZYXEN Engineering",
 };
 
+function getCoverImageMeta(rawSrc: string) {
+  const safeSrc = safeImageSrc(rawSrc);
+  const isBrokenWeb = safeSrc.includes("customer-struggling-broken-website");
+  return {
+    mobileWebp: isBrokenWeb ? "/images/uploads/customer-struggling-broken-website-202608081842-360.webp" : null,
+    webp: safeSrc.startsWith("http") ? null : safeSrc.replace(/\.(jpeg|jpg|png)$/i, ".webp"),
+    fallback: safeSrc,
+  };
+}
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const post = getPostBySlug(slug);
@@ -147,7 +156,15 @@ export default async function BlogPostPage({ params }: Params) {
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  const html = renderContent(post.content);
+  let html = renderContent(post.content);
+  // Ensure valid heading hierarchy: if content begins with H3 without an H2 predecessor, promote top-level H3 to H2
+  const firstH2Index = html.search(/<h2[\s>]/i);
+  const firstH3Index = html.search(/<h3[\s>]/i);
+  if (firstH3Index !== -1 && (firstH2Index === -1 || firstH3Index < firstH2Index)) {
+    const splitIndex = firstH2Index === -1 ? html.length : firstH2Index;
+    const beforeH2 = html.slice(0, splitIndex).replace(/<h3([^>]*)>([\s\S]*?)<\/h3>/gi, "<h2$1>$2</h2>");
+    html = beforeH2 + html.slice(splitIndex);
+  }
   const h2Headings = extractH2Headings(html);
 
   // Guarantee 3 related articles (prefer matching category, fill from other posts)
@@ -155,6 +172,7 @@ export default async function BlogPostPage({ params }: Params) {
   const sameCategory = allPosts.filter((p) => p.category === post.category && p.slug !== post.slug);
   const otherPosts = allPosts.filter((p) => p.category !== post.category && p.slug !== post.slug);
   const related = [...sameCategory, ...otherPosts].slice(0, 3);
+  const coverMeta = getCoverImageMeta(post.image);
 
   const url = `${SITE_URL}/blogs/${post.slug}`;
   const image = post.image.startsWith("http")
@@ -214,33 +232,21 @@ export default async function BlogPostPage({ params }: Params) {
 
         <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-[0.2em]">
           <span className="font-bold text-[#00D9FF]">{post.category}</span>
-          <span className="text-white/40 normal-case tracking-normal">{post.readTime}</span>
+          <span className="text-[#BFC7D5] normal-case tracking-normal">{post.readTime}</span>
         </div>
 
         <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight md:text-5xl">
           {post.title}
         </h1>
 
-        <p className="mt-4 text-sm text-white/50">
+        <p className="mt-4 text-sm text-[#BFC7D5]">
           {post.author} · <time dateTime={post.date}>{post.date}</time>
           {post.updatedDate && (
-            <span className="ml-2 text-white/40">
+            <span className="ml-2 text-[#BFC7D5]">
               (Updated: <time dateTime={post.updatedDate}>{post.updatedDate}</time>)
             </span>
           )}
         </p>
-
-        <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-white/10">
-          <Image
-            src={safeImageSrc(post.image)}
-            alt={post.coverImageAlt || post.title}
-            fill
-            priority
-            sizes="(min-width: 768px) 768px, 100vw"
-            className="object-cover"
-            unoptimized={post.image.startsWith("http")}
-          />
-        </div>
 
         {h2Headings.length >= 4 && (
           <nav
@@ -250,12 +256,12 @@ export default async function BlogPostPage({ params }: Params) {
             <p className="text-xs font-mono uppercase tracking-[0.25em] text-[#00D9FF] mb-3">
               Table of Contents
             </p>
-            <ol className="space-y-2 list-decimal list-inside text-sm text-[#BFC7D5]">
+            <ol className="space-y-1 list-decimal list-inside text-sm text-[#BFC7D5]">
               {h2Headings.map((h) => (
                 <li key={h.id} className="leading-snug">
                   <a
                     href={`#${h.id}`}
-                    className="hover:text-[#00D9FF] hover:underline transition-colors ml-1 inline"
+                    className="hover:text-[#00D9FF] hover:underline transition-colors ml-1 inline-flex min-h-[44px] items-center py-1"
                   >
                     {h.text}
                   </a>
@@ -264,6 +270,35 @@ export default async function BlogPostPage({ params }: Params) {
             </ol>
           </nav>
         )}
+
+        <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
+          <picture>
+            {coverMeta.mobileWebp && (
+              <source
+                media="(max-width: 640px)"
+                srcSet={coverMeta.mobileWebp}
+                type="image/webp"
+              />
+            )}
+            {coverMeta.webp && (
+              <source
+                srcSet={coverMeta.webp}
+                type="image/webp"
+              />
+            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={coverMeta.fallback}
+              alt={post.coverImageAlt || post.title}
+              width={800}
+              height={450}
+              loading="lazy"
+              fetchPriority="low"
+              decoding="async"
+              className="w-full h-auto aspect-[16/9] object-cover"
+            />
+          </picture>
+        </div>
 
         <div className="zy-prose mt-10" dangerouslySetInnerHTML={{ __html: html }} />
 
@@ -286,10 +321,10 @@ export default async function BlogPostPage({ params }: Params) {
                 Engineering software architectures, high-performance web applications, and operational platforms for aviation academies and enterprise businesses at ZYXEN.
               </p>
               <div className="pt-2 flex items-center gap-4 text-xs font-mono">
-                <Link href="/about" className="text-[#00D9FF] hover:underline">
+                <Link href="/about" prefetch={false} className="min-h-[44px] inline-flex items-center text-[#00D9FF] hover:underline">
                   About ZYXEN &rarr;
                 </Link>
-                <Link href="/contact" className="text-white/60 hover:text-white transition-colors">
+                <Link href="/contact" prefetch={false} className="min-h-[44px] inline-flex items-center text-white/60 hover:text-white transition-colors">
                   Contact Team
                 </Link>
               </div>
@@ -311,12 +346,14 @@ export default async function BlogPostPage({ params }: Params) {
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <Link
               href={contextualCta.href}
+              prefetch={false}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#00D9FF] px-6 py-3 text-xs font-bold uppercase tracking-widest text-black hover:bg-white hover:scale-105 transition-all"
             >
               {contextualCta.ctaText} &rarr;
             </Link>
             <Link
               href="/contact"
+              prefetch={false}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/20 px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-colors"
             >
               Talk to Our Team
@@ -333,10 +370,11 @@ export default async function BlogPostPage({ params }: Params) {
                 <li key={r.slug} className="group">
                   <Link
                     href={`/blogs/${r.slug}`}
-                    className="text-[#BFC7D5] group-hover:text-[#00D9FF] transition-colors flex items-center justify-between text-sm sm:text-base"
+                    prefetch={false}
+                    className="text-[#BFC7D5] group-hover:text-[#00D9FF] transition-colors flex items-center justify-between text-sm sm:text-base min-h-[44px] py-2"
                   >
                     <span>{r.title}</span>
-                    <span className="text-xs font-mono text-white/40 ml-4 shrink-0">
+                    <span className="text-xs font-mono text-[#BFC7D5] ml-4 shrink-0">
                       {r.category} &rarr;
                     </span>
                   </Link>

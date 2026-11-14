@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { PerformanceMonitor } from "@react-three/drei";
 import { useQualityTier, QualityTier } from "@/hooks/useQualityTier";
 import { debugStore } from "@/lib/debugState";
+import { safeRequestIdleCallback, safeCancelIdleCallback } from "@/lib/browser-compat";
 
 export const QualityTierContext = createContext<QualityTier>("full");
 export const useQualityTierContext = () => useContext(QualityTierContext);
@@ -167,30 +168,15 @@ export function SceneShell({
       if (isDisposed) return;
 
       if (activeTier === "full") {
-        const win = window as any;
-        let idleId: any = null;
-        let timeoutId: any = null;
-
-        if (typeof win.requestIdleCallback === "function") {
-          idleId = win.requestIdleCallback(() => mountCanvas(), { timeout: 2000 });
-        } else {
-          timeoutId = setTimeout(() => mountCanvas(), 500);
-        }
-
-        cleanupListeners = () => {
-          if (idleId && typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(idleId);
-          if (timeoutId) clearTimeout(timeoutId);
-        };
-      } else if (activeTier === "lite") {
-        const win = window as any;
-        let idleId: any = null;
+        let idleId: number | null = null;
         let timeoutId: any = null;
         let triggered = false;
 
         const events = ["pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
 
-        const onInteraction = () => {
+        const onInteraction = (e: Event) => {
           if (triggered || isDisposed) return;
+          if (e.type === "scroll" && window.scrollY === 0) return;
           triggered = true;
           cleanup();
           mountCanvas();
@@ -200,7 +186,47 @@ export function SceneShell({
           events.forEach((evt) => {
             window.removeEventListener(evt, onInteraction, { capture: true } as any);
           });
-          if (idleId && typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(idleId);
+          if (idleId !== null) safeCancelIdleCallback(idleId);
+          if (timeoutId) clearTimeout(timeoutId);
+        };
+
+        cleanupListeners = cleanup;
+
+        events.forEach((evt) => {
+          window.addEventListener(evt, onInteraction, { once: true, passive: true, capture: true });
+        });
+
+        // 4500 ms idle post-load fallback
+        timeoutId = setTimeout(() => {
+          if (triggered || isDisposed) return;
+          idleId = safeRequestIdleCallback(() => {
+            if (!triggered && !isDisposed) {
+              triggered = true;
+              cleanup();
+              mountCanvas();
+            }
+          }, { timeout: 1500 });
+        }, 4500);
+      } else if (activeTier === "lite") {
+        let idleId: number | null = null;
+        let timeoutId: any = null;
+        let triggered = false;
+
+        const events = ["pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
+
+        const onInteraction = (e: Event) => {
+          if (triggered || isDisposed) return;
+          if (e.type === "scroll" && window.scrollY === 0) return;
+          triggered = true;
+          cleanup();
+          mountCanvas();
+        };
+
+        const cleanup = () => {
+          events.forEach((evt) => {
+            window.removeEventListener(evt, onInteraction, { capture: true } as any);
+          });
+          if (idleId !== null) safeCancelIdleCallback(idleId);
           if (timeoutId) clearTimeout(timeoutId);
         };
 
@@ -213,19 +239,13 @@ export function SceneShell({
         // 5000 ms idle post-load fallback
         timeoutId = setTimeout(() => {
           if (triggered || isDisposed) return;
-          if (typeof win.requestIdleCallback === "function") {
-            idleId = win.requestIdleCallback(() => {
-              if (!triggered && !isDisposed) {
-                triggered = true;
-                cleanup();
-                mountCanvas();
-              }
-            });
-          } else {
-            triggered = true;
-            cleanup();
-            mountCanvas();
-          }
+          idleId = safeRequestIdleCallback(() => {
+            if (!triggered && !isDisposed) {
+              triggered = true;
+              cleanup();
+              mountCanvas();
+            }
+          });
         }, 5000);
       }
     };
@@ -315,9 +335,11 @@ export function SceneShell({
           className={`relative z-10 w-full h-full transition-opacity duration-700 ease-out ${
             canvasVisible && !contextLost ? "opacity-100" : "opacity-0"
           }`}
+          style={{ touchAction: "pan-y" }}
         >
           <QualityTierContext.Provider value={activeTier}>
             <Canvas
+              style={{ touchAction: "pan-y" }}
               camera={camera}
               shadows={shadows}
               gl={{

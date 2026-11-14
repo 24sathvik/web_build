@@ -20,7 +20,7 @@ const robotoMono = Roboto_Mono({
   preload: false,
 });
 
-const allowIndexing = process.env.ALLOW_INDEXING === "true";
+const allowIndexing = process.env.ALLOW_INDEXING !== "false";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

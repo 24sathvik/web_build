@@ -5,27 +5,17 @@ import { useFrame } from "@react-three/fiber";
 import { Float, Sparkles, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 import { useQualityTierContext } from "../SceneShell";
+import { safePostTask } from "@/lib/browser-compat";
 
 function yieldFrame(callback: () => void): () => void {
   let cancelled = false;
-  const win = typeof window !== "undefined" ? (window as any) : null;
 
-  if (win?.scheduler?.postTask) {
-    win.scheduler.postTask(
-      () => {
-        if (!cancelled) callback();
-      },
-      { priority: "user-visible" }
-    );
-  } else if (typeof requestAnimationFrame !== "undefined") {
-    requestAnimationFrame(() => {
+  safePostTask(
+    () => {
       if (!cancelled) callback();
-    });
-  } else {
-    setTimeout(() => {
-      if (!cancelled) callback();
-    }, 16);
-  }
+    },
+    { priority: "user-visible" }
+  );
 
   return () => {
     cancelled = true;

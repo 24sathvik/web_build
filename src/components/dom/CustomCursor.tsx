@@ -327,6 +327,8 @@ export function CustomCursor() {
 
   if (!enabled) return null;
 
+  if (!enabled) return null;
+
   return (
     <div
       aria-hidden="true"

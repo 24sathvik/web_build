@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
 import clsx from "clsx";
 import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { siteContent } from "@/content/site";
 import { useContactForm } from "@/hooks/useContactForm";
 import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
+import { safeRequestIdleCallback, safeCancelIdleCallback } from "@/lib/browser-compat";
 
 export function ContactOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,23 +21,6 @@ export function ContactOverlay() {
     isSuccess,
     isError,
   } = useContactForm();
-
-  useEffect(() => {
-    // Reveal animation on load
-    if (containerRef.current) {
-      const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const elements = containerRef.current.querySelectorAll(".reveal-elem");
-      if (prefersReducedMotion) {
-        gsap.set(elements, { opacity: 1, y: 0 });
-        return;
-      }
-      gsap.fromTo(
-        elements,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: "power3.out" }
-      );
-    }
-  }, []);
 
   return (
     <div
@@ -63,12 +46,12 @@ export function ContactOverlay() {
           Tell us about your requirements for an exam portal, fee system, ERP or website. We build software fitted to your business.
         </p>
 
-        <div className="reveal-elem pointer-events-auto space-y-5 border-t border-white/10 pt-6">
+        <div className="hero-entrance-delay-2 pointer-events-auto space-y-5 border-t border-white/10 pt-6">
           <div>
             <p className="text-xs text-[#00D9FF] tracking-widest uppercase mb-1 font-mono">Email</p>
             <a
               href={`mailto:${siteContent.contact.email}`}
-              className="text-lg md:text-xl text-white hover:text-[#00D9FF] transition-colors font-medium"
+              className="min-h-[44px] inline-flex items-center text-lg md:text-xl text-white hover:text-[#00D9FF] transition-colors font-medium"
             >
               {siteContent.contact.email}
             </a>
@@ -80,7 +63,7 @@ export function ContactOverlay() {
                 <a
                   key={phone}
                   href={`tel:${phone.replace(/\s+/g, "")}`}
-                  className="text-lg md:text-xl text-white hover:text-[#00D9FF] transition-colors font-medium w-fit"
+                  className="min-h-[44px] inline-flex items-center text-lg md:text-xl text-white hover:text-[#00D9FF] transition-colors font-medium w-fit"
                 >
                   {phone}
                 </a>
@@ -98,7 +81,7 @@ export function ContactOverlay() {
 
       {/* Right side form */}
       <div className="w-full lg:w-1/2 flex justify-end items-center pointer-events-auto">
-        <div className="reveal-elem w-full max-w-lg glass-panel p-6 md:p-8 rounded-3xl border border-[#00D9FF]/30 backdrop-blur-xl bg-[#050505]/75 shadow-2xl">
+        <div className="hero-entrance-delay-2 w-full max-w-lg glass-panel p-6 md:p-8 rounded-3xl border border-[#00D9FF]/30 backdrop-blur-xl bg-[#050505]/75 shadow-2xl">
           {isSuccess ? (
             <div className="py-12 flex flex-col items-center justify-center text-center px-4">
               <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
@@ -111,7 +94,7 @@ export function ContactOverlay() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-white/90 transition-colors"
+                className="min-h-[44px] px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-white/90 transition-colors inline-flex items-center justify-center"
               >
                 Send Another Message
               </button>
@@ -276,7 +259,7 @@ export function ContactOverlay() {
               <button
                 disabled={isSubmitting}
                 type="submit"
-                className="w-full py-3 bg-gradient-to-r from-[#6E5BFF] to-[#00D9FF] text-[#050505] font-bold tracking-wider uppercase text-xs font-mono rounded-lg hover:brightness-110 transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full min-h-[44px] py-3 bg-gradient-to-r from-[#6E5BFF] to-[#00D9FF] text-[#050505] font-bold tracking-wider uppercase text-xs font-mono rounded-lg hover:brightness-110 transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>

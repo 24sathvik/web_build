@@ -312,7 +312,7 @@ export function SolutionPageLayout({ solution }: SolutionPageLayoutProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs font-medium text-[#BFC7D5] hover:border-[#00D9FF]/50 hover:text-white transition-colors"
+                className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs font-medium text-[#BFC7D5] hover:border-[#00D9FF]/50 hover:text-white transition-colors"
               >
                 <span>{link.label}</span>
                 <span className="text-[#00D9FF]">&rarr;</span>
@@ -332,7 +332,7 @@ export function SolutionPageLayout({ solution }: SolutionPageLayoutProps) {
                 <li key={post.slug}>
                   <Link
                     href={`/blogs/${post.slug}`}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[#BFC7D5] hover:text-[#00D9FF] transition-colors p-3 rounded-lg border border-white/5 hover:border-white/15 bg-white/[0.01]"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between min-h-[44px] gap-1 text-[#BFC7D5] hover:text-[#00D9FF] transition-colors p-3 rounded-lg border border-white/5 hover:border-white/15 bg-white/[0.01]"
                   >
                     <span className="text-sm font-medium">{post.title}</span>
                     <span className="text-xs font-mono text-white/40 shrink-0">

@@ -62,7 +62,7 @@ export default function AviationClient({ footer }: { footer?: ReactNode }) {
                 type="button"
                 aria-label="Close authority preview"
                 onClick={() => aviationStore.set({ selectedCode: null, hoveredCode: null })}
-                className="text-xs text-white/60 hover:text-white px-1.5 py-0.5 rounded"
+                className="text-xs text-white/60 hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center rounded -mr-2"
               >
                 &times;
               </button>
@@ -74,7 +74,7 @@ export default function AviationClient({ footer }: { footer?: ReactNode }) {
           </p>
           <a
             href={`#authority-${activeAuthority.code.toLowerCase()}`}
-            className="mt-1.5 inline-block text-[11px] font-mono text-[#00D9FF] hover:underline"
+            className="mt-1.5 inline-flex min-h-[44px] items-center text-[11px] font-mono text-[#00D9FF] hover:underline"
           >
             Jump to rules &darr;
           </a>

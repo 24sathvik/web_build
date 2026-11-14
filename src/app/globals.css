@@ -14,11 +14,40 @@
 
 :root {
   color-scheme: dark;
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
 }
 
+html,
 body {
-  /* Prevent scrollbars while we implement custom smooth scrolling */
-  overscroll-behavior: none;
+  /* Prevent bounce scroll on iOS/Safari while maintaining touch gestures */
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+}
+
+/* Ensure all interactive canvases preserve vertical page scroll */
+canvas {
+  touch-action: pan-y !important;
+}
+
+/* 100svh fallback for browsers lacking small viewport height support */
+@supports not (height: 100svh) {
+  .min-h-\[100svh\] {
+    min-height: 100vh !important;
+  }
+  .h-\[100svh\] {
+    height: 100vh !important;
+  }
+  .max-h-\[100svh\] {
+    max-height: 100vh !important;
+  }
+}
+
+/* WebKit backdrop-filter support for older Safari and iOS WebViews */
+[class*="backdrop-blur"] {
+  -webkit-backdrop-filter: blur(16px);
 }
 
 /* Custom cursor visibility: only hide native cursor on devices with fine pointer */

@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const allowIndexing = process.env.ALLOW_INDEXING === "true";
+const allowIndexing = process.env.ALLOW_INDEXING !== "false";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,

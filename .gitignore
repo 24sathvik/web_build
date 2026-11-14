@@ -46,3 +46,6 @@ public/admin
 
 /*.csv
 /screenshots/
+/playwright-screenshots/
+lh-temp*.json
+lighthouse-audit-summary.json

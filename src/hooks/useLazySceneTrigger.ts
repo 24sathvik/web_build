@@ -3,6 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import { QualityTier } from "./useQualityTier";
 import { debugStore } from "@/lib/debugState";
+import {
+  getNetworkConnection,
+  safeRequestIdleCallback,
+  safeCancelIdleCallback,
+} from "@/lib/browser-compat";
 
 export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
   const [shouldMount, setShouldMount] = useState(false);
@@ -29,14 +34,10 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
 
     // Requirement 4: Never prefetch on Save-Data or slow connections (2g, slow-2g, 3g)
     const isConnectionSlowOrSaveData = () => {
-      if (typeof navigator === "undefined") return false;
-      const nav = navigator as any;
-      if (nav.connection) {
-        if (nav.connection.saveData === true) return true;
-        const eff = nav.connection.effectiveType;
-        if (eff === "2g" || eff === "slow-2g" || eff === "3g") return true;
-      }
-      return false;
+      const conn = getNetworkConnection();
+      if (conn.saveData) return true;
+      const eff = conn.effectiveType;
+      return eff === "2g" || eff === "slow-2g" || eff === "3g";
     };
 
     // Requirement 3 & 4: Fetch static /chunks-manifest.json (pure static build, zero server runtime)
@@ -67,39 +68,56 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
     const scheduleAfterLoad = () => {
       if (isDisposed || hasTriggered.current) return;
 
-      const win = window as any;
-
       if (tier === "full") {
-        let idleId: any = null;
+        let idleId: number | null = null;
         let timeoutId: any = null;
+        const events = ["pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
 
-        if (typeof win.requestIdleCallback === "function") {
-          idleId = win.requestIdleCallback(() => fireTrigger(), { timeout: 2000 });
-        } else {
-          timeoutId = setTimeout(() => fireTrigger(), 500);
-        }
+        const onInteraction = (e: Event) => {
+          if (hasTriggered.current || isDisposed) return;
+          if (e.type === "scroll" && window.scrollY === 0) return;
+          cleanup();
+          fireTrigger();
+        };
 
-        cleanupListeners = () => {
-          if (idleId && typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(idleId);
+        const cleanup = () => {
+          events.forEach((evt) => {
+            window.removeEventListener(evt, onInteraction, { capture: true } as any);
+          });
+          if (idleId !== null) safeCancelIdleCallback(idleId);
           if (timeoutId) clearTimeout(timeoutId);
         };
+
+        cleanupListeners = cleanup;
+
+        events.forEach((evt) => {
+          window.addEventListener(evt, onInteraction, { once: true, passive: true, capture: true });
+        });
+
+        // Fallback: trigger after 4500ms on idle if no user interaction occurred
+        timeoutId = setTimeout(() => {
+          if (hasTriggered.current || isDisposed) return;
+          idleId = safeRequestIdleCallback(() => {
+            if (!hasTriggered.current && !isDisposed) {
+              cleanup();
+              fireTrigger();
+            }
+          }, { timeout: 1500 });
+        }, 4500);
       } else if (tier === "lite") {
         // Requirement 4: Start prefetch only after "load" event PLUS an additional 2000 ms idle
         let prefetchTimer: any = setTimeout(() => {
           if (isDisposed || hasTriggered.current) return;
-          if (typeof win.requestIdleCallback === "function") {
-            win.requestIdleCallback(() => prefetchChunks(), { timeout: 8000 });
-          } else {
-            prefetchChunks();
-          }
+          safeRequestIdleCallback(() => prefetchChunks(), { timeout: 8000 });
         }, 2000);
 
-        let idleId: any = null;
+        let idleId: number | null = null;
         let timeoutId: any = null;
         const events = ["pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
 
-        const onInteraction = () => {
+        const onInteraction = (e: Event) => {
           if (hasTriggered.current || isDisposed) return;
+          if (e.type === "scroll" && window.scrollY === 0) return;
           cleanup();
           fireTrigger();
         };
@@ -109,7 +127,7 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
             window.removeEventListener(evt, onInteraction, { capture: true } as any);
           });
           if (prefetchTimer) clearTimeout(prefetchTimer);
-          if (idleId && typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(idleId);
+          if (idleId !== null) safeCancelIdleCallback(idleId);
           if (timeoutId) clearTimeout(timeoutId);
         };
 
@@ -122,17 +140,12 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
         // 5000 ms idle post-load fallback: wait 5000ms, then trigger on idle
         timeoutId = setTimeout(() => {
           if (hasTriggered.current || isDisposed) return;
-          if (typeof win.requestIdleCallback === "function") {
-            idleId = win.requestIdleCallback(() => {
-              if (!hasTriggered.current && !isDisposed) {
-                cleanup();
-                fireTrigger();
-              }
-            }, { timeout: 6000 });
-          } else {
-            cleanup();
-            fireTrigger();
-          }
+          idleId = safeRequestIdleCallback(() => {
+            if (!hasTriggered.current && !isDisposed) {
+              cleanup();
+              fireTrigger();
+            }
+          });
         }, 5000);
       }
     };

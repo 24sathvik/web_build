@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getNetworkConnection, getDeviceMemoryGB } from "@/lib/browser-compat";
 
 export type QualityTier = "full" | "lite" | "static";
 
@@ -23,12 +24,8 @@ export function useQualityTier(): QualityTier {
 
     // 1. Check "static" conditions
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const nav = navigator as Navigator & {
-      connection?: { saveData?: boolean };
-      deviceMemory?: number;
-    };
-    const saveData = nav.connection?.saveData === true;
+    const connection = getNetworkConnection();
+    const saveData = connection.saveData;
 
     let hasWebGL = false;
     try {
@@ -51,7 +48,8 @@ export function useQualityTier(): QualityTier {
     // 2. Check "lite" conditions
     const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
     const isMobileViewport = window.innerWidth < 768;
-    const lowMemory = typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4;
+    const deviceMemory = getDeviceMemoryGB();
+    const lowMemory = deviceMemory <= 4;
     const lowConcurrency =
       typeof navigator.hardwareConcurrency === "number" && navigator.hardwareConcurrency <= 4;
 

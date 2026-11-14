@@ -57,7 +57,7 @@ export default function Blogs({ posts, footer }: { posts: BlogCard[]; footer?: R
           </p>
           <Link
             href={`/blogs/${hoveredPost.slug}`}
-            className="mt-1.5 inline-block text-[11px] font-mono text-[#00D9FF] hover:underline"
+            className="mt-1.5 inline-flex min-h-[44px] items-center text-[11px] font-mono text-[#00D9FF] hover:underline"
           >
             Read article &rarr;
           </Link>

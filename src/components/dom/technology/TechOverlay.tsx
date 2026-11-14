@@ -2,45 +2,80 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { siteContent } from "@/content/site";
 import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export function TechOverlay() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const sections = gsap.utils.toArray(".tech-section") as HTMLElement[];
-    sections.slice(1).forEach((section) => {
-      const texts = section.querySelectorAll(".reveal-text");
-      if (prefersReducedMotion) {
-        gsap.set(texts, { scale: 1, opacity: 1, y: 0 });
-        return;
-      }
-      gsap.fromTo(
-        texts,
-        { scale: 1.05, opacity: 0, y: 30 },
-        {
-          scale: 1,
-          opacity: 1,
-          y: 0,
-          duration: 1.2,
-          stagger: 0.15,
-          ease: "back.out(1.7)",
-          scrollTrigger: {
-            trigger: section,
-            scroller: "#scroll-container-tech",
-            start: "top center",
-            end: "center center",
-            scrub: false,
-          },
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    let cancelled = false;
+    let initialized = false;
+    const scroller = document.getElementById("scroll-container-tech");
+
+    const initAnimations = () => {
+      if (cancelled || initialized) return;
+      initialized = true;
+      cleanupListeners();
+
+      Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+        ([{ default: gsap }, { ScrollTrigger }]) => {
+          if (cancelled) return;
+          gsap.registerPlugin(ScrollTrigger);
+          ScrollTrigger.config({ ignoreMobileResize: true });
+
+          const sections = gsap.utils.toArray(".tech-section") as HTMLElement[];
+          sections.slice(1).forEach((section) => {
+            const texts = section.querySelectorAll(".reveal-text");
+            gsap.fromTo(
+              texts,
+              { scale: 1.05, opacity: 0, y: 30 },
+              {
+                scale: 1,
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                stagger: 0.15,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                  trigger: section,
+                  scroller: "#scroll-container-tech",
+                  start: "top center",
+                  end: "center center",
+                  scrub: false,
+                },
+              }
+            );
+          });
         }
       );
-    });
+    };
+
+    const cleanupListeners = () => {
+      scroller?.removeEventListener("scroll", initAnimations);
+      window.removeEventListener("wheel", initAnimations);
+      window.removeEventListener("touchstart", initAnimations);
+      window.removeEventListener("keydown", initAnimations);
+    };
+
+    if (scroller && scroller.scrollTop > 0) {
+      initAnimations();
+    } else {
+      scroller?.addEventListener("scroll", initAnimations, { passive: true, once: true });
+      window.addEventListener("wheel", initAnimations, { passive: true, once: true });
+      window.addEventListener("touchstart", initAnimations, { passive: true, once: true });
+      window.addEventListener("keydown", initAnimations, { passive: true, once: true });
+    }
+
+    return () => {
+      cancelled = true;
+      cleanupListeners();
+    };
   }, []);
 
   const tagColors = [
@@ -104,7 +139,7 @@ export function TechOverlay() {
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black font-semibold text-sm hover:bg-white/90 transition-colors"
+              className="inline-flex min-h-[44px] items-center gap-2 px-6 py-3 rounded-full bg-white text-black font-semibold text-sm hover:bg-white/90 transition-colors"
             >
               Discuss Your Stack Requirements &rarr;
             </Link>

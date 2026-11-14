@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import emailjs from "@emailjs/browser";
 import { siteContent } from "@/content/site";
 import { trackEvent } from "@/lib/analytics";
 
@@ -141,6 +140,7 @@ export function useContactForm(onSuccessCallback?: () => void) {
         message: fullMessage,
       };
 
+      const { default: emailjs } = await import("@emailjs/browser");
       await emailjs.send(serviceId, templateId, templateParams, publicKey);
 
       trackEvent("contact_submit", {

@@ -65,7 +65,7 @@ export default function Projects({ footer }: { footer?: ReactNode }) {
           <span className="text-white/90">{previewProject.name}</span>
           <a
             href={`#${previewProject.id}`}
-            className="text-[#00D9FF] hover:underline"
+            className="text-[#00D9FF] hover:underline min-h-[44px] inline-flex items-center"
           >
             View &darr;
           </a>
