@@ -9,7 +9,7 @@ export default function Image() {
   return generateOgImage({
     title: "Technology Stack & Architecture",
     category: "ARCHITECTURE",
-    description: "The modern stack ZYXEN uses to build fast, secure and scalable web platforms and business software.",
+    description: "The modern stack ZYXEN uses to build fast, dependable and scalable web platforms and business software.",
   });
 }
 

@@ -330,7 +330,7 @@ function ProjectPlaceholder({ project }: { project: ProjectItem }) {
             <div className="w-16 h-16 rounded-full border border-dashed border-[#00D9FF]/60 animate-spin" />
             <div className="absolute text-[11px] font-mono text-white/60">GPU-ACCELERATED MOTION</div>
           </div>
-          <p className="text-[11px] font-mono text-white/40">Next.js 16 SSR &bull; Lighthouse 95+ Core Web Vitals</p>
+          <p className="text-[11px] font-mono text-white/40">Next.js SSR &bull; Core Web Vitals Targets</p>
         </div>
       )}
     </div>

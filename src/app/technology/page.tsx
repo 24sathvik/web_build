@@ -5,7 +5,7 @@ import Technology from "./client";
 
 export const metadata = pageMetadata({
   title: "Technology | How ZYXEN Builds Fast, Scalable Software",
-  description: "The modern stack ZYXEN uses to build fast, secure and scalable web platforms and business software.",
+  description: "The modern stack ZYXEN uses to build fast, dependable and scalable web platforms and business software.",
   path: "/technology",
   absoluteTitle: true,
 });
@@ -17,7 +17,7 @@ export default function Page() {
     "@id": `${SITE_URL}/technology#service`,
     name: "Software Architecture & Cloud Engineering",
     serviceType: "Cloud Infrastructure, System Architecture & Software Engineering",
-    description: "Modern web architecture, microservices, containerization, and edge-native deployments designed for extreme speed and high availability.",
+    description: "Modern web architecture, microservices, containerization, and edge-native deployments designed for fast performance and high availability.",
     provider: { "@id": `${SITE_URL}/#organization` },
     areaServed: {
       "@type": "Country",

@@ -231,12 +231,12 @@ export const siteContent: SiteContent = {
         {
           title: "Exam & Admissions Systems",
           description:
-            "Custom test-prep engines, timed mock tests, and student enquiry pipelines tailored to institutional rules.",
+            "Custom test-prep engines, timed mock tests, and student enquiry pipelines tailored to institutional rules.", // VERIFY: Test-prep and enquiry pipelines
         },
         {
           title: "ERP & Operations",
           description:
-            "Central systems for billing, student fee ledgers, batch inventory, and quotation-to-invoice workflows.",
+            "Central systems for billing, student fee ledgers, batch inventory, and quotation-to-invoice workflows.", // VERIFY: Billing, fee ledgers, and inventory systems
         },
         {
           title: "Modern Web Applications",
@@ -280,7 +280,7 @@ export const siteContent: SiteContent = {
         number: "03",
         title: "Long-Term Support",
         description:
-          "Direct, ongoing communication with the engineers who built your platform for maintenance, compliance rule adjustments, and feature additions.", // VERIFY: ongoing maintenance support
+          "Direct, ongoing communication with the engineers who built your platform for maintenance, compliance rule adjustments, and feature additions.", // VERIFY: Ongoing maintenance support
       },
     ],
   },
@@ -310,8 +310,8 @@ export const siteContent: SiteContent = {
       number: "03",
       name: "Custom Software & Web Apps",
       description:
-        "Tailored web applications built around your exact operational workflows, team roles, and internal business rules.",
-      highlights: ["Role-based Access", "Secure APIs", "Operational Portals", "Custom Dashboards"],
+        "Tailored web applications built around your exact operational workflows, team roles, and internal business rules.", // VERIFY: Custom operational software
+      highlights: ["Role-based Access", "Authenticated APIs", "Operational Portals", "Custom Dashboards"], // VERIFY: Custom operational portals
       linkUrl: "/projects#zyops",
       linkText: "Explore Custom Systems",
     },
@@ -320,8 +320,8 @@ export const siteContent: SiteContent = {
       number: "04",
       name: "Business Automation",
       description:
-        "Practical automation pipelines that connect internal tools, reduce manual data entry, and speed up turnaround times.",
-      highlights: ["System Integration", "Notification Pipelines", "Reduced Data Entry", "Audit Logging"],
+        "Practical automation pipelines that connect internal tools, reduce manual data entry, and speed up turnaround times.", // VERIFY: Automation pipelines
+      highlights: ["System Integration", "Notification Pipelines", "Reduced Data Entry", "Audit Logging"], // VERIFY: System integration and logging
       linkUrl: "/projects#goalflow",
       linkText: "See Automation Tools",
     },
@@ -331,7 +331,7 @@ export const siteContent: SiteContent = {
       name: "Exam Portals & Admissions Systems",
       description:
         "Online test-prep and student intake platforms configured to follow regulatory exam patterns and institutional admissions steps.", // VERIFY: Pilot mock exam portals and academy admissions deployments
-      highlights: ["Regulatory Exam Patterns", "Timed Simulations", "Enquiry Pipeline", "Student Performance Logs"],
+      highlights: ["Regulatory Exam Patterns", "Timed Simulations", "Enquiry Pipeline", "Student Performance Logs"], // VERIFY: Exam simulation and intake highlights
       linkUrl: "/aviation-academy-software",
       linkText: "View Aviation & Exam Systems",
     },
@@ -341,7 +341,7 @@ export const siteContent: SiteContent = {
       name: "ERP, Finance & Fee Management",
       description:
         "Centralized systems for fee collection, student billing, quotation generation, inventory sync, and GST-ready invoicing.", // VERIFY: Academy fee collection and quotation system implementation
-      highlights: ["Student Fee Ledgers", "GST Invoicing", "Stock & Inventory", "Audit Trail"],
+      highlights: ["Student Fee Ledgers", "GST Invoicing Layouts", "Stock & Inventory", "Audit Trail"], // VERIFY: Fee ledgers and invoicing layouts
       linkUrl: "/aviation-academy-software",
       linkText: "View Fee & ERP Modules",
     },
@@ -389,7 +389,7 @@ export const siteContent: SiteContent = {
     {
       id: "erp-platform",
       name: "ERP Platform",
-      tagline: "One system for sales, stock and accounts",
+      tagline: "One system for sales, stock and accounts", // VERIFY: ERP system for sales and accounts
       group: "aviation",
       badge: "Institute ERP",
       features: ["multi-unit", "roles", "inventory sync"],
@@ -410,7 +410,7 @@ export const siteContent: SiteContent = {
     {
       id: "zyops",
       name: "ZyOps",
-      tagline: "Sales and operations management",
+      tagline: "Sales and operations management", // VERIFY: ZyOps sales and operations tool
       group: "business",
       badge: "Operations Tool",
       features: ["invoices", "work-in-progress board", "quotations", "accounts"],
@@ -418,7 +418,7 @@ export const siteContent: SiteContent = {
     {
       id: "goalflow",
       name: "GoalFlow",
-      tagline: "Milestone and team execution tracking",
+      tagline: "Milestone and team execution tracking", // VERIFY: GoalFlow team execution tracking
       group: "business",
       badge: "Team Execution",
       features: ["goals", "progress analytics", "tasks"],
@@ -426,7 +426,7 @@ export const siteContent: SiteContent = {
     {
       id: "quotation-invoice",
       name: "Quotation & Invoice Generator",
-      tagline: "GST-ready quotes and invoices for SMEs",
+      tagline: "GST-ready quotes and invoices for SMEs", // VERIFY: SME quotation and invoice generator
       group: "business",
       badge: "Billing System",
       features: ["PDF", "tax calculation", "follow-ups"],
@@ -442,7 +442,7 @@ export const siteContent: SiteContent = {
     {
       id: "interactive-websites",
       name: "Interactive Websites",
-      tagline: "High-performance Next.js sites with 3D and motion",
+      tagline: "High-performance Next.js sites with 3D and motion", // VERIFY: Interactive 3D and motion web projects
       group: "business",
       badge: "Web presences",
       features: ["fast loading", "SEO-first"],
@@ -461,7 +461,7 @@ export const siteContent: SiteContent = {
     headline: "Aviation Academy Software",
     subHeadline: "Exam Portals, Student Fee Management, Admissions & ERP",
     pitch:
-      "A complete digital system engineered specifically for pilot training institutes and aviation academies. From test simulations configured to match authority syllabi to student fee schedules, admissions pipelines, and multi-branch operations, our software is designed around real academy workflows.",
+      "A digital platform designed for pilot training institutes and aviation academies. From test simulations configured to match authority syllabi to student fee schedules, admissions pipelines, and multi-branch operations, our software models operational academy workflows.", // VERIFY: Aviation software suite
     modulesTitle: "Four Core Modules",
     modulesSubtitle: "Modular software components deployed individually or integrated as a single academy platform.",
     modules: [
@@ -470,7 +470,7 @@ export const siteContent: SiteContent = {
         title: "Exam Portal",
         subtitle: "Mock Exam & Test-Prep Engine",
         description:
-          "Online test engine configured for pilot-licence ground training. Features timed test simulations, authority syllabus mapping, customizable question pools, and instant performance diagnostics.", // VERIFY: Exam portal deployed for an aviation academy client
+          "Online test engine configured for pilot-licence ground training. Features timed test simulations, authority syllabus mapping, customizable question pools, and performance diagnostics.", // VERIFY: Exam portal deployed for an aviation academy client
         features: [
           "Syllabus mapping per subject",
           "Timed test simulation",
@@ -483,12 +483,12 @@ export const siteContent: SiteContent = {
         title: "Finance & Fee System",
         subtitle: "Academy Billing & Ledger",
         description:
-          "End-to-end fee accounting designed for student payment cycles, flight training quotation generation, instalment receipts, and staff payslips.", // VERIFY: Fee system deployed for student accounts at an aviation academy client
+          "Fee accounting workflows designed for student payment cycles, flight training quotation generation, instalment receipts, and staff payslips.", // VERIFY: Fee system deployed for student accounts at an aviation academy client
         features: [
           "Student fee ledgers & instalments",
-          "GST-ready invoice generation",
+          "GST-formatted invoice layouts",
           "Payment receipts & follow-ups",
-          "Complete administrative audit trail",
+          "Structured administrative audit trail",
         ],
       },
       {
@@ -496,7 +496,7 @@ export const siteContent: SiteContent = {
         title: "Admissions System",
         subtitle: "Enquiry-to-Enrolment Pipeline",
         description:
-          "Structured pipeline managing inbound student enquiries from website visit to document verification, assessment scheduling, and final batch allocation.", // VERIFY: Admissions workflow deployed for enquiry tracking
+          "Structured pipeline managing inbound student enquiries from website visit to document verification, assessment scheduling, and batch allocation.", // VERIFY: Admissions workflow deployed for enquiry tracking
         features: [
           "Online application intake",
           "Status pipeline & stage tracking",
@@ -509,7 +509,7 @@ export const siteContent: SiteContent = {
         title: "ERP Platform",
         subtitle: "Unified Academy Operations",
         description:
-          "A centralized operations platform uniting student databases, staff records, flying logs, resource allocation, and multi-branch management into one dashboard.",
+          "A centralized operations platform uniting student databases, staff records, flying logs, resource allocation, and multi-branch management into one dashboard.", // VERIFY: ERP operations platform
         features: [
           "Role-based staff permissions",
           "Batch & student scheduling",
@@ -539,8 +539,8 @@ export const siteContent: SiteContent = {
           "Technical Specific",
           "Radio Telephony (Part 1 & 2 theory)",
         ],
-        negativeMarking: "Configurable per authority test standards (e.g. 0.25 penalty or zero penalty)",
-        timerPassing: "Timed section timers with 70% passing benchmark",
+        negativeMarking: "Configurable per authority test standards (e.g. 0.25 penalty or zero penalty)", // VERIFY: DGCA negative marking configuration
+        timerPassing: "Timed section timers with 70% passing benchmark", // VERIFY: DGCA passing benchmark
       },
       {
         code: "FAA",
@@ -557,8 +557,8 @@ export const siteContent: SiteContent = {
           "Federal Aviation Regulations (FARs)",
           "Aerodynamics, Engines & Systems",
         ],
-        negativeMarking: "Zero negative marking per standard FAA testing format",
-        timerPassing: "Per-subject test timers with 70% passing threshold",
+        negativeMarking: "Zero negative marking per standard FAA testing format", // VERIFY: FAA negative marking format
+        timerPassing: "Per-subject test timers with 70% passing threshold", // VERIFY: FAA passing threshold
       },
       {
         code: "EASA",
@@ -576,8 +576,8 @@ export const siteContent: SiteContent = {
           "Aircraft General Knowledge",
           "Flight Performance & Planning",
         ],
-        negativeMarking: "No negative marking per standard EASA ECQB regulations",
-        timerPassing: "Strict per-subject countdown timers with 75% passing mark",
+        negativeMarking: "No negative marking per standard EASA ECQB regulations", // VERIFY: EASA negative marking rules
+        timerPassing: "Per-subject countdown timers with 75% passing mark", // VERIFY: EASA passing benchmark
       },
     ],
     regulatorNote:
@@ -585,7 +585,7 @@ export const siteContent: SiteContent = {
     otherInstitutes: {
       title: "Adapted for Other Educational Institutes",
       description:
-        "The same reliable software architecture powers digital operations for schools, undergraduate colleges, professional coaching centres, and competitive exam academies.",
+        "The same modular software architecture is designed to support digital operations for schools, undergraduate colleges, professional coaching centres, and competitive exam academies.", // VERIFY: Modular architecture across institute types
       types: [
         "Schools & Junior Colleges (Student Fee Schedules, Admissions, Notices)",
         "Competitive Exam Coaching Centres (Mock Test Engines, Timers, Negative Marking)",
@@ -603,17 +603,17 @@ export const siteContent: SiteContent = {
       {
         question: "Can the mock exam engine be configured for DGCA, FAA, or EASA exams?",
         answer:
-          "Yes. The exam portal allows academy administrators to configure subject categories, question counts, timers, passing percentages, and negative marking rules to follow the syllabus pattern of DGCA (India), FAA (USA), EASA (Europe), or custom authority formats.",
+          "Yes. The exam portal allows academy administrators to configure subject categories, question counts, timers, passing percentages, and negative marking rules to follow the syllabus pattern of DGCA (India), FAA (USA), EASA (Europe), or custom authority formats.", // VERIFY: Authority rule configuration
       },
       {
         question: "How does the fee management system handle aviation academy instalments?",
         answer:
-          "The system supports structured payment schedules tailored for pilot training, including multi-stage ground school and flying fee instalments, quotations, GST-ready invoices, receipts, and individual student balance ledgers.",
+          "The system supports structured payment schedules tailored for pilot training, including multi-stage ground school and flying fee instalments, quotations, GST-formatted invoices, receipts, and individual student balance ledgers.", // VERIFY: Aviation fee payment schedules
       },
       {
         question: "Can these systems be used by schools, colleges, or other coaching institutes?",
         answer:
-          "Yes. The underlying test-prep, admissions, fee ledger, and operations modules are fully modular and can be adapted for schools, colleges, and competitive coaching centres.",
+          "Yes. The underlying test-prep, admissions, fee ledger, and operations modules are modular and can be adapted for schools, colleges, and competitive coaching centres.", // VERIFY: Modular institute software adaptation
       },
     ],
   },
@@ -650,7 +650,7 @@ export const siteContent: SiteContent = {
         tag: "Framework",
         title: "Next.js & Modern Frontend",
         description:
-          "Server-side rendering, static generation, and TypeScript for rapid page loads, search visibility, and predictable behavior.",
+          "Server-side rendering, static generation, and TypeScript for fast page loads, search visibility, and predictable behavior.",
       },
       {
         tag: "Speed",

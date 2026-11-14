@@ -56,7 +56,7 @@ const CATEGORY_CTA_MAP: Record<string, CategoryCTA> = {
   "Website Design": {
     eyebrow: "Website Design & Engineering",
     title: "Need a high-converting, performance-first website?",
-    description: "ZYXEN crafts bespoke, lightning-fast web applications and business websites built to turn visitors into long-term clients.",
+    description: "ZYXEN crafts bespoke, fast web applications and business websites built to turn visitors into long-term clients.",
     href: "/services",
     ctaText: "Explore Web Design Services",
   },
@@ -77,7 +77,7 @@ const CATEGORY_CTA_MAP: Record<string, CategoryCTA> = {
   "Exam Portals": {
     eyebrow: "Online Assessment Engines",
     title: "Custom mock test and exam portals built for scale",
-    description: "Secure, real-time online examination portals supporting negative marking, timed assessments, and multi-authority syllabus patterns.",
+    description: "Purpose-built online examination portals supporting negative marking, timed assessments, and multi-authority syllabus patterns.",
     href: "/aviation-academy-software",
     ctaText: "View Exam Solutions",
   },
@@ -90,15 +90,15 @@ const CATEGORY_CTA_MAP: Record<string, CategoryCTA> = {
   },
   "High-Performance Web": {
     eyebrow: "Core Web Vitals & Speed",
-    title: "Sub-second load times and flawless Core Web Vitals",
-    description: "We re-architect slow websites into modern edge-rendered platforms with optimized TTFB, AVIF/WebP assets, and zero layout shift.",
+    title: "Fast load times and targeted Core Web Vitals",
+    description: "We re-architect slow websites into modern edge-rendered platforms with optimized TTFB, AVIF/WebP assets, and minimized layout shifts.",
     href: "/technology",
     ctaText: "View Architecture & Tech",
   },
   "Modern Cloud Architecture": {
     eyebrow: "Cloud & Infrastructure",
     title: "Scalable, resilient cloud systems built for growth",
-    description: "Design and implement modern serverless and containerized cloud architectures that never fail under peak traffic.",
+    description: "Design and implement modern serverless and containerized cloud architectures configured to handle traffic spikes.",
     href: "/technology",
     ctaText: "Explore Cloud Architecture",
   },
