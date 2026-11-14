@@ -5,7 +5,7 @@
 ## Core Capabilities
 - High-Performance Web Engineering: Next.js, React, Tailwind CSS, edge delivery, ultra-fast TTFB, optimized Core Web Vitals, accessible semantic UI.
 - Aviation Academy Software: Pilot mock exam portals configured for DGCA (India), FAA (USA), and EASA (Europe) examination rules, student fee ledgers, admissions CRM, and institute ERP.
-- Production Management Systems: Real-time batch tracking, raw material lot traceability, WHO-GMP and CDSCO Schedule M compliance audit trails, and multi-unit inventory control for pharmaceutical and bulk drug manufacturers.
+- Production Management Systems: Real-time batch tracking, raw material lot traceability, digital batch records, and multi-unit inventory control for pharmaceutical and bulk drug manufacturers.
 - Cloud & Systems Architecture: Scalable microservices, fault-tolerant database design, API engineering, and automated cloud deployments.
 - Custom Software & Workflow Automation: Business process automation, quotation generation engines, client portals, and bespoke administrative dashboards.
 

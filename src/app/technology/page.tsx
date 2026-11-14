@@ -13,30 +13,17 @@ export const metadata = pageMetadata({
 export default function Page() {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Service",
-        "@id": `${SITE_URL}/technology#service`,
-        name: "Software Architecture & Cloud Engineering",
-        serviceType: "Cloud Infrastructure, System Architecture & Software Engineering",
-        description: "Modern web architecture, microservices, containerization, and edge-native deployments designed for extreme speed and high availability.",
-        provider: { "@id": `${SITE_URL}/#organization` },
-        areaServed: {
-          "@type": "Country",
-          name: "India",
-        },
-        url: `${SITE_URL}/technology`,
-      },
-      {
-        "@type": "SoftwareApplication",
-        "@id": `${SITE_URL}/technology#production-software`,
-        name: "ZYXEN Production Management & Batch Tracking System",
-        applicationCategory: "BusinessApplication",
-        operatingSystem: "Web Browser",
-        description: "Cloud-based manufacturing batch tracking, raw material traceability, and GMP compliance system for API and pharma manufacturers.",
-        url: `${SITE_URL}/technology`,
-      },
-    ],
+    "@type": "Service",
+    "@id": `${SITE_URL}/technology#service`,
+    name: "Software Architecture & Cloud Engineering",
+    serviceType: "Cloud Infrastructure, System Architecture & Software Engineering",
+    description: "Modern web architecture, microservices, containerization, and edge-native deployments designed for extreme speed and high availability.",
+    provider: { "@id": `${SITE_URL}/#organization` },
+    areaServed: {
+      "@type": "Country",
+      name: "India",
+    },
+    url: `${SITE_URL}/technology`,
   };
 
   return (

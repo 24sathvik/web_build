@@ -3,6 +3,7 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { siteContent } from "@/content/site";
+import { trackEvent } from "@/lib/analytics";
 
 export interface ContactFormData {
   name: string;
@@ -141,6 +142,12 @@ export function useContactForm(onSuccessCallback?: () => void) {
       };
 
       await emailjs.send(serviceId, templateId, templateParams, publicKey);
+
+      trackEvent("contact_submit", {
+        form_id: "contact_form",
+        has_organisation: Boolean(formData.organisation.trim()),
+        has_service: Boolean(formData.service.trim()),
+      });
 
       setStatus("success");
       setFormData(initialFormData);

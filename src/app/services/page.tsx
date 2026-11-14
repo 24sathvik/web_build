@@ -49,7 +49,7 @@ export default function Page() {
           itemOffered: {
             "@type": "Service",
             name: "Pharma & Manufacturing Batch Tracking Systems",
-            description: "Digital lot traceability, GMP compliance records, and inventory software.",
+            description: "Digital lot traceability, production batch records, and inventory software.",
           },
         },
         {

@@ -6,7 +6,7 @@ import { Header } from "@/components/dom/Header";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { SiteFooter } from "@/components/dom/SiteFooter";
 import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
-import { getAllPosts, getPostBySlug, renderContent, safeImageSrc } from "@/lib/blog";
+import { getAllPosts, getPostBySlug, renderContent, safeImageSrc, extractH2Headings } from "@/lib/blog";
 import { pageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 
@@ -62,7 +62,7 @@ const CATEGORY_CTA_MAP: Record<string, CategoryCTA> = {
   },
   "Production Management": {
     eyebrow: "Production & Batch Tracking Software",
-    title: "Digitize batch records, lot traceability & GMP compliance",
+    title: "Digitize batch records, lot traceability & quality tracking", // VERIFY: claim
     description: "ZYXEN builds custom production management and inventory systems purpose-built for pharma manufacturers in Hyderabad.",
     href: "/technology",
     ctaText: "Discover Production Software",
@@ -148,6 +148,7 @@ export default async function BlogPostPage({ params }: Params) {
   if (!post) notFound();
 
   const html = renderContent(post.content);
+  const h2Headings = extractH2Headings(html);
 
   // Guarantee 3 related articles (prefer matching category, fill from other posts)
   const allPosts = getAllPosts();
@@ -241,7 +242,60 @@ export default async function BlogPostPage({ params }: Params) {
           />
         </div>
 
+        {h2Headings.length >= 4 && (
+          <nav
+            aria-label="Table of contents"
+            className="my-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6"
+          >
+            <p className="text-xs font-mono uppercase tracking-[0.25em] text-[#00D9FF] mb-3">
+              Table of Contents
+            </p>
+            <ol className="space-y-2 list-decimal list-inside text-sm text-[#BFC7D5]">
+              {h2Headings.map((h) => (
+                <li key={h.id} className="leading-snug">
+                  <a
+                    href={`#${h.id}`}
+                    className="hover:text-[#00D9FF] hover:underline transition-colors ml-1 inline"
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         <div className="zy-prose mt-10" dangerouslySetInnerHTML={{ __html: html }} />
+
+        {/* Author Box */}
+        <section className="mt-12 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#00D9FF] to-[#6E5BFF] flex items-center justify-center text-black font-extrabold text-xl shrink-0">
+              {post.author ? post.author.slice(0, 2).toUpperCase() : "ZY"}
+            </div>
+            <div className="space-y-1.5 flex-1">
+              <div className="flex items-center gap-3">
+                <h3 className="text-base font-bold text-white">
+                  {post.author || "ZYXEN Engineering Team"}
+                </h3>
+                <span className="text-[10px] font-mono text-[#00D9FF] border border-[#00D9FF]/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Author
+                </span>
+              </div>
+              <p className="text-sm text-[#BFC7D5] leading-relaxed">
+                Engineering software architectures, high-performance web applications, and operational platforms for aviation academies and enterprise businesses at ZYXEN.
+              </p>
+              <div className="pt-2 flex items-center gap-4 text-xs font-mono">
+                <Link href="/about" className="text-[#00D9FF] hover:underline">
+                  About ZYXEN &rarr;
+                </Link>
+                <Link href="/contact" className="text-white/60 hover:text-white transition-colors">
+                  Contact Team
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Contextual Service Call-to-Action */}
         <div className="mt-14 rounded-2xl border border-[#00D9FF]/30 bg-gradient-to-br from-[#00D9FF]/[0.07] via-white/[0.02] to-transparent p-6 sm:p-8">

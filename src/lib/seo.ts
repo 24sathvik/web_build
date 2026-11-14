@@ -10,6 +10,8 @@ interface PageMetaInput {
   image?: string;
   type?: "website" | "article";
   publishedTime?: string;
+  noindex?: boolean;
+  robots?: Metadata["robots"];
 }
 
 export function pageMetadata({
@@ -19,11 +21,15 @@ export function pageMetadata({
   image = DEFAULT_OG_IMAGE,
   type = "website",
   publishedTime,
+  noindex,
+  robots,
 }: PageMetaInput): Metadata {
   const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
+  const robotsConfig = noindex ? { index: false, follow: false } : robots;
   return {
     title: { absolute: title },
     description,
+    ...(robotsConfig ? { robots: robotsConfig } : {}),
     alternates: {
       canonical: url,
       languages: {

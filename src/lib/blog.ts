@@ -1,7 +1,7 @@
 import "server-only";
 import fs from "fs";
 import path from "path";
-import { marked } from "marked";
+import { Marked } from "marked";
 
 export interface BlogPost {
   id: string;
@@ -65,6 +65,49 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
   return getAllPosts().find((p) => p.slug === slug);
 }
 
+function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/<[^>]*>/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+export interface HeadingItem {
+  id: string;
+  text: string;
+}
+
+export function extractH2Headings(html: string): HeadingItem[] {
+  const matches = [...html.matchAll(/<h2[^>]*\bid=["']([^"']+)["'][^>]*>([\s\S]*?)<\/h2>/gi)];
+  return matches.map((m) => ({
+    id: m[1],
+    text: m[2].replace(/<[^>]*>/g, "").trim(),
+  }));
+}
+
+const customMarked = new Marked({
+  async: false,
+});
+
+customMarked.use({
+  renderer: {
+    heading({ tokens, depth, text }) {
+      const p = this.parser.parseInline(tokens);
+      if (depth === 2 || depth === 3) {
+        const id = slugifyHeading(text || p);
+        return `<h${depth} id="${id}">${p}</h${depth}>\n`;
+      }
+      return `<h${depth}>${p}</h${depth}>\n`;
+    },
+    image({ href, title, text }) {
+      const titleAttr = title ? ` title="${title}"` : "";
+      return `<img src="${href}" alt="${text || ""}"${titleAttr} loading="lazy" />`;
+    },
+  },
+});
+
 /** Markdown (or HTML from the CMS) -> HTML. Content is authored by the site owner via the CMS. */
 export function renderContent(content: string): string {
   let cleaned = content.replace(/<!--[\s\S]*?-->/g, "");
@@ -89,7 +132,22 @@ export function renderContent(content: string): string {
   // Demote any remaining <h1> to <h2>
   cleaned = cleaned.replace(/<h1(\s[^>]*)?>([\s\S]*?)<\/h1>/gi, "<h2$1>$2</h2>");
 
-  return marked.parse(cleaned, { async: false }) as string;
+  let html = customMarked.parse(cleaned) as string;
+
+  // Add id to any remaining h2 or h3 missing an id
+  html = html.replace(
+    /<h([23])(?![^>]*\bid=)([^>]*)>([\s\S]*?)<\/h\1>/gi,
+    (_, level, attrs, headingText) => {
+      const plainText = headingText.replace(/<[^>]*>/g, "").trim();
+      const id = slugifyHeading(plainText);
+      return `<h${level}${attrs} id="${id}">${headingText}</h${level}>`;
+    }
+  );
+
+  // Ensure all img tags have loading="lazy"
+  html = html.replace(/<img(?![^>]*\bloading=)([^>]*?)(\/?>)/gi, '<img$1 loading="lazy"$2');
+
+  return html;
 }
 
 /** Encode local paths that contain unicode/space characters; leave absolute URLs alone. */

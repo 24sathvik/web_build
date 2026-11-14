@@ -99,15 +99,39 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section className="space-y-3">
-            {/* VERIFY: Analytics provider and toggle state in deployment environment */}
             <h2 className="text-xl font-bold text-white">
               4. Analytics &amp; Technical Telemetry
             </h2>
             <p>
-              Aggregate website analytics, if enabled in our hosting or deployment
-              configuration, are used strictly to measure page performance, load
-              reliability, and general traffic trends. Where analytics are not
-              enabled, no tracking scripts or advertising cookies are loaded.
+              When enabled via deployment configuration (Google Analytics 4), we collect
+              pseudonymous technical telemetry to measure website speed, Core Web Vitals,
+              and visitor interactions:
+            </p>
+            <ul className="list-disc list-inside space-y-1.5 text-sm pl-2">
+              <li>
+                <strong className="text-white">Performance Metrics:</strong> Core Web Vitals including
+                Cumulative Layout Shift (CLS), Interaction to Next Paint (INP / FID), Largest Contentful
+                Paint (LCP), First Contentful Paint (FCP), and Time to First Byte (TTFB).
+              </li>
+              <li>
+                <strong className="text-white">Interaction Events:</strong> Contact form submissions,
+                clicks on telephone links, clicks on email addresses, and primary call-to-action selections.
+              </li>
+              <li>
+                <strong className="text-white">Deferred Loading:</strong> Analytics scripts are loaded
+                strictly on first user interaction or when the browser is idle to protect load speed and
+                data privacy.
+              </li>
+              <li>
+                <strong className="text-white">Zero Third-Party Advertising:</strong> We do not deploy
+                advertising cookies, behavioral retargeting pixels, or data broker networks.
+              </li>
+            </ul>
+            <p className="text-sm">
+              If the analytics identifier is not configured in the host environment, zero analytics
+              scripts or telemetry requests are initiated. You can prevent analytics tracking at any time
+              by using standard browser content blockers, enabling Global Privacy Control (GPC), or
+              installing the Google Analytics Opt-out Browser Add-on.
             </p>
           </section>
 

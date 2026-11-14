@@ -1,3 +1,8 @@
+import { solutionsData, type SolutionPageConfig, type SolutionStatus } from "./solutions";
+
+export type { SolutionPageConfig, SolutionStatus };
+export const solutions = solutionsData;
+
 export interface NavItem {
   name: string;
   path: string;
@@ -177,6 +182,7 @@ export interface SiteContent {
       tag: string;
     }[];
   };
+  solutions: SolutionPageConfig[];
 }
 
 export const siteContent: SiteContent = {
@@ -274,7 +280,7 @@ export const siteContent: SiteContent = {
         number: "03",
         title: "Long-Term Support",
         description:
-          "Direct, ongoing communication with the engineers who built your platform for maintenance, compliance rule adjustments, and feature additions.",
+          "Direct, ongoing communication with the engineers who built your platform for maintenance, compliance rule adjustments, and feature additions.", // VERIFY: ongoing maintenance support
       },
     ],
   },
@@ -666,4 +672,5 @@ export const siteContent: SiteContent = {
       },
     ],
   },
+  solutions: solutionsData,
 };

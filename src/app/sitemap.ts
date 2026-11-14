@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts, safeImageSrc } from "@/lib/blog";
 import { SITE_URL, STATIC_LAST_MODIFIED } from "@/lib/site";
+import { solutions } from "@/content/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date(STATIC_LAST_MODIFIED);
@@ -15,6 +16,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/blogs`, lastModified, changeFrequency: "weekly", priority: 0.9 },
     { url: `${SITE_URL}/privacy-policy`, lastModified, changeFrequency: "monthly", priority: 0.4 },
   ];
+
+  const liveSolutionRoutes: MetadataRoute.Sitemap = solutions
+    .filter((s) => s.status === "live")
+    .map((s) => ({
+      url: `${SITE_URL}${s.path}`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.85,
+    }));
 
   const blogRoutes: MetadataRoute.Sitemap = getAllPosts().map((post) => {
     const rawDate = post.updatedDate || post.date;
@@ -33,5 +43,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
-  return [...staticRoutes, ...blogRoutes];
+  return [...staticRoutes, ...liveSolutionRoutes, ...blogRoutes];
 }

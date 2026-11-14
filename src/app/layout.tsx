@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { Exo, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
 import { CONTACT_EMAIL, SITE_NAME, SITE_URL, SOCIALS } from "@/lib/site";
 import { siteContent } from "@/content/site";
 import { DebugOverlay } from "@/components/dom/DebugOverlay";
+import { Analytics } from "@/components/analytics/Analytics";
 
 const exo = Exo({
   variable: "--font-exo",
@@ -153,26 +153,7 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col bg-[#050505] text-white overflow-x-hidden selection:bg-[#00D9FF] selection:text-black">
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <>
-            <Script
-              strategy="afterInteractive"
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-            />
-            <Script
-              id="google-analytics"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
-                `,
-              }}
-            />
-          </>
-        )}
+        <Analytics />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

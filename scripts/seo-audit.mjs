@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+import fs from "fs";
+import path from "path";
+
 /**
  * ZYXEN Automated SEO, Metadata & Structured Data Audit
  * Verifies sitemap URLs, HTTP 200, title/desc constraints, single h1,
@@ -271,10 +274,10 @@ async function runAudit() {
         logFail(`Missing schemas on /aviation-academy-software: Service=${types.has("Service")}, FAQPage=${types.has("FAQPage")}, SoftwareApplication=${types.has("SoftwareApplication")}`);
       }
     } else if (parsed.pathname === "/technology") {
-      if (types.has("Service") && types.has("SoftwareApplication")) {
-        logPass(`Service and SoftwareApplication schemas verified on /technology`);
+      if (types.has("Service") && !types.has("SoftwareApplication")) {
+        logPass(`Service schema verified and SoftwareApplication schema confirmed absent on /technology`);
       } else {
-        logFail(`Missing schemas on /technology: Service=${types.has("Service")}, SoftwareApplication=${types.has("SoftwareApplication")}`);
+        logFail(`Schemas on /technology invalid: Service=${types.has("Service")}, SoftwareApplication=${types.has("SoftwareApplication")}`);
       }
     } else if (parsed.pathname.startsWith("/blogs/")) {
       if (types.has("BlogPosting")) {
@@ -359,6 +362,214 @@ async function runAudit() {
     }
   } catch (err) {
     logFail(`Failed to fetch /blogs/feed.xml: ${err.message}`);
+  }
+
+  // 6. Verify Solution Pages (Draft / Live Behavior, Schemas, Word Counts)
+  logSection("6. Verifying Solution Pages (Draft / Live Behavior & Schemas)");
+  const solutionConfigPath = path.join(process.cwd(), "src", "content", "solutions.ts");
+  const solutionConfigContent = fs.readFileSync(solutionConfigPath, "utf8");
+
+  function getSolutionStatuses() {
+    const statuses = {};
+    const regex = /slug:\s*["']([^"']+)["'][\s\S]*?status:\s*["'](draft|live)["']/g;
+    let match;
+    while ((match = regex.exec(solutionConfigContent)) !== null) {
+      statuses[`/${match[1]}`] = match[2];
+    }
+    return statuses;
+  }
+
+  const SOLUTION_PAGES = [
+    {
+      path: "/aviation-exam-portal-software",
+      status: "draft",
+      expectedSchemas: ["BreadcrumbList", "Service", "FAQPage"],
+    },
+    {
+      path: "/fee-and-finance-software-for-academies",
+      status: "draft",
+      expectedSchemas: ["BreadcrumbList", "Service", "FAQPage"],
+    },
+    {
+      path: "/admission-management-software",
+      status: "draft",
+      expectedSchemas: ["BreadcrumbList", "Service", "FAQPage"],
+    },
+    {
+      path: "/erp-for-educational-institutes",
+      status: "draft",
+      expectedSchemas: ["BreadcrumbList", "Service", "FAQPage"],
+    },
+    {
+      path: "/web-development-hyderabad",
+      status: "draft",
+      expectedSchemas: ["BreadcrumbList", "Service", "FAQPage"],
+    },
+    {
+      path: "/production-management-software-pharma",
+      status: "draft",
+      expectedSchemas: ["BreadcrumbList", "Service", "FAQPage", "SoftwareApplication"],
+    },
+  ];
+
+  const solutionStatuses = getSolutionStatuses();
+
+  for (const sol of SOLUTION_PAGES) {
+    const status = solutionStatuses[sol.path] || sol.status;
+    const localUrl = `${BASE_URL}${sol.path}`;
+    console.log(`\nTesting Solution: \x1b[33m${sol.path}\x1b[0m (Status: ${status})`);
+
+    let html;
+    try {
+      const res = await fetch(localUrl);
+      if (res.status === 200) {
+        logPass(`HTTP 200 OK`);
+        html = await res.text();
+      } else {
+        logFail(`Expected HTTP 200 OK but received ${res.status}`);
+        continue;
+      }
+    } catch (err) {
+      logFail(`Failed to fetch ${localUrl}: ${err.message}`);
+      continue;
+    }
+
+    // Check Sitemap presence
+    const inSitemap = sitemapUrls.some((u) => u.endsWith(sol.path));
+    if (status === "draft") {
+      if (!inSitemap) {
+        logPass(`Draft page correctly excluded from /sitemap.xml`);
+      } else {
+        logFail(`Draft page MUST NOT appear in /sitemap.xml`);
+      }
+
+      // Check robots noindex
+      const robotsMeta = extractAttr(html, /<meta[^>]*name=["']robots["'][^>]*>/i, "content");
+      if (robotsMeta && robotsMeta.includes("noindex")) {
+        logPass(`Robots meta includes 'noindex' (${robotsMeta})`);
+      } else {
+        logFail(`Draft page missing 'noindex' in robots meta (got: ${robotsMeta})`);
+      }
+    } else {
+      if (inSitemap) {
+        logPass(`Live page correctly included in /sitemap.xml`);
+      } else {
+        logFail(`Live page MUST appear in /sitemap.xml`);
+      }
+
+      const robotsMeta = extractAttr(html, /<meta[^>]*name=["']robots["'][^>]*>/i, "content");
+      if (!robotsMeta || !robotsMeta.includes("noindex")) {
+        logPass(`Live page is indexable (robots: ${robotsMeta || "default index"})`);
+      } else {
+        logFail(`Live page has 'noindex'`);
+      }
+    }
+
+    // Check <h1> count
+    const h1Count = (html.match(/<h1(\s[^>]*)?>/gi) || []).length;
+    if (h1Count === 1) {
+      logPass(`Single <h1> found`);
+    } else {
+      logFail(`Found ${h1Count} <h1> tags (expected exactly 1)`);
+    }
+
+    // Check Breadcrumbs UI
+    if (html.includes('aria-label="Breadcrumb"')) {
+      logPass(`Visible Breadcrumb navigation present`);
+    } else {
+      logFail(`Missing visible Breadcrumb navigation`);
+    }
+
+    // Check FAQ count (5 questions)
+    const faqCount = (html.match(/<span[^>]*>\s*Q(?:<!--.*?-->|\s)*[1-5]\s*<\/span>/gi) || []).length;
+    if (faqCount >= 5) {
+      logPass(`Visible 5-question FAQ present (${faqCount} questions)`);
+    } else {
+      logFail(`Expected at least 5 visible FAQ questions, found ${faqCount}`);
+    }
+
+    // Check Word Count (700 to 1000 words)
+    const textOnly = html
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[\s\S]*?<\/style>/gi, "")
+      .replace(/<[^>]*>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const words = textOnly.split(" ").filter(Boolean);
+    if (words.length >= 700) {
+      logPass(`Content length healthy: ${words.length} words`);
+    } else {
+      logFail(`Content word count below 700: got ${words.length}`);
+    }
+
+    // Check Internal Links (at least 5 internal links)
+    const links = [...html.matchAll(/<a[^>]*href=["'](\/[^"']*)["'][^>]*>/gi)].map((m) => m[1]);
+    const uniqueInternalLinks = new Set(links.filter((l) => !l.startsWith("/#")));
+    if (uniqueInternalLinks.size >= 5) {
+      logPass(`Contains ${uniqueInternalLinks.size} internal links (>= 5 required)`);
+    } else {
+      logFail(`Only ${uniqueInternalLinks.size} internal links found (expected at least 5)`);
+    }
+
+    // Check Structured Data Schemas
+    const schemas = extractAllJsonLd(html);
+    const discoveredTypes = new Set();
+    schemas.forEach((s) => collectTypes(s, discoveredTypes));
+
+    for (const exp of sol.expectedSchemas) {
+      if (discoveredTypes.has(exp)) {
+        logPass(`JSON-LD schema @type '${exp}' found`);
+      } else {
+        logFail(`Missing expected JSON-LD schema @type '${exp}'`);
+      }
+    }
+
+    // For SoftwareApplication: verify NO ratings, NO prices, NO compliance claims
+    if (sol.expectedSchemas.includes("SoftwareApplication")) {
+      const allSchemaText = JSON.stringify(schemas);
+      if (allSchemaText.includes("aggregateRating") || allSchemaText.includes("ratingValue")) {
+        logFail(`SoftwareApplication schema MUST NOT have rating claims`);
+      } else {
+        logPass(`SoftwareApplication schema has no fake ratings`);
+      }
+      if (allSchemaText.includes("offers") || allSchemaText.includes("price")) {
+        logFail(`SoftwareApplication schema MUST NOT have pricing claims`);
+      } else {
+        logPass(`SoftwareApplication schema has no pricing claims`);
+      }
+      if (allSchemaText.toLowerCase().includes("gmp compliance")) {
+        logFail(`SoftwareApplication schema MUST NOT have GMP compliance claims`);
+      } else {
+        logPass(`SoftwareApplication schema clean of GMP compliance claims`);
+      }
+    }
+  }
+
+  // 7. Verify /technology Schema Cleanliness
+  logSection("7. Verifying /technology Schema Cleanliness");
+  try {
+    const techHtml = await fetchText(`${BASE_URL}/technology`);
+    const techSchemas = extractAllJsonLd(techHtml);
+    const techTypes = new Set();
+    techSchemas.forEach((s) => collectTypes(s, techTypes));
+    if (!techTypes.has("SoftwareApplication")) {
+      logPass(`/technology successfully removed SoftwareApplication schema`);
+    } else {
+      logFail(`/technology MUST NOT contain SoftwareApplication schema`);
+    }
+    if (techTypes.has("Service")) {
+      logPass(`/technology retains Service schema`);
+    } else {
+      logFail(`/technology missing Service schema`);
+    }
+    const techSchemaStr = JSON.stringify(techSchemas);
+    if (!techSchemaStr.toLowerCase().includes("gmp compliance")) {
+      logPass(`/technology structured data clean of 'GMP compliance' phrase`);
+    } else {
+      logFail(`/technology structured data still contains 'GMP compliance' phrase`);
+    }
+  } catch (err) {
+    logFail(`Failed to verify /technology: ${err.message}`);
   }
 
   // Final Summary
