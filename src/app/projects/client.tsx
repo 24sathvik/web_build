@@ -9,17 +9,23 @@ import { useQualityTier } from "@/hooks/useQualityTier";
 import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
 
 import { useSelectionStore, projectStore } from "@/lib/sceneSync";
-import { siteContent } from "@/content/site";
+import type { ProjectItem } from "@/content/site";
 
 const ProjectsScene = dynamic(() => import("@/components/canvas/projects/ProjectsScene"), { ssr: false });
 
-export default function Projects({ footer }: { footer?: ReactNode }) {
+export default function Projects({
+  projects = [],
+  footer,
+}: {
+  projects?: ProjectItem[];
+  footer?: ReactNode;
+}) {
   const tier = useQualityTier();
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/projects");
   const { hoveredId, activeId } = useSelectionStore(projectStore);
   const previewId = hoveredId || activeId;
   const previewProject = previewId
-    ? siteContent.projects.find((p) => p.id === previewId)
+    ? projects.find((p) => p.id === previewId)
     : null;
 
   useEffect(() => {
@@ -76,7 +82,7 @@ export default function Projects({ footer }: { footer?: ReactNode }) {
         className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden touch-pan-y"
         id="scroll-container-projects"
       >
-        <ProjectsOverlay />
+        <ProjectsOverlay projects={projects} />
         {footer}
       </div>
     </main>

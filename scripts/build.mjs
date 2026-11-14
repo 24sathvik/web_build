@@ -43,7 +43,15 @@ if (!hasCredentials) {
 
   run("tinacms build --local --skip-cloud-checks", "Building TinaCMS (offline fallback)");
 } else {
-  run("tinacms build", "Building TinaCMS (cloud production)");
+  try {
+    run("tinacms build", "Building TinaCMS (cloud production)");
+  } catch (err) {
+    console.warn("\n" + "=".repeat(70));
+    console.warn("⚠️  TinaCMS cloud check failed (offline or test credentials).");
+    console.warn("⚠️  Retrying TinaCMS build with --skip-cloud-checks...");
+    console.warn("=".repeat(70) + "\n");
+    run("tinacms build --skip-cloud-checks", "Building TinaCMS (cloud production with skip-cloud-checks)");
+  }
 }
 
 // 3. Next.js build

@@ -1,5 +1,6 @@
 import { pageMetadata } from "@/lib/seo";
 import { SiteFooter } from "@/components/dom/SiteFooter";
+import { siteContent } from "@/content/site";
 import Projects from "./client";
 
 export const metadata = pageMetadata({
@@ -10,5 +11,5 @@ export const metadata = pageMetadata({
 });
 
 export default function Page() {
-  return <Projects footer={<SiteFooter />} />;
+  return <Projects projects={siteContent.projects} footer={<SiteFooter />} />;
 }

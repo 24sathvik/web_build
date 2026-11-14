@@ -26,7 +26,7 @@ export default function Blogs({ posts, footer }: { posts: BlogCard[]; footer?: R
     <main className="relative w-full h-[100svh] overflow-hidden cursor-none">
       <CustomCursor />
       <Header />
-      
+
       <div className="absolute inset-0 z-0" aria-hidden="true">
         {shouldMount ? (
           <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>

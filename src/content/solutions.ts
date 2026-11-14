@@ -685,7 +685,7 @@ export const solutionsData: SolutionPageConfig[] = [
       },
       {
         title: "Automated Deployment & Cloud Hosting Setup",
-        description: "Continuous integration and deployment pipelines configured on edge infrastructure (such as Vercel) with SSL certificates, DDoS mitigation provided by the edge hosting platform, and monitoring."
+        description: "Continuous integration and deployment pipelines configured on edge infrastructure (such as Vercel) with SSL certificates, edge platform-level network protection, and monitoring."
       }
     ],
     processSummary: "Our engineering sprint methodology from initial concept to launch.",
