@@ -32,8 +32,8 @@
 - [ ] `src/content/site.ts:376` tagline: "Fees, quotations, invoices, payslips and student billing for academies — *Verification Target:* Implemented student fee management for an aviation academy client
 - [ ] `src/content/site.ts:384` tagline: "Enquiry-to-enrolment tracking for institutes — *Verification Target:* Deployed for enquiry and enrolment pipeline tracking
 - [ ] `src/content/site.ts:392` tagline: "One system for sales, stock and accounts — *Verification Target:* ERP system for sales and accounts
-- [ ] `src/content/site.ts:399` name: "Pharma Manufacturer: Website & Quotation System"
-- [ ] `src/content/site.ts:400` tagline: "A website and a quotation system for a pharmaceutical engineering equipment manufacturer"
+- [ ] `src/content/site.ts:399` name: "Pharmaceutical Engineering Quotation System"
+- [ ] `src/content/site.ts:400` tagline: "A digital quotation management platform designed for pharmaceutical engineering equipment businesses, supporting product selection, pricing calculations, multi-currency quotations, branded PDF generation and quotation tracking."
 - [ ] `src/content/site.ts:405` role-based access for sales and admin teams
 - [ ] `src/content/site.ts:406` product catalogue with live totals
 - [ ] `src/content/site.ts:407` branded PDF quotations

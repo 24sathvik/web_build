@@ -396,8 +396,8 @@ export const siteContent: SiteContent = {
     },
     {
       id: "pharma-quotation-system",
-      name: "Pharma Manufacturer: Website & Quotation System",
-      tagline: "A website and a quotation system for a pharmaceutical engineering equipment manufacturer", // VERIFY
+      name: "Pharmaceutical Engineering Quotation System",
+      tagline: "A digital quotation management platform designed for pharmaceutical engineering equipment businesses, supporting product selection, pricing calculations, multi-currency quotations, branded PDF generation and quotation tracking.",
       group: "business",
       badge: "Pharma",
       features: [

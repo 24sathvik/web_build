@@ -7,7 +7,7 @@ import { trackEvent } from "@/lib/analytics";
 import { safeRequestIdleCallback, safeCancelIdleCallback } from "@/lib/browser-compat";
 
 export function Analytics() {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-WKZ9NBF6WN";
   const [loadGA, setLoadGA] = useState(false);
 
   // Web Vitals telemetry (CLS, FID/INP, LCP, FCP, TTFB)
