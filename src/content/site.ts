@@ -395,16 +395,18 @@ export const siteContent: SiteContent = {
       features: ["multi-unit", "roles", "inventory sync"],
     },
     {
-      id: "raise-lab-equipment",
-      name: "Raise Lab Equipment", // VERIFY
-      tagline: "Website and quotation system for a pharmaceutical laboratory equipment manufacturer", // VERIFY
+      id: "pharma-quotation-system",
+      name: "Pharma Manufacturer: Website & Quotation System",
+      tagline: "A website and a quotation system for a pharmaceutical engineering equipment manufacturer", // VERIFY
       group: "business",
       badge: "Pharma",
-      href: "",
       features: [
-        "Company website", // VERIFY
-        "Product enquiries", // VERIFY
-        "Quotation system", // VERIFY
+        "role-based access for sales and admin teams",
+        "product catalogue with live totals",
+        "INR and USD conversion",
+        "branded PDF quotations",
+        "quotation status tracking (pending, approved, rejected)",
+        "installable on phones as an app",
       ],
     },
     {

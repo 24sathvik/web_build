@@ -18,7 +18,7 @@ HARD RULES
 5. Plain, specific English. No "exabytes", "infinite", "neural", "transmission"-style
    jargon. No claims we cannot prove. Never say "DGCA-approved", "FAA-certified" or
    similar; say "configured to follow the exam pattern and rules of <authority>".
-   Do not show client names; say "an aviation academy client".
+   Do not show client names; no client names anywhere on the site (say "an aviation academy client", "a pharmaceutical engineering equipment manufacturer", etc.).
 6. Currency is INR. No dollar amounts.
 7. Next.js 16 has breaking changes: read node_modules/next/dist/docs/ before coding.
 

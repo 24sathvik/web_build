@@ -82,18 +82,16 @@ function ProjectCard({
       className="projects-section content-visibility-auto w-full min-h-[100svh] flex items-center justify-center px-6 md:px-16 lg:px-24 py-16"
     >
       <div
-        className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center rounded-3xl p-4 md:p-6 transition-all duration-300 ${
-          isEven ? "" : "lg:[&>*:first-child]:order-2"
-        } ${isHighlighted ? ringClass : ""}`}
+        className={`max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center rounded-3xl p-4 md:p-6 transition-all duration-300 ${isEven ? "" : "lg:[&>*:first-child]:order-2"
+          } ${isHighlighted ? ringClass : ""}`}
       >
         {/* Left Column: Project Info */}
         <div className="lg:col-span-5 pointer-events-auto">
           <span
-            className={`inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full border mb-4 ${
-              isAviation
+            className={`inline-block text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full border mb-4 ${isAviation
                 ? "bg-[#00D9FF]/10 border-[#00D9FF]/30 text-[#00D9FF]"
                 : "bg-[#6E5BFF]/10 border-[#6E5BFF]/30 text-[#6E5BFF]"
-            }`}
+              }`}
           >
             {project.badge}
           </span>

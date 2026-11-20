@@ -19,7 +19,7 @@ const ATLAS_COLS = 2;
 const ATLAS_ROWS = 5;
 
 function getProjectAccent(project: ProjectItem): string {
-  if (project.id === "raise-lab-equipment") return "#00FFB2";
+  if (project.id === "pharma-quotation-system") return "#00FFB2";
   return project.group === "aviation" ? "#00D9FF" : "#6E5BFF";
 }
 
@@ -66,11 +66,11 @@ function createProjectAtlasTexture(size: number): THREE.CanvasTexture {
       const w = cellW - pad * 2;
       const h = cellH - pad * 2;
       const accent = getProjectAccent(project);
-      const isRaiseLab = project.id === "raise-lab-equipment";
+      const isPharma = project.id === "pharma-quotation-system";
 
       // Card background fill
       const grad = ctx.createLinearGradient(x, y, x + w, y + h);
-      grad.addColorStop(0, isRaiseLab ? "rgba(0, 46, 36, 0.94)" : "rgba(15, 19, 32, 0.94)");
+      grad.addColorStop(0, isPharma ? "rgba(0, 46, 36, 0.94)" : "rgba(15, 19, 32, 0.94)");
       grad.addColorStop(1, "rgba(7, 9, 16, 0.96)");
       drawRoundedRect(ctx, x, y, w, h, Math.max(6, w * 0.04));
       ctx.fillStyle = grad;
@@ -78,7 +78,7 @@ function createProjectAtlasTexture(size: number): THREE.CanvasTexture {
 
       // Border + top accent stripe
       ctx.lineWidth = Math.max(1.5, size * 0.0024);
-      ctx.strokeStyle = isRaiseLab ? "rgba(0, 255, 178, 0.78)" : `${accent}88`;
+      ctx.strokeStyle = isPharma ? "rgba(0, 255, 178, 0.78)" : `${accent}88`;
       ctx.stroke();
 
       ctx.fillStyle = accent;
@@ -235,7 +235,7 @@ function ProjectsOrbitContent() {
   const panelResources = useMemo(() => {
     return PROJECTS.map((project, idx) => {
       const geo = createPanelGeometry(idx);
-      const isRaiseLab = project.id === "raise-lab-equipment";
+      const isPharma = project.id === "pharma-quotation-system";
       const accent = getProjectAccent(project);
       const mat = isLite
         ? new THREE.MeshBasicMaterial({
@@ -248,10 +248,10 @@ function ProjectsOrbitContent() {
             map: atlasTexture,
             transparent: true,
             opacity: 0.92,
-            roughness: isRaiseLab ? 0.25 : 0.38,
+            roughness: isPharma ? 0.25 : 0.38,
             metalness: 0.15,
             emissive: new THREE.Color(accent),
-            emissiveIntensity: isRaiseLab ? 0.18 : 0.08,
+            emissiveIntensity: isPharma ? 0.18 : 0.08,
             side: THREE.DoubleSide,
           });
       return { project, geo, mat, accent };

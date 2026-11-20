@@ -61,7 +61,7 @@ This repository is configured for deployment strictly on **Vercel** with content
    | `NEXT_PUBLIC_EMAILJS_SERVICE_ID` | Production, Preview, Dev | EmailJS Service ID |
    | `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID` | Production, Preview, Dev | EmailJS Template ID |
    | `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY` | Production, Preview, Dev | EmailJS Public Key |
-   | `NEXT_PUBLIC_GA_ID` | Production | Google Analytics Measurement ID (e.g. `G-XXXXXXXXXX`) |
+   | `NEXT_PUBLIC_GA_ID` | Production | Google Analytics Measurement ID (production value is `G-WKZ9NBF6WN`) |
    | `NEXT_PUBLIC_GSC_VERIFICATION` | Production | Google Search Console verification token |
    | `BING_VERIFICATION` | Production | Bing Webmaster Tools verification code |
 

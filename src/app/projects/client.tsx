@@ -59,7 +59,7 @@ export default function Projects({
         >
           <span
             className={`font-bold uppercase tracking-wider ${
-              previewProject.id === "raise-lab-equipment"
+              previewProject.id === "pharma-quotation-system"
                 ? "text-[#00FFB2]"
                 : previewProject.group === "aviation"
                   ? "text-[#00D9FF]"

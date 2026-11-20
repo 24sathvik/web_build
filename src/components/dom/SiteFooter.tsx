@@ -56,7 +56,7 @@ const footerColumns = [
     links: [
       { label: "All Services", href: "/services" },
       { label: "Custom Web Platforms", href: "/services" },
-      { label: "Raise Lab Equipment", href: "/projects#raise-lab-equipment" },
+      { label: "Pharma Quotation System", href: "/projects#pharma-quotation-system" },
       { label: "ZyOps & GoalFlow", href: "/projects#zyops" },
     ],
   },

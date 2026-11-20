@@ -32,11 +32,11 @@
 - [ ] `src/content/site.ts:376` tagline: "Fees, quotations, invoices, payslips and student billing for academies — *Verification Target:* Implemented student fee management for an aviation academy client
 - [ ] `src/content/site.ts:384` tagline: "Enquiry-to-enrolment tracking for institutes — *Verification Target:* Deployed for enquiry and enrolment pipeline tracking
 - [ ] `src/content/site.ts:392` tagline: "One system for sales, stock and accounts — *Verification Target:* ERP system for sales and accounts
-- [ ] `src/content/site.ts:399` name: "Raise Lab Equipment
-- [ ] `src/content/site.ts:400` tagline: "Website and quotation system for a pharmaceutical laboratory equipment manufacturer
-- [ ] `src/content/site.ts:405` Company website
-- [ ] `src/content/site.ts:406` Product enquiries
-- [ ] `src/content/site.ts:407` Quotation system
+- [ ] `src/content/site.ts:399` name: "Pharma Manufacturer: Website & Quotation System"
+- [ ] `src/content/site.ts:400` tagline: "A website and a quotation system for a pharmaceutical engineering equipment manufacturer"
+- [ ] `src/content/site.ts:405` role-based access for sales and admin teams
+- [ ] `src/content/site.ts:406` product catalogue with live totals
+- [ ] `src/content/site.ts:407` branded PDF quotations
 - [ ] `src/content/site.ts:413` tagline: "Sales and operations management — *Verification Target:* ZyOps sales and operations tool
 - [ ] `src/content/site.ts:421` tagline: "Milestone and team execution tracking — *Verification Target:* GoalFlow team execution tracking
 - [ ] `src/content/site.ts:429` tagline: "GST-ready quotes and invoices for SMEs — *Verification Target:* SME quotation and invoice generator
