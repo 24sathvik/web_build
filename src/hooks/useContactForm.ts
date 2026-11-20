@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { siteContent } from "@/content/site";
 import { trackEvent } from "@/lib/analytics";
+import { serviceId, templateId, publicKey } from "@/lib/emailjs-config";
 
 export interface ContactFormData {
   name: string;
@@ -102,19 +103,6 @@ export function useContactForm(onSuccessCallback?: () => void) {
     setStatus("submitting");
     setErrorMessage("");
 
-    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-
-    // Fail gracefully if keys are not configured in environment
-    if (!serviceId || !templateId || !publicKey) {
-      setStatus("error");
-      setErrorMessage(
-        `Email service configuration is pending. Please contact us directly at ${siteContent.contact.email}`
-      );
-      return;
-    }
-
     try {
       const trimmedName = formData.name.trim();
       const nameParts = trimmedName.split(/\s+/);
@@ -133,8 +121,8 @@ export function useContactForm(onSuccessCallback?: () => void) {
           : formData.message.trim();
 
       const templateParams = {
-        firstName,
-        lastName,
+        first_name: firstName,
+        last_name: lastName,
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         message: fullMessage,
@@ -176,4 +164,3 @@ export function useContactForm(onSuccessCallback?: () => void) {
     isError: status === "error",
   };
 }
-

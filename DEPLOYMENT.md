@@ -58,12 +58,15 @@ This repository is configured for deployment strictly on **Vercel** with content
    | `NEXT_PUBLIC_TINA_CLIENT_ID` | Production, Preview, Dev | Your Client ID from TinaCloud |
    | `TINA_TOKEN` | Production, Preview, Dev | Content Token from TinaCloud |
    | `GITHUB_BRANCH` | Production, Preview, Dev | `master` |
-   | `NEXT_PUBLIC_EMAILJS_SERVICE_ID` | Production, Preview, Dev | EmailJS Service ID |
-   | `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID` | Production, Preview, Dev | EmailJS Template ID |
-   | `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY` | Production, Preview, Dev | EmailJS Public Key |
+   | `NEXT_PUBLIC_EMAILJS_SERVICE_ID` | Production, Preview, Dev | EmailJS Service ID (optional; default `service_p5gb8wg` configured in code) |
+   | `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID` | Production, Preview, Dev | EmailJS Template ID (optional; default `template_osddfod` configured in code) |
+   | `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY` | Production, Preview, Dev | EmailJS Public Key (optional; default `m1xChN43puPbSRCtJ` configured in code) |
    | `NEXT_PUBLIC_GA_ID` | Production | Google Analytics Measurement ID (production value is `G-WKZ9NBF6WN`) |
    | `NEXT_PUBLIC_GSC_VERIFICATION` | Production | Google Search Console verification token |
    | `BING_VERIFICATION` | Production | Bing Webmaster Tools verification code |
+
+   > [!NOTE]
+   > All `NEXT_PUBLIC_*` variables (such as `NEXT_PUBLIC_EMAILJS_*` and `NEXT_PUBLIC_GA_ID`) are inlined into client-side bundles at build time. A redeploy is required after adding or updating them in Vercel.
 
 3. **Deploy**:
    - Click **Deploy**. Vercel will build the project and output a `*.vercel.app` preview URL.
