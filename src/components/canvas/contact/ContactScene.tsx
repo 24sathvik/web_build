@@ -1,20 +1,22 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { Sphere, Torus, Stars } from "@react-three/drei";
+import { Stars } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { useRef } from "react";
-import SceneShell, { useQualityTierContext } from "../SceneShell";
+import SceneShell, { useQualityTierContext, useHasFirstFrame } from "../SceneShell";
 import { isReducedMotion } from "@/lib/motion";
 
 function BlackHole() {
   const groupRef = useRef<THREE.Group>(null);
   const diskRef = useRef<THREE.Mesh>(null);
   const tier = useQualityTierContext();
+  const hasFirstFrame = useHasFirstFrame();
   const isLite = tier === "lite";
 
   useFrame((state) => {
+    if (!hasFirstFrame) return;
     if (diskRef.current) {
       diskRef.current.rotation.z = state.clock.getElapsedTime() * (isLite ? 1 : 2);
     }
@@ -35,26 +37,32 @@ function BlackHole() {
   return (
     <group ref={groupRef} position={[0, 0, -5]} rotation={[Math.PI / 3, 0, 0]}>
       {/* The Void */}
-      <Sphere args={[2, isLite ? 32 : 64, isLite ? 32 : 64]}>
+      <mesh>
+        <sphereGeometry args={[2, isLite ? 16 : 32, isLite ? 16 : 32]} />
         <meshBasicMaterial color="#000000" />
-      </Sphere>
+      </mesh>
       
       {/* Accretion Disk */}
-      <Torus ref={diskRef} args={[3, 0.5, 16, isLite ? 40 : 100]}>
+      <mesh ref={diskRef}>
+        <torusGeometry args={[3, 0.5, isLite ? 8 : 16, isLite ? 24 : 64]} />
         <meshBasicMaterial color="#00D9FF" transparent opacity={0.6} wireframe />
-      </Torus>
+      </mesh>
       
-      {/* Outer Glow */}
-      <Torus args={[3.2, 1, 16, isLite ? 40 : 100]}>
-        <meshBasicMaterial color="#6E5BFF" transparent opacity={0.1} />
-      </Torus>
+      {/* Outer Glow: deferred to frame 2 */}
+      {hasFirstFrame && (
+        <mesh>
+          <torusGeometry args={[3.2, 1, isLite ? 8 : 16, isLite ? 24 : 64]} />
+          <meshBasicMaterial color="#6E5BFF" transparent opacity={0.1} />
+        </mesh>
+      )}
     </group>
   );
 }
 
 function ContactEffects() {
   const tier = useQualityTierContext();
-  if (tier !== "full") return null;
+  const hasFirstFrame = useHasFirstFrame();
+  if (tier !== "full" || !hasFirstFrame) return null;
 
   return (
     <EffectComposer multisampling={0}>
@@ -66,14 +74,17 @@ function ContactEffects() {
 
 function ContactContent() {
   const tier = useQualityTierContext();
+  const hasFirstFrame = useHasFirstFrame();
   const isLite = tier === "lite";
-  const starCount = isLite ? 1250 : 5000;
+  const starCount = isLite ? 600 : 2000;
 
   return (
     <>
       <color attach="background" args={["#050505"]} />
       
-      <Stars key={starCount} radius={100} depth={50} count={starCount} factor={4} saturation={0} fade speed={isLite ? 0.5 : 1} />
+      {hasFirstFrame && (
+        <Stars key={starCount} radius={100} depth={50} count={starCount} factor={4} saturation={0} fade speed={isLite ? 0.5 : 1} />
+      )}
 
       <BlackHole />
 
@@ -86,8 +97,13 @@ export default function ContactScene({ triggerTime }: { triggerTime?: number | n
   return (
     <SceneShell
       triggerTime={triggerTime}
-      camera={{ position: [0, 0, 10], fov: 45 }}
-      gl={{ powerPreference: "high-performance", antialias: false }}
+      camera={{ position: [0, 0, 10], fov: 45, near: 0.1, far: 100 }}
+      gl={{
+        powerPreference: "high-performance",
+        antialias: false,
+        stencil: false,
+        depth: true,
+      }}
     >
       <ContactContent />
     </SceneShell>

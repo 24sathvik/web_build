@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Float, Sparkles, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
-import { useQualityTierContext } from "../SceneShell";
+import { useQualityTierContext, useHasFirstFrame } from "../SceneShell";
 import { safePostTask } from "@/lib/browser-compat";
 
 function yieldFrame(callback: () => void): () => void {
@@ -26,13 +26,14 @@ export default function Chapter1() {
   const coreRef = useRef<THREE.Mesh>(null);
   const ringRef = useRef<THREE.Mesh>(null);
   const tier = useQualityTierContext();
+  const hasFirstFrame = useHasFirstFrame();
   const isLite = tier === "lite";
 
   // Requirement 4: Build chapter objects across several frames (yield between steps with scheduler.postTask / RAF)
   // Stage 1: Core mesh
   // Stage 2: Outer Ring
   // Stage 3: Particles / Sparkles
-  const [mountStage, setMountStage] = useState(isLite ? 1 : 3);
+  const [mountStage, setMountStage] = useState(1);
 
   useEffect(() => {
     if (mountStage >= 3) return;
@@ -69,7 +70,7 @@ export default function Chapter1() {
         {/* Stage 1: ZYXEN Symbol Proxy - MeshBasicMaterial on lite (no PBR shader overhead) */}
         <mesh ref={coreRef} position={[0, 0, 0]}>
           <octahedronGeometry args={[1.5, 0]} />
-          {isLite ? (
+          {isLite || !hasFirstFrame ? (
             <meshBasicMaterial color="#00D9FF" wireframe />
           ) : (
             <MeshDistortMaterial
@@ -89,7 +90,7 @@ export default function Chapter1() {
         {mountStage >= 2 && (
           <mesh ref={ringRef}>
             <torusGeometry args={isLite ? [2.5, 0.05, 8, 24] : [2.5, 0.05, 16, 100]} />
-            {isLite ? (
+            {isLite || !hasFirstFrame ? (
               <meshBasicMaterial color="#6E5BFF" />
             ) : (
               <meshStandardMaterial

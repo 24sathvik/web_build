@@ -171,17 +171,6 @@ export interface SiteContent {
       message: string;
     };
   };
-  technology: {
-    headline: string;
-    subHeadline: string;
-    cardHeading: string;
-    cardDescription: string;
-    principles: {
-      title: string;
-      description: string;
-      tag: string;
-    }[];
-  };
   solutions: SolutionPageConfig[];
 }
 
@@ -205,7 +194,6 @@ export const siteContent: SiteContent = {
     { name: "Aviation", path: "/aviation-academy-software" },
     { name: "About", path: "/about" },
     { name: "Services", path: "/services" },
-    { name: "Tech", path: "/technology" },
     { name: "Projects", path: "/projects" },
     { name: "Blogs", path: "/blogs" },
     { name: "Contact", path: "/contact" },
@@ -640,39 +628,6 @@ export const siteContent: SiteContent = {
       budget: "Estimated budget",
       message: "Tell us about your project, timeline, or key requirements...",
     },
-  },
-  technology: {
-    headline: "HOW WE BUILD",
-    subHeadline: "Modern engineering focused on performance, security, and long-term maintainability.",
-    cardHeading: "Engineering Standards",
-    cardDescription:
-      "Every platform we develop is built with proven production technologies. We prioritize clean architectures, structured databases, and mobile-first design so your software remains fast, dependable, and easy to maintain as your business grows.",
-    principles: [
-      {
-        tag: "Framework",
-        title: "Next.js & Modern Frontend",
-        description:
-          "Server-side rendering, static generation, and TypeScript for fast page loads, search visibility, and predictable behavior.",
-      },
-      {
-        tag: "Speed",
-        title: "Performance-First Architecture",
-        description:
-          "Optimized asset pipelines, lightweight motion components, and clean code paths designed to run smoothly on mobile networks and desktop browsers alike.",
-      },
-      {
-        tag: "Security",
-        title: "Security & Data Integrity",
-        description:
-          "Strict authenticated endpoints, role-based user permissions, relational database integrity with PostgreSQL, and automated backup routines.",
-      },
-      {
-        tag: "Mobile",
-        title: "Mobile-First Usability",
-        description:
-          "Responsive interfaces structured so pilots, students, administrative staff, and managers can complete tasks seamlessly from any smartphone, tablet, or workstation.",
-      },
-    ],
   },
   solutions: solutionsData,
 };

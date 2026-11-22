@@ -13,6 +13,7 @@ export function DebugOverlay() {
   );
 
   useEffect(() => {
+    debugStore.setTimeline("hydrationEnd", performance.now());
     try {
       const params = new URLSearchParams(window.location.search);
       if (params.get("debug") === "1") {
@@ -117,6 +118,33 @@ export function DebugOverlay() {
       <div className="flex justify-between gap-3">
         <span className="text-white/70">Draw Calls:</span>
         <span className="font-bold text-sky-300">{debugData.drawCalls}</span>
+      </div>
+      <div className="text-[10px] uppercase tracking-wider text-white/50 border-t border-b border-white/10 py-0.5 my-0.5 font-semibold">
+        TIMELINE
+      </div>
+      <div className="flex justify-between gap-3">
+        <span className="text-white/70">Hydration:</span>
+        <span className="font-bold text-white">
+          {debugData.timeline?.hydrationEnd !== null ? `${debugData.timeline.hydrationEnd}ms` : "—"}
+        </span>
+      </div>
+      <div className="flex justify-between gap-3">
+        <span className="text-white/70">Mount Trigger:</span>
+        <span className="font-bold text-cyan-300">
+          {debugData.timeline?.mountTrigger !== null ? `+${Math.max(0, debugData.timeline.mountTrigger - (debugData.timeline.hydrationEnd || 0))}ms` : "—"}
+        </span>
+      </div>
+      <div className="flex justify-between gap-3">
+        <span className="text-white/70">Chunk Loaded:</span>
+        <span className="font-bold text-cyan-300">
+          {debugData.timeline?.chunkLoaded !== null ? `+${Math.max(0, debugData.timeline.chunkLoaded - (debugData.timeline.hydrationEnd || 0))}ms` : "—"}
+        </span>
+      </div>
+      <div className="flex justify-between gap-3">
+        <span className="text-white/70">First Frame:</span>
+        <span className="font-bold text-emerald-400">
+          {debugData.timeline?.firstFrame !== null ? `+${Math.max(0, debugData.timeline.firstFrame - (debugData.timeline.hydrationEnd || 0))}ms` : "—"}
+        </span>
       </div>
     </div>
   );

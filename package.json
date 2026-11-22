@@ -12,7 +12,9 @@
     "lint": "eslint",
     "check:budgets": "node scripts/check-budgets.mjs",
     "test:ga4": "node scripts/test-ga4.mjs",
-    "test:contact": "node scripts/test-contact-form.mjs"
+    "test:contact": "node scripts/test-contact-form.mjs",
+    "test:footer": "node scripts/test-footer-height.mjs",
+    "test:timeline": "node scripts/test-3d-timeline.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^5.0.3",

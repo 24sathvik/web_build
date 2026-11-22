@@ -9,7 +9,6 @@ import {
   Home, 
   Info, 
   Package, 
-  Cpu, 
   Briefcase, 
   Mail, 
   BookOpen, 
@@ -24,7 +23,6 @@ const iconMap: Record<string, typeof Home> = {
   "/aviation-academy-software": Plane,
   "/about": Info,
   "/services": Package,
-  "/technology": Cpu,
   "/projects": Briefcase,
   "/blogs": BookOpen,
   "/contact": Mail,
@@ -53,11 +51,10 @@ export function Header() {
     { name: "Contact", path: "/contact", icon: Mail },
   ];
 
-  // Mobile sheet items: About, Technology, Aviation, Blogs
+  // Mobile sheet items: Aviation, About, Blogs
   const mobileSheetItems = [
     { name: "Aviation Academy", path: "/aviation-academy-software", icon: Plane, desc: "DGCA/FAA exam portals & ERP" },
     { name: "About ZYXEN", path: "/about", icon: Info, desc: "Principles & Hyderabad agency" },
-    { name: "Technology", path: "/technology", icon: Cpu, desc: "Next.js, performance & security" },
     { name: "Blogs & Insights", path: "/blogs", icon: BookOpen, desc: "Guides, costs & architectures" },
   ];
 

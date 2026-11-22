@@ -8,17 +8,18 @@ import * as THREE from "three";
 import { useRef, useMemo } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import SceneShell, { useQualityTierContext } from "../SceneShell";
+import SceneShell, { useQualityTierContext, useHasFirstFrame } from "../SceneShell";
 import { isReducedMotion } from "@/lib/motion";
 
 function Carousel() {
   const groupRef = useRef<THREE.Group>(null);
   const tier = useQualityTierContext();
+  const hasFirstFrame = useHasFirstFrame();
   const isLite = tier === "lite";
 
   useGSAP(() => {
     if (!groupRef.current) return;
-    if (isReducedMotion()) return;
+    if (!hasFirstFrame || isReducedMotion()) return;
     
     // Rotate the entire carousel based on scroll
     gsap.to(groupRef.current.rotation, {
@@ -36,12 +37,8 @@ function Carousel() {
 
   const material = useMemo(() => {
     if (isLite) {
-      return new THREE.MeshStandardMaterial({
-        color: "#050505",
-        metalness: 0.8,
-        roughness: 0.2,
-        emissive: "#6E5BFF",
-        emissiveIntensity: 0.2,
+      return new THREE.MeshBasicMaterial({
+        color: "#6E5BFF",
         wireframe: true,
       });
     }
@@ -83,7 +80,8 @@ function Carousel() {
 
 function ServicesEffects() {
   const tier = useQualityTierContext();
-  if (tier !== "full") return null;
+  const hasFirstFrame = useHasFirstFrame();
+  if (tier !== "full" || !hasFirstFrame) return null;
 
   return (
     <EffectComposer multisampling={0}>

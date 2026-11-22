@@ -14,7 +14,6 @@
 - Aviation Academy Software: https://zyxen.in/aviation-academy-software
 - Engineering & Web Services: https://zyxen.in/services
 - Selected Projects & Systems: https://zyxen.in/projects
-- Technology Stack & Architecture: https://zyxen.in/technology
 - About ZYXEN: https://zyxen.in/about
 - Contact & Inquiries: https://zyxen.in/contact
 - Insights & Blog: https://zyxen.in/blogs

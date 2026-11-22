@@ -191,7 +191,7 @@ export const solutionsData: SolutionPageConfig[] = [
       { label: "Fee & Finance Software", href: "/fee-and-finance-software-for-academies" },
       { label: "Admission Management Software", href: "/admission-management-software" },
       { label: "Institute ERP Platform", href: "/erp-for-educational-institutes" },
-      { label: "Software Architecture & Tech", href: "/technology" },
+      { label: "Web & Software Services", href: "/services" },
       { label: "Contact Engineering Team", href: "/contact" }
     ]
   },
@@ -608,7 +608,7 @@ export const solutionsData: SolutionPageConfig[] = [
       { label: "Aviation Exam Portal", href: "/aviation-exam-portal-software" },
       { label: "Fee & Finance Software", href: "/fee-and-finance-software-for-academies" },
       { label: "Admission Management Software", href: "/admission-management-software" },
-      { label: "Software Architecture & Tech", href: "/technology" },
+      { label: "Web & Software Services", href: "/services" },
       { label: "Contact Engineering Team", href: "/contact" }
     ]
   },
@@ -745,7 +745,7 @@ export const solutionsData: SolutionPageConfig[] = [
     internalLinks: [
       { label: "Engineering Services", href: "/services" },
       { label: "Selected Projects", href: "/projects" },
-      { label: "Software Architecture & Tech", href: "/technology" },
+      { label: "Web & Software Services", href: "/services" },
       { label: "About ZYXEN", href: "/about" },
       { label: "Aviation Academy Systems", href: "/aviation-academy-software" },
       { label: "Contact Engineering Team", href: "/contact" }
@@ -882,7 +882,7 @@ export const solutionsData: SolutionPageConfig[] = [
       "reduce-raw-material-wastage-pharma"
     ],
     internalLinks: [
-      { label: "Software Architecture & Tech", href: "/technology" },
+      { label: "Web & Software Services", href: "/services" },
       { label: "Engineering Services", href: "/services" },
       { label: "Selected Projects", href: "/projects" },
       { label: "About ZYXEN", href: "/about" },

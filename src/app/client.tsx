@@ -7,11 +7,17 @@ import { Header } from "@/components/dom/Header";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { useQualityTier } from "@/hooks/useQualityTier";
 import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
+import { debugStore } from "@/lib/debugState";
 
 // Dynamically import the Canvas to prevent SSR issues with Three.js
-const Scene = dynamic(() => import("@/components/canvas/Scene"), {
-  ssr: false,
-});
+const Scene = dynamic(
+  () =>
+    import("@/components/canvas/Scene").then((mod) => {
+      debugStore.setTimeline("chunkLoaded", performance.now());
+      return mod;
+    }),
+  { ssr: false }
+);
 
 export default function Home({ footer }: { footer?: ReactNode }) {
   const tier = useQualityTier();
@@ -20,7 +26,11 @@ export default function Home({ footer }: { footer?: ReactNode }) {
   useEffect(() => {
     // Scroll to top on load
     window.scrollTo(0, 0);
-  }, []);
+    // Start fetching 3D chunk immediately upon hydration
+    if (tier !== "static") {
+      import("@/components/canvas/Scene");
+    }
+  }, [tier]);
 
   return (
     <main className="relative w-full h-[100svh] overflow-hidden cursor-none">
@@ -30,7 +40,14 @@ export default function Home({ footer }: { footer?: ReactNode }) {
       {/* 3D WebGL Background: gated by tier so static tier never downloads the 3D bundle */}
       <div className="absolute inset-0 z-0">
         {shouldMount ? (
-          <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
+          <Suspense
+            fallback={
+              <div
+                className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(110,91,255,0.18),rgba(5,5,5,1))]"
+                aria-hidden="true"
+              />
+            }
+          >
             <Scene triggerTime={triggerTime} />
           </Suspense>
         ) : (

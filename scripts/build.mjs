@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { execSync } from "node:child_process";
 import path from "node:path";
+import fs from "node:fs";
 
 // Ensure local node_modules/.bin is prepended to PATH for cross-platform resolution
 const rootDir = process.cwd();
@@ -54,7 +55,11 @@ if (!hasCredentials) {
   }
 }
 
-// 3. Next.js build
+// 3. Next.js build: clean stale generated types from previous runs
+try {
+  fs.rmSync(path.join(rootDir, ".next", "types"), { recursive: true, force: true });
+  fs.rmSync(path.join(rootDir, ".next", "dev"), { recursive: true, force: true });
+} catch {}
 run("next build", "Building Next.js application");
 
 // 4. Generate chunks manifest

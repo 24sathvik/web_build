@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { QualityTier } from "./useQualityTier";
 import { debugStore } from "@/lib/debugState";
+import chunksManifest from "@/lib/chunks-manifest.json";
 import {
   getNetworkConnection,
   safeRequestIdleCallback,
@@ -10,18 +11,25 @@ import {
 } from "@/lib/browser-compat";
 
 export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
-  const [shouldMount, setShouldMount] = useState(false);
+  const [shouldMount, setShouldMount] = useState(tier !== "static");
   const [triggerTime, setTriggerTime] = useState<number | null>(null);
   const hasTriggered = useRef(false);
 
   useEffect(() => {
+    // Record hydrationEnd on mount
+    debugStore.setTimeline("hydrationEnd", performance.now());
+
+    // Static tier is unchanged: no 3D scene, no chunk
     if (tier === "static") {
       setShouldMount(false);
       return;
     }
+    setShouldMount(true);
 
     let isDisposed = false;
-    let cleanupListeners: (() => void) | null = null;
+    let raf1: number | null = null;
+    let raf2: number | null = null;
+    let idleId: number | null = null;
 
     const fireTrigger = () => {
       if (hasTriggered.current || isDisposed) return;
@@ -30,9 +38,10 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
       setTriggerTime(t);
       setShouldMount(true);
       debugStore.set({ canvasMounted: true });
+      debugStore.setTimeline("mountTrigger", t);
     };
 
-    // Requirement 4: Never prefetch on Save-Data or slow connections (2g, slow-2g, 3g)
+    // Never prefetch on Save-Data or slow connections (2g, slow-2g, 3g)
     const isConnectionSlowOrSaveData = () => {
       const conn = getNetworkConnection();
       if (conn.saveData) return true;
@@ -40,130 +49,50 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
       return eff === "2g" || eff === "slow-2g" || eff === "3g";
     };
 
-    // Requirement 3 & 4: Fetch static /chunks-manifest.json (pure static build, zero server runtime)
+    // Start fetching 3D chunk right after hydration (no artificial delay; skip on Save-Data/2g/3g)
     const prefetchChunks = () => {
       if (isConnectionSlowOrSaveData()) return;
 
       try {
-        fetch("/chunks-manifest.json")
-          .then((r) => r.json())
-          .then((data) => {
-            if (isDisposed || !data || !Array.isArray(data[routePath])) return;
-            const files: string[] = data[routePath];
-            files.forEach((file: string) => {
-              const fullHref = `/_next/${file}`;
-              if (!document.querySelector(`link[href="${fullHref}"]`)) {
-                const link = document.createElement("link");
-                link.rel = "prefetch";
-                link.as = "script";
-                link.href = fullHref;
-                document.head.appendChild(link);
-              }
-            });
-          })
-          .catch(() => {});
+        const manifest = chunksManifest as Record<string, string[]>;
+        const files = manifest[routePath];
+        if (Array.isArray(files)) {
+          files.forEach((file: string) => {
+            const fullHref = `/_next/${file}`;
+            if (!document.querySelector(`link[href="${fullHref}"]`)) {
+              const link = document.createElement("link");
+              link.rel = "preload";
+              link.as = "script";
+              link.href = fullHref;
+              document.head.appendChild(link);
+            }
+          });
+        }
       } catch {}
     };
 
-    const scheduleAfterLoad = () => {
-      if (isDisposed || hasTriggered.current) return;
+    // Fetch chunk immediately upon hydration
+    prefetchChunks();
 
-      if (tier === "full") {
-        let idleId: number | null = null;
-        let timeoutId: any = null;
-        const events = ["pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
+    // Mount right after hydration and first paint (two requestAnimationFrames or requestIdleCallback with 150ms timeout)
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        fireTrigger();
+      });
+    });
 
-        const onInteraction = (e: Event) => {
-          if (hasTriggered.current || isDisposed) return;
-          if (e.type === "scroll" && window.scrollY === 0) return;
-          cleanup();
-          fireTrigger();
-        };
-
-        const cleanup = () => {
-          events.forEach((evt) => {
-            window.removeEventListener(evt, onInteraction, { capture: true } as any);
-          });
-          if (idleId !== null) safeCancelIdleCallback(idleId);
-          if (timeoutId) clearTimeout(timeoutId);
-        };
-
-        cleanupListeners = cleanup;
-
-        events.forEach((evt) => {
-          window.addEventListener(evt, onInteraction, { once: true, passive: true, capture: true });
-        });
-
-        // Fallback: trigger after 4500ms on idle if no user interaction occurred
-        timeoutId = setTimeout(() => {
-          if (hasTriggered.current || isDisposed) return;
-          idleId = safeRequestIdleCallback(() => {
-            if (!hasTriggered.current && !isDisposed) {
-              cleanup();
-              fireTrigger();
-            }
-          }, { timeout: 1500 });
-        }, 4500);
-      } else if (tier === "lite") {
-        // Requirement 4: Start prefetch only after "load" event PLUS an additional 2000 ms idle
-        let prefetchTimer: any = setTimeout(() => {
-          if (isDisposed || hasTriggered.current) return;
-          safeRequestIdleCallback(() => prefetchChunks(), { timeout: 8000 });
-        }, 2000);
-
-        let idleId: number | null = null;
-        let timeoutId: any = null;
-        const events = ["pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
-
-        const onInteraction = (e: Event) => {
-          if (hasTriggered.current || isDisposed) return;
-          if (e.type === "scroll" && window.scrollY === 0) return;
-          cleanup();
-          fireTrigger();
-        };
-
-        const cleanup = () => {
-          events.forEach((evt) => {
-            window.removeEventListener(evt, onInteraction, { capture: true } as any);
-          });
-          if (prefetchTimer) clearTimeout(prefetchTimer);
-          if (idleId !== null) safeCancelIdleCallback(idleId);
-          if (timeoutId) clearTimeout(timeoutId);
-        };
-
-        cleanupListeners = cleanup;
-
-        events.forEach((evt) => {
-          window.addEventListener(evt, onInteraction, { once: true, passive: true, capture: true });
-        });
-
-        // 5000 ms idle post-load fallback: wait 5000ms, then trigger on idle
-        timeoutId = setTimeout(() => {
-          if (hasTriggered.current || isDisposed) return;
-          idleId = safeRequestIdleCallback(() => {
-            if (!hasTriggered.current && !isDisposed) {
-              cleanup();
-              fireTrigger();
-            }
-          });
-        }, 5000);
-      }
-    };
-
-    let loadHandler: (() => void) | null = null;
-    if (typeof window !== "undefined") {
-      if (document.readyState === "complete") {
-        scheduleAfterLoad();
-      } else {
-        loadHandler = () => scheduleAfterLoad();
-        window.addEventListener("load", loadHandler, { once: true });
-      }
-    }
+    idleId = safeRequestIdleCallback(
+      () => {
+        fireTrigger();
+      },
+      { timeout: 150 }
+    );
 
     return () => {
       isDisposed = true;
-      if (loadHandler) window.removeEventListener("load", loadHandler);
-      if (cleanupListeners) cleanupListeners();
+      if (raf1 !== null) cancelAnimationFrame(raf1);
+      if (raf2 !== null) cancelAnimationFrame(raf2);
+      if (idleId !== null) safeCancelIdleCallback(idleId);
     };
   }, [tier, routePath]);
 

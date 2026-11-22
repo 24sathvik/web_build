@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
-import SceneShell, { useQualityTierContext } from "../SceneShell";
+import SceneShell, { useQualityTierContext, useHasFirstFrame } from "../SceneShell";
 import { useOverlayScrollProgress, useStagePointer } from "../useStagePointer";
 import { aviationStore } from "@/lib/sceneSync";
 import { isReducedMotion } from "@/lib/motion";
@@ -288,6 +288,7 @@ const ARC_FRAG = /* glsl */ `
 
 function AviationNetworkContent() {
   const tier = useQualityTierContext();
+  const hasFirstFrame = useHasFirstFrame();
   const isLite = tier === "lite";
   const { size, camera } = useThree();
 
@@ -369,7 +370,7 @@ function AviationNetworkContent() {
   });
 
   // Fibonacci dot-sphere geometry & shader
-  const dotCount = isLite ? 1200 : 3200;
+  const dotCount = isLite ? 250 : 1000;
   const dotsGeometry = useMemo(() => buildFibonacciDots(dotCount), [dotCount]);
   const dotsMaterial = useMemo(
     () =>
@@ -654,19 +655,21 @@ function AviationNetworkContent() {
         <points geometry={dotsGeometry} material={dotsMaterial} />
 
         {/* Great-circle arcs from Hyderabad */}
-        {arcResources.map((arc) => (
+        {hasFirstFrame && arcResources.map((arc) => (
           <mesh key={arc.node.code} geometry={arc.geo} material={arc.mat} />
         ))}
 
         {/* Small aircraft glyphs travelling each arc */}
-        <instancedMesh ref={jetsRef} args={[jetGeo, jetMat, AUTHORITY_NODES.length]} />
+        {hasFirstFrame && (
+          <instancedMesh ref={jetsRef} args={[jetGeo, jetMat, AUTHORITY_NODES.length]} />
+        )}
 
         {/* Pulsing rings + node cores */}
         <instancedMesh ref={ringsRef} args={[ringGeo, ringMat, GEO_NODES.length]} />
         <instancedMesh ref={coresRef} args={[nodeCoreGeo, nodeCoreMat, GEO_NODES.length]} />
       </group>
 
-      {tier === "full" && (
+      {tier === "full" && hasFirstFrame && (
         <EffectComposer multisampling={0}>
           <Bloom luminanceThreshold={0.35} luminanceSmoothing={0.9} intensity={1.35} mipmapBlur />
         </EffectComposer>

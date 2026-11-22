@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
-import SceneShell, { useQualityTierContext } from "../SceneShell";
+import SceneShell, { useQualityTierContext, useHasFirstFrame } from "../SceneShell";
 import { useOverlayScrollProgress, useStagePointer } from "../useStagePointer";
 import type { BlogCard } from "@/components/dom/blogs/BlogsOverlay";
 import { blogStore } from "@/lib/sceneSync";
@@ -174,6 +174,7 @@ const STREAM_FRAG = /* glsl */ `
 
 function SignalStreamContent({ posts }: { posts: BlogCard[] }) {
   const tier = useQualityTierContext();
+  const hasFirstFrame = useHasFirstFrame();
   const isLite = tier === "lite";
   const router = useRouter();
   const { size, camera } = useThree();
@@ -225,7 +226,7 @@ function SignalStreamContent({ posts }: { posts: BlogCard[] }) {
     []
   );
 
-  const particleCount = isLite ? 1500 : 3600;
+  const particleCount = isLite ? 200 : 1200;
   const streamGeo = useMemo(
     () => buildStreamGeometry(particleCount, categories, categoryColorMap),
     [particleCount, categories, categoryColorMap]
@@ -493,7 +494,7 @@ function SignalStreamContent({ posts }: { posts: BlogCard[] }) {
         )}
       </group>
 
-      {tier === "full" && (
+      {tier === "full" && hasFirstFrame && (
         <EffectComposer multisampling={0}>
           <Bloom luminanceThreshold={0.35} luminanceSmoothing={0.85} intensity={1.3} mipmapBlur />
         </EffectComposer>

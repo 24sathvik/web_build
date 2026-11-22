@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
-import SceneShell, { useQualityTierContext } from "../SceneShell";
+import SceneShell, { useQualityTierContext, useHasFirstFrame } from "../SceneShell";
 import { useOverlayScrollProgress, useStagePointer } from "../useStagePointer";
 import { siteContent, type ProjectItem } from "@/content/site";
 import { projectStore } from "@/lib/sceneSync";
@@ -197,6 +197,7 @@ function scrollToProjectCard(id: string) {
 
 function ProjectsOrbitContent() {
   const tier = useQualityTierContext();
+  const hasFirstFrame = useHasFirstFrame();
   const isLite = tier === "lite";
   const { size, camera } = useThree();
 
@@ -227,8 +228,8 @@ function ProjectsOrbitContent() {
     []
   );
 
-  // Single CanvasTexture atlas (512px on Lite, 2048px on Full)
-  const atlasSize = isLite ? 512 : 2048;
+  // CanvasTexture atlas (256px on Lite & initial frame, 1024px on Full after first frame)
+  const atlasSize = isLite ? 256 : (hasFirstFrame ? 1024 : 512);
   const atlasTexture = useMemo(() => createProjectAtlasTexture(atlasSize), [atlasSize]);
 
   // Pre-mapped geometries + materials per panel (Lite: MeshBasicMaterial, Full: MeshStandardMaterial)
@@ -493,7 +494,7 @@ function ProjectsOrbitContent() {
         material={floorMat}
       />
 
-      {tier === "full" && (
+      {tier === "full" && hasFirstFrame && (
         <EffectComposer multisampling={0}>
           <Bloom luminanceThreshold={0.45} luminanceSmoothing={0.85} intensity={1.0} mipmapBlur />
         </EffectComposer>

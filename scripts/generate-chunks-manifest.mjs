@@ -9,7 +9,6 @@ const ROUTE_MAP = {
   "/contact": "contact/page",
   "/projects": "projects/page",
   "/services": "services/page",
-  "/technology": "technology/page",
 };
 
 const result = {};
@@ -38,5 +37,7 @@ if (!fs.existsSync(outDir)) {
 }
 
 fs.writeFileSync(path.join(outDir, "chunks-manifest.json"), JSON.stringify(result, null, 2));
-console.log("Successfully generated public/chunks-manifest.json");
+const libDir = path.join(process.cwd(), "src/lib");
+fs.writeFileSync(path.join(libDir, "chunks-manifest.json"), JSON.stringify(result, null, 2));
+console.log("Successfully generated public/chunks-manifest.json and src/lib/chunks-manifest.json");
 

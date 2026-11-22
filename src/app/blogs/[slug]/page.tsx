@@ -63,7 +63,7 @@ const CATEGORY_CTA_MAP: Record<string, CategoryCTA> = {
     eyebrow: "Production & Batch Tracking Software",
     title: "Digitize batch records, lot traceability & quality tracking", // VERIFY: claim
     description: "ZYXEN builds custom production management and inventory systems purpose-built for pharma manufacturers in Hyderabad.",
-    href: "/technology",
+    href: "/production-management-software-pharma",
     ctaText: "Discover Production Software",
   },
   "Aviation Academy": {
@@ -91,22 +91,22 @@ const CATEGORY_CTA_MAP: Record<string, CategoryCTA> = {
     eyebrow: "Core Web Vitals & Speed",
     title: "Fast load times and targeted Core Web Vitals",
     description: "We re-architect slow websites into modern edge-rendered platforms with optimized TTFB, AVIF/WebP assets, and minimized layout shifts.",
-    href: "/technology",
-    ctaText: "View Architecture & Tech",
+    href: "/services",
+    ctaText: "View Web Architecture",
   },
   "Modern Cloud Architecture": {
     eyebrow: "Cloud & Infrastructure",
     title: "Scalable, resilient cloud systems built for growth",
     description: "Design and implement modern serverless and containerized cloud architectures configured to handle traffic spikes.",
-    href: "/technology",
+    href: "/services",
     ctaText: "Explore Cloud Architecture",
   },
   "System Design": {
     eyebrow: "Enterprise Software Architecture",
     title: "Mission-critical system design for complex operations",
     description: "We architect scalable databases, fault-tolerant APIs, and decoupled micro-services for demanding business workflows.",
-    href: "/technology",
-    ctaText: "Learn About Our System Design",
+    href: "/services",
+    ctaText: "Learn About System Design",
   },
 };
 

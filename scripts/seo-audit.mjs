@@ -2,6 +2,8 @@
 
 import fs from "fs";
 import path from "path";
+import http from "http";
+import { spawn, execSync } from "child_process";
 
 /**
  * ZYXEN Automated SEO, Metadata & Structured Data Audit
@@ -10,8 +12,61 @@ import path from "path";
  * image alts, internal link resolution, llms.txt, and RSS feed.
  */
 
-const BASE_URL = process.env.AUDIT_BASE_URL || "http://localhost:3000";
+const PORT = 3000;
+const BASE_URL = process.env.AUDIT_BASE_URL || `http://localhost:${PORT}`;
 const SITE_DOMAIN = "zyxen.in";
+
+let serverProcess = null;
+
+async function isServerRunning(url) {
+  return new Promise((resolve) => {
+    const req = http.get(url, () => {
+      resolve(true);
+    });
+    req.on("error", () => resolve(false));
+    req.setTimeout(1000, () => {
+      req.destroy();
+      resolve(false);
+    });
+  });
+}
+
+async function ensureServer() {
+  const running = await isServerRunning(`${BASE_URL}/`);
+  if (running) {
+    console.log(`Server already running at ${BASE_URL}`);
+    return;
+  }
+
+  console.log(`Starting server on port ${PORT}...`);
+  serverProcess = spawn("npx", ["next", "start", "-p", String(PORT)], {
+    stdio: "inherit",
+    shell: true,
+  });
+
+  const start = Date.now();
+  while (Date.now() - start < 30000) {
+    await new Promise((r) => setTimeout(r, 1000));
+    if (await isServerRunning(`${BASE_URL}/`)) {
+      console.log(`Server started at ${BASE_URL}`);
+      return;
+    }
+  }
+  throw new Error("Server failed to start within 30 seconds");
+}
+
+function stopServer() {
+  if (!serverProcess) return;
+  console.log("\nStopping server...");
+  try {
+    if (process.platform === "win32") {
+      execSync(`taskkill /pid ${serverProcess.pid} /T /F`, { stdio: "ignore" });
+    } else {
+      serverProcess.kill("SIGTERM");
+    }
+  } catch {}
+  serverProcess = null;
+}
 
 let totalErrors = 0;
 function logPass(msg) {
@@ -96,6 +151,7 @@ function collectTypes(obj, types = new Set()) {
 }
 
 async function runAudit() {
+  await ensureServer();
   console.log(`Starting SEO Audit against ${BASE_URL}...`);
 
   // 1. Audit /sitemap.xml
@@ -272,12 +328,6 @@ async function runAudit() {
         logPass(`Service, FAQPage, and SoftwareApplication schemas verified on /aviation-academy-software`);
       } else {
         logFail(`Missing schemas on /aviation-academy-software: Service=${types.has("Service")}, FAQPage=${types.has("FAQPage")}, SoftwareApplication=${types.has("SoftwareApplication")}`);
-      }
-    } else if (parsed.pathname === "/technology") {
-      if (types.has("Service") && !types.has("SoftwareApplication")) {
-        logPass(`Service schema verified and SoftwareApplication schema confirmed absent on /technology`);
-      } else {
-        logFail(`Schemas on /technology invalid: Service=${types.has("Service")}, SoftwareApplication=${types.has("SoftwareApplication")}`);
       }
     } else if (parsed.pathname.startsWith("/blogs/")) {
       if (types.has("BlogPosting")) {
@@ -545,34 +595,26 @@ async function runAudit() {
     }
   }
 
-  // 7. Verify /technology Schema Cleanliness
-  logSection("7. Verifying /technology Schema Cleanliness");
+  // 7. Verify /technology Permanent Redirect to /services
+  logSection("7. Verifying /technology Permanent Redirect to /services");
   try {
-    const techHtml = await fetchText(`${BASE_URL}/technology`);
-    const techSchemas = extractAllJsonLd(techHtml);
-    const techTypes = new Set();
-    techSchemas.forEach((s) => collectTypes(s, techTypes));
-    if (!techTypes.has("SoftwareApplication")) {
-      logPass(`/technology successfully removed SoftwareApplication schema`);
+    const res = await fetch(`${BASE_URL}/technology`, { redirect: "manual" });
+    if (res.status === 308 || res.status === 301) {
+      const loc = res.headers.get("location");
+      if (loc === "/services" || loc === `${BASE_URL}/services`) {
+        logPass(`/technology successfully redirects permanently (HTTP ${res.status}) to ${loc}`);
+      } else {
+        logFail(`/technology redirects to ${loc}, expected /services`);
+      }
     } else {
-      logFail(`/technology MUST NOT contain SoftwareApplication schema`);
-    }
-    if (techTypes.has("Service")) {
-      logPass(`/technology retains Service schema`);
-    } else {
-      logFail(`/technology missing Service schema`);
-    }
-    const techSchemaStr = JSON.stringify(techSchemas);
-    if (!techSchemaStr.toLowerCase().includes("gmp compliance")) {
-      logPass(`/technology structured data clean of 'GMP compliance' phrase`);
-    } else {
-      logFail(`/technology structured data still contains 'GMP compliance' phrase`);
+      logFail(`/technology returned status ${res.status}, expected 308/301 redirect to /services`);
     }
   } catch (err) {
-    logFail(`Failed to verify /technology: ${err.message}`);
+    logFail(`Failed to verify /technology redirect: ${err.message}`);
   }
 
   // Final Summary
+  stopServer();
   console.log("\n==============================================");
   if (totalErrors === 0) {
     console.log(`\x1b[32m✔ ALL SEO AUDIT CHECKS PASSED PERFECTLY!\x1b[0m`);

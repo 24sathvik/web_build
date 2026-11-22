@@ -5,19 +5,22 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useHasFirstFrame } from "./SceneShell";
 
 export default function CameraRig() {
   const { camera } = useThree();
   const groupRef = useRef<THREE.Group>(null);
+  const hasFirstFrame = useHasFirstFrame();
 
   useGSAP(() => {
+    camera.position.set(0, 0, 5);
+    if (!hasFirstFrame) return;
+
     const prefersReducedMotion =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (prefersReducedMotion) {
-      // In reduced motion, avoid intense 3D camera travel
-      camera.position.set(0, 0, 5);
       return;
     }
 

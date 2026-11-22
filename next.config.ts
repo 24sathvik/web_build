@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      {
+        source: "/technology",
+        destination: "/services",
+        permanent: true,
+      },
       // Alternate / older URLs seen in SEO notes -> live canonical slugs
       {
         source: "/blogs/website-development-cost-in-india-2026-guide",

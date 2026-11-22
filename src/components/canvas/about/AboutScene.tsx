@@ -8,7 +8,7 @@ import * as THREE from "three";
 import { useRef, useMemo } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import SceneShell, { useQualityTierContext } from "../SceneShell";
+import SceneShell, { useQualityTierContext, useHasFirstFrame } from "../SceneShell";
 import { createSeededRandom } from "@/lib/seededRandom";
 import { isReducedMotion } from "@/lib/motion";
 
@@ -17,8 +17,8 @@ function Helix() {
   const tier = useQualityTierContext();
   const isLite = tier === "lite";
   
-  // Cut particle count to 25% on lite (500 vs 2000)
-  const particleCount = isLite ? 500 : 2000;
+  // Cut particle count on lite (250 vs 2000)
+  const particleCount = isLite ? 250 : 2000;
   
   const positions = useMemo(() => {
     const rng = createSeededRandom(42);
@@ -63,13 +63,14 @@ function Helix() {
 
 function CameraRig() {
   const { camera } = useThree();
+  const hasFirstFrame = useHasFirstFrame();
 
   useGSAP(() => {
     // Start camera at the top of the tunnel
     camera.position.set(0, 40, 0);
     camera.rotation.set(-Math.PI / 2, 0, 0);
 
-    if (isReducedMotion()) {
+    if (!hasFirstFrame || isReducedMotion()) {
       return;
     }
 
@@ -92,7 +93,8 @@ function CameraRig() {
 
 function AboutEffects() {
   const tier = useQualityTierContext();
-  if (tier !== "full") return null;
+  const hasFirstFrame = useHasFirstFrame();
+  if (tier !== "full" || !hasFirstFrame) return null;
 
   return (
     <EffectComposer multisampling={0}>

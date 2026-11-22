@@ -7,10 +7,18 @@ import { CustomCursor } from "@/components/dom/CustomCursor";
 import { BlogsOverlay, type BlogCard } from "@/components/dom/blogs/BlogsOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
 import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
+import { debugStore } from "@/lib/debugState";
 import { useSelectionStore, blogStore } from "@/lib/sceneSync";
 import Link from "next/link";
 
-const BlogsScene = dynamic(() => import("@/components/canvas/blogs/BlogsScene"), { ssr: false });
+const BlogsScene = dynamic(
+  () =>
+    import("@/components/canvas/blogs/BlogsScene").then((mod) => {
+      debugStore.setTimeline("chunkLoaded", performance.now());
+      return mod;
+    }),
+  { ssr: false }
+);
 
 export default function Blogs({ posts, footer }: { posts: BlogCard[]; footer?: ReactNode }) {
   const tier = useQualityTier();
@@ -20,7 +28,10 @@ export default function Blogs({ posts, footer }: { posts: BlogCard[]; footer?: R
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    if (tier !== "static") {
+      import("@/components/canvas/blogs/BlogsScene");
+    }
+  }, [tier]);
 
   return (
     <main className="relative w-full h-[100svh] overflow-hidden cursor-none">
@@ -29,12 +40,19 @@ export default function Blogs({ posts, footer }: { posts: BlogCard[]; footer?: R
 
       <div className="absolute inset-0 z-0" aria-hidden="true">
         {shouldMount ? (
-          <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
+          <Suspense
+            fallback={
+              <div
+                className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,255,178,0.15),rgba(5,5,5,1))]"
+                aria-hidden="true"
+              />
+            }
+          >
             <BlogsScene posts={posts} triggerTime={triggerTime} />
           </Suspense>
         ) : (
           <div
-            className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(110,91,255,0.18),rgba(5,5,5,1))]"
+            className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,255,178,0.15),rgba(5,5,5,1))]"
             aria-hidden="true"
           />
         )}

@@ -10,6 +10,9 @@ import { safeRequestIdleCallback, safeCancelIdleCallback } from "@/lib/browser-c
 export const QualityTierContext = createContext<QualityTier>("full");
 export const useQualityTierContext = () => useContext(QualityTierContext);
 
+export const FirstFrameContext = createContext<boolean>(false);
+export const useHasFirstFrame = () => useContext(FirstFrameContext);
+
 interface SceneShellProps {
   children: React.ReactNode;
   fallbackClassName?: string;
@@ -21,13 +24,26 @@ interface SceneShellProps {
 }
 
 // Requirement 1: Measure time from trigger to first rendered frame
-function FirstFrameNotifier({ triggerTime }: { triggerTime?: number | null }) {
+function FirstFrameNotifier({
+  triggerTime,
+  onFirstFrame,
+}: {
+  triggerTime?: number | null;
+  onFirstFrame?: () => void;
+}) {
   const recorded = useRef(false);
   useFrame(() => {
-    if (!recorded.current && triggerTime && triggerTime > 0) {
+    if (!recorded.current) {
       recorded.current = true;
-      const duration = Math.round(performance.now() - triggerTime);
-      debugStore.set({ triggerToFirstFrame: duration });
+      const now = performance.now();
+      debugStore.setTimeline("firstFrame", now);
+      if (triggerTime && triggerTime > 0) {
+        const duration = Math.round(now - triggerTime);
+        debugStore.set({ triggerToFirstFrame: duration });
+      }
+      if (onFirstFrame) {
+        onFirstFrame();
+      }
     }
   });
   return null;
@@ -89,6 +105,7 @@ export function SceneShell({
   // Otherwise fall back to local schedule.
   const [mounted, setMounted] = useState(triggerTime ? true : false);
   const [localTriggerTime, setLocalTriggerTime] = useState<number | null>(triggerTime || null);
+  const [firstFrameDone, setFirstFrameDone] = useState(false);
   const [canvasVisible, setCanvasVisible] = useState(false);
   const [contextLost, setContextLost] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -154,116 +171,38 @@ export function SceneShell({
     if (activeTier === "static" || mounted) return;
 
     let isDisposed = false;
-    let cleanupListeners: (() => void) | null = null;
+    let raf1: number | null = null;
+    let raf2: number | null = null;
+    let idleId: number | null = null;
 
     const mountCanvas = () => {
       if (isDisposed) return;
       const t = performance.now();
+      debugStore.setTimeline("mountTrigger", t);
       setLocalTriggerTime(t);
       setMounted(true);
       debugStore.set({ canvasMounted: true });
     };
 
-    const scheduleAfterLoad = () => {
-      if (isDisposed) return;
+    // Mount right after hydration and first paint
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        mountCanvas();
+      });
+    });
 
-      if (activeTier === "full") {
-        let idleId: number | null = null;
-        let timeoutId: any = null;
-        let triggered = false;
-
-        const events = ["pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
-
-        const onInteraction = (e: Event) => {
-          if (triggered || isDisposed) return;
-          if (e.type === "scroll" && window.scrollY === 0) return;
-          triggered = true;
-          cleanup();
-          mountCanvas();
-        };
-
-        const cleanup = () => {
-          events.forEach((evt) => {
-            window.removeEventListener(evt, onInteraction, { capture: true } as any);
-          });
-          if (idleId !== null) safeCancelIdleCallback(idleId);
-          if (timeoutId) clearTimeout(timeoutId);
-        };
-
-        cleanupListeners = cleanup;
-
-        events.forEach((evt) => {
-          window.addEventListener(evt, onInteraction, { once: true, passive: true, capture: true });
-        });
-
-        // 4500 ms idle post-load fallback
-        timeoutId = setTimeout(() => {
-          if (triggered || isDisposed) return;
-          idleId = safeRequestIdleCallback(() => {
-            if (!triggered && !isDisposed) {
-              triggered = true;
-              cleanup();
-              mountCanvas();
-            }
-          }, { timeout: 1500 });
-        }, 4500);
-      } else if (activeTier === "lite") {
-        let idleId: number | null = null;
-        let timeoutId: any = null;
-        let triggered = false;
-
-        const events = ["pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
-
-        const onInteraction = (e: Event) => {
-          if (triggered || isDisposed) return;
-          if (e.type === "scroll" && window.scrollY === 0) return;
-          triggered = true;
-          cleanup();
-          mountCanvas();
-        };
-
-        const cleanup = () => {
-          events.forEach((evt) => {
-            window.removeEventListener(evt, onInteraction, { capture: true } as any);
-          });
-          if (idleId !== null) safeCancelIdleCallback(idleId);
-          if (timeoutId) clearTimeout(timeoutId);
-        };
-
-        cleanupListeners = cleanup;
-
-        events.forEach((evt) => {
-          window.addEventListener(evt, onInteraction, { once: true, passive: true, capture: true });
-        });
-
-        // 5000 ms idle post-load fallback
-        timeoutId = setTimeout(() => {
-          if (triggered || isDisposed) return;
-          idleId = safeRequestIdleCallback(() => {
-            if (!triggered && !isDisposed) {
-              triggered = true;
-              cleanup();
-              mountCanvas();
-            }
-          });
-        }, 5000);
-      }
-    };
-
-    let loadHandler: (() => void) | null = null;
-    if (typeof window !== "undefined") {
-      if (document.readyState === "complete") {
-        scheduleAfterLoad();
-      } else {
-        loadHandler = () => scheduleAfterLoad();
-        window.addEventListener("load", loadHandler, { once: true });
-      }
-    }
+    idleId = safeRequestIdleCallback(
+      () => {
+        mountCanvas();
+      },
+      { timeout: 150 }
+    );
 
     return () => {
       isDisposed = true;
-      if (loadHandler) window.removeEventListener("load", loadHandler);
-      if (cleanupListeners) cleanupListeners();
+      if (raf1 !== null) cancelAnimationFrame(raf1);
+      if (raf2 !== null) cancelAnimationFrame(raf2);
+      if (idleId !== null) safeCancelIdleCallback(idleId);
     };
   }, [activeTier, mounted]);
 
@@ -332,7 +271,7 @@ export function SceneShell({
       {/* Canvas container: mounts lazily and fades in once ready */}
       {mounted && (
         <div
-          className={`relative z-10 w-full h-full transition-opacity duration-700 ease-out ${
+          className={`relative z-10 w-full h-full transition-opacity duration-400 ease-out ${
             canvasVisible && !contextLost ? "opacity-100" : "opacity-0"
           }`}
           style={{ touchAction: "pan-y" }}
@@ -370,8 +309,13 @@ export function SceneShell({
             >
               <PerformanceMonitor onDecline={handleDecline} onIncline={handleIncline} />
               <QualitySupervisor tier={activeTier} onStepDown={handleStepDown} />
-              <FirstFrameNotifier triggerTime={localTriggerTime} />
-              {children}
+              <FirstFrameNotifier
+                triggerTime={localTriggerTime}
+                onFirstFrame={() => setFirstFrameDone(true)}
+              />
+              <FirstFrameContext.Provider value={firstFrameDone}>
+                {children}
+              </FirstFrameContext.Provider>
             </Canvas>
           </QualityTierContext.Provider>
         </div>

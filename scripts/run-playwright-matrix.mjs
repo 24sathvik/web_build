@@ -30,7 +30,6 @@ const ROUTES = [
   "/",
   "/about",
   "/services",
-  "/technology",
   "/projects",
   "/aviation-academy-software",
   "/blogs",

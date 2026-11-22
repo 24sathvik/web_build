@@ -7,11 +7,19 @@ import { CustomCursor } from "@/components/dom/CustomCursor";
 import { ProjectsOverlay } from "@/components/dom/projects/ProjectsOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
 import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
+import { debugStore } from "@/lib/debugState";
 
 import { useSelectionStore, projectStore } from "@/lib/sceneSync";
 import type { ProjectItem } from "@/content/site";
 
-const ProjectsScene = dynamic(() => import("@/components/canvas/projects/ProjectsScene"), { ssr: false });
+const ProjectsScene = dynamic(
+  () =>
+    import("@/components/canvas/projects/ProjectsScene").then((mod) => {
+      debugStore.setTimeline("chunkLoaded", performance.now());
+      return mod;
+    }),
+  { ssr: false }
+);
 
 export default function Projects({
   projects = [],
@@ -30,7 +38,10 @@ export default function Projects({
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    if (tier !== "static") {
+      import("@/components/canvas/projects/ProjectsScene");
+    }
+  }, [tier]);
 
   return (
     <main className="relative w-full h-[100svh] overflow-hidden cursor-none">
@@ -39,7 +50,14 @@ export default function Projects({
       
       <div className="absolute inset-0 z-0" aria-hidden="true">
         {shouldMount ? (
-          <Suspense fallback={<div className="w-full h-full bg-[#050505]" />}>
+          <Suspense
+            fallback={
+              <div
+                className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(110,91,255,0.18),rgba(5,5,5,1))]"
+                aria-hidden="true"
+              />
+            }
+          >
             <ProjectsScene triggerTime={triggerTime} />
           </Suspense>
         ) : (
