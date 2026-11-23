@@ -9,7 +9,7 @@ import { useOverlayScrollProgress, useStagePointer } from "../useStagePointer";
 import { aviationStore } from "@/lib/sceneSync";
 import { isReducedMotion } from "@/lib/motion";
 
-const GLOBE_RADIUS = 2.65;
+const GLOBE_BASE_RADIUS = 2.65;
 const DEG2RAD = Math.PI / 180;
 
 interface GeoPoint {
@@ -78,13 +78,14 @@ const GEO_NODES: GeoPoint[] = RAW_NODES.map((n) => {
   return {
     ...n,
     dir,
-    pos: dir.clone().multiplyScalar(GLOBE_RADIUS * 1.01),
+    pos: dir.clone().multiplyScalar(GLOBE_BASE_RADIUS * 1.01),
   };
 });
 
 const HYD_NODE = GEO_NODES[0];
 const AUTHORITY_NODES = GEO_NODES.filter((n) => n.isAuthority);
 
+// 1. Fibonacci Dot-Sphere with Landmass Clustering
 function buildFibonacciDots(count: number) {
   const positions = new Float32Array(count * 3);
   const normals = new Float32Array(count * 3);
@@ -98,7 +99,7 @@ function buildFibonacciDots(count: number) {
     const x = Math.cos(theta) * radiusAtY;
     const z = Math.sin(theta) * radiusAtY;
 
-    // Deterministic spherical harmonic mask so landmasses read as clustered bands
+    // Harmonic landmass mask
     const lat = Math.asin(y);
     const lon = Math.atan2(x, z);
     const mask =
@@ -107,9 +108,9 @@ function buildFibonacciDots(count: number) {
       0.35 * Math.sin(lat * 5.2 + lon * 1.8);
     const weight = mask > 0.12 ? 1.0 : 0.32;
 
-    positions[i * 3] = x * GLOBE_RADIUS;
-    positions[i * 3 + 1] = y * GLOBE_RADIUS;
-    positions[i * 3 + 2] = z * GLOBE_RADIUS;
+    positions[i * 3] = x * GLOBE_BASE_RADIUS;
+    positions[i * 3 + 1] = y * GLOBE_BASE_RADIUS;
+    positions[i * 3 + 2] = z * GLOBE_BASE_RADIUS;
 
     normals[i * 3] = x;
     normals[i * 3 + 1] = y;
@@ -123,6 +124,95 @@ function buildFibonacciDots(count: number) {
   geometry.setAttribute("aNormal", new THREE.BufferAttribute(normals, 3));
   geometry.setAttribute("aWeight", new THREE.BufferAttribute(weights, 1));
   return geometry;
+}
+
+// 2. Latitude / Longitude Graticule (Merged Single Draw Call)
+function buildGraticuleGeometry(radius: number): THREE.BufferGeometry {
+  const points: number[] = [];
+  const segments = 64;
+
+  // Parallels (Latitudes: -60, -30, 0, 30, 60)
+  const latitudes = [-60, -30, 0, 30, 60];
+  for (const lat of latitudes) {
+    const phi = lat * DEG2RAD;
+    const r = radius * Math.cos(phi);
+    const y = radius * Math.sin(phi);
+    for (let i = 0; i < segments; i++) {
+      const theta1 = (i / segments) * Math.PI * 2;
+      const theta2 = ((i + 1) / segments) * Math.PI * 2;
+      points.push(
+        r * Math.sin(theta1), y, r * Math.cos(theta1),
+        r * Math.sin(theta2), y, r * Math.cos(theta2)
+      );
+    }
+  }
+
+  // Meridians (Longitudes: every 30 deg -> 12 meridians)
+  for (let lon = 0; lon < 360; lon += 30) {
+    const theta = lon * DEG2RAD;
+    const sinT = Math.sin(theta);
+    const cosT = Math.cos(theta);
+    for (let i = 0; i < segments; i++) {
+      const phi1 = -Math.PI / 2 + (i / segments) * Math.PI;
+      const phi2 = -Math.PI / 2 + ((i + 1) / segments) * Math.PI;
+      points.push(
+        radius * Math.cos(phi1) * sinT, radius * Math.sin(phi1), radius * Math.cos(phi1) * cosT,
+        radius * Math.cos(phi2) * sinT, radius * Math.sin(phi2), radius * Math.cos(phi2) * cosT
+      );
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(points, 3));
+  return geo;
+}
+
+// 3. Parallax Starfield Background
+function buildStarfieldGeometry(count: number): THREE.BufferGeometry {
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  const palette = [
+    new THREE.Color("#FFFFFF"),
+    new THREE.Color("#00D9FF"),
+    new THREE.Color("#6E5BFF"),
+    new THREE.Color("#BFC7D5"),
+  ];
+
+  for (let i = 0; i < count; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = 35 + Math.random() * 30; // Radius between 35 and 65
+    positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+    positions[i * 3 + 2] = r * Math.cos(phi);
+
+    const c = palette[i % palette.length];
+    colors[i * 3] = c.r;
+    colors[i * 3 + 1] = c.g;
+    colors[i * 3 + 2] = c.b;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  return geo;
+}
+
+// 4. Orbital Navigation Ring
+function buildOrbitRingGeometry(radius: number): THREE.BufferGeometry {
+  const segments = 96;
+  const points: number[] = [];
+  for (let i = 0; i < segments; i++) {
+    const t1 = (i / segments) * Math.PI * 2;
+    const t2 = ((i + 1) / segments) * Math.PI * 2;
+    points.push(
+      radius * Math.cos(t1), 0, radius * Math.sin(t1),
+      radius * Math.cos(t2), 0, radius * Math.sin(t2)
+    );
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(points, 3));
+  return geo;
 }
 
 class GreatCircleArcCurve extends THREE.Curve<THREE.Vector3> {
@@ -152,7 +242,7 @@ class GreatCircleArcCurve extends THREE.Curve<THREE.Vector3> {
         .addScaledVector(this.endDir, w1)
         .normalize();
     }
-    const r = GLOBE_RADIUS * 1.012 + Math.sin(Math.PI * t) * this.lift;
+    const r = GLOBE_BASE_RADIUS * 1.012 + Math.sin(Math.PI * t) * this.lift;
     return optionalTarget.multiplyScalar(r);
   }
 }
@@ -178,21 +268,20 @@ function sampleArcPoint(
       .addScaledVector(endDir, w1)
       .normalize();
   }
-  const r = GLOBE_RADIUS * 1.028 + Math.sin(Math.PI * t) * lift;
+  const r = GLOBE_BASE_RADIUS * 1.028 + Math.sin(Math.PI * t) * lift;
   return out.multiplyScalar(r);
 }
 
 function createJetGlyphGeometry(): THREE.BufferGeometry {
-  // Sleek low-poly chevron aircraft pointing +Z
   const vertices = new Float32Array([
     // Left wing upper
-    0, 0.015, 0.14,  -0.11, 0, -0.09,  0, 0.025, -0.04,
+    0, 0.018, 0.16,  -0.13, 0, -0.10,  0, 0.03, -0.05,
     // Right wing upper
-    0, 0.015, 0.14,   0, 0.025, -0.04,  0.11, 0, -0.09,
+    0, 0.018, 0.16,   0, 0.03, -0.05,  0.13, 0, -0.10,
     // Left wing lower
-    0, -0.01, 0.14,   0, 0.025, -0.04, -0.11, 0, -0.09,
+    0, -0.012, 0.16,  0, 0.03, -0.05, -0.13, 0, -0.10,
     // Right wing lower
-    0, -0.01, 0.14,   0.11, 0, -0.09,  0, 0.025, -0.04,
+    0, -0.012, 0.16,  0.13, 0, -0.10,  0, 0.03, -0.05,
   ]);
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
@@ -200,6 +289,7 @@ function createJetGlyphGeometry(): THREE.BufferGeometry {
   return geo;
 }
 
+// Shaders
 const GLOBE_VERT = /* glsl */ `
   attribute vec3 aNormal;
   attribute float aWeight;
@@ -220,12 +310,12 @@ const GLOBE_VERT = /* glsl */ `
 
     float ndotv = dot(vNorm, viewDir);
     vFront = smoothstep(-0.22, 0.45, ndotv);
-    vRim = pow(1.0 - max(ndotv, 0.0), 2.1);
+    vRim = pow(1.0 - max(ndotv, 0.0), 2.2);
     vWeight = aWeight;
     vFocus = pow(max(dot(normalize(aNormal), normalize(uActiveDir)), 0.0), 4.0) * uHighlight;
 
-    float ptSize = mix(14.0, 25.0, aWeight) * uDotScale * (1.0 + vFocus * 0.45);
-    gl_PointSize = clamp(ptSize / max(-mvPos.z, 1.0), 1.4, 7.5);
+    float ptSize = mix(16.0, 28.0, aWeight) * uDotScale * (1.0 + vFocus * 0.5);
+    gl_PointSize = clamp(ptSize / max(-mvPos.z, 1.0), 1.6, 8.5);
     gl_Position = projectionMatrix * mvPos;
   }
 `;
@@ -241,19 +331,43 @@ const GLOBE_FRAG = /* glsl */ `
     float alphaCircle = smoothstep(0.5, 0.12, dist);
     if (alphaCircle < 0.02) discard;
 
-    vec3 baseOcean = vec3(0.18, 0.25, 0.42);
-    vec3 baseLand = vec3(0.45, 0.72, 0.96);
-    vec3 cyanGlow = vec3(0.0, 0.85, 1.0);
+    vec3 baseOcean = vec3(0.18, 0.28, 0.46);
+    vec3 baseLand = vec3(0.48, 0.78, 1.0);
+    vec3 cyanGlow = vec3(0.0, 0.9, 1.0);
     vec3 violetRim = vec3(0.43, 0.36, 1.0);
 
     vec3 col = mix(baseOcean, baseLand, vWeight);
     col = mix(col, violetRim, vRim * 0.65);
-    col = mix(col, cyanGlow, clamp(vFocus * 0.85, 0.0, 1.0));
+    col = mix(col, cyanGlow, clamp(vFocus * 0.9, 0.0, 1.0));
 
-    float alpha = alphaCircle * mix(0.08, 0.88, vFront) * mix(0.35, 1.0, vWeight);
-    alpha = clamp(alpha + vFocus * 0.35 * alphaCircle, 0.0, 1.0);
+    float alpha = alphaCircle * mix(0.1, 0.92, vFront) * mix(0.4, 1.0, vWeight);
+    alpha = clamp(alpha + vFocus * 0.4 * alphaCircle, 0.0, 1.0);
 
     gl_FragColor = vec4(col, alpha);
+  }
+`;
+
+const FRESNEL_ATMOSPHERE_VERT = /* glsl */ `
+  varying vec3 vNormal;
+  varying vec3 vViewDir;
+  void main() {
+    vNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = normalize(-mvPos.xyz);
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const FRESNEL_ATMOSPHERE_FRAG = /* glsl */ `
+  varying vec3 vNormal;
+  varying vec3 vViewDir;
+  void main() {
+    float ndotv = max(dot(vNormal, vViewDir), 0.0);
+    float fresnel = pow(1.0 - ndotv, 3.2);
+    vec3 cyanGlow = vec3(0.0, 0.85, 1.0);
+    vec3 violetGlow = vec3(0.43, 0.36, 1.0);
+    vec3 col = mix(cyanGlow, violetGlow, 0.3);
+    gl_FragColor = vec4(col, fresnel * 0.85);
   }
 `;
 
@@ -279,9 +393,9 @@ const ARC_FRAG = /* glsl */ `
     float wrapDist = min(dist, 1.0 - dist);
     float pulse = smoothstep(0.18, 0.0, wrapDist);
 
-    float baseAlpha = mix(0.22, 0.52, uActive);
-    float alpha = clamp(baseAlpha + pulse * mix(0.55, 0.95, uActive), 0.0, 1.0);
-    vec3 col = mix(uColor, vec3(1.0), pulse * 0.45);
+    float baseAlpha = mix(0.24, 0.55, uActive);
+    float alpha = clamp(baseAlpha + pulse * mix(0.6, 0.98, uActive), 0.0, 1.0);
+    vec3 col = mix(uColor, vec3(1.0), pulse * 0.5);
     gl_FragColor = vec4(col, alpha);
   }
 `;
@@ -293,6 +407,8 @@ function AviationNetworkContent() {
   const { size, camera } = useThree();
 
   const globeGroupRef = useRef<THREE.Group>(null);
+  const orbitGroupRef = useRef<THREE.Group>(null);
+  const starfieldRef = useRef<THREE.Points>(null);
   const jetsRef = useRef<THREE.InstancedMesh>(null);
   const ringsRef = useRef<THREE.InstancedMesh>(null);
   const coresRef = useRef<THREE.InstancedMesh>(null);
@@ -311,7 +427,6 @@ function AviationNetworkContent() {
     "overlay-container-aviation"
   );
 
-  // Scratch math objects (zero allocations inside useFrame)
   const scratch = useMemo(
     () => ({
       proj: new THREE.Vector3(),
@@ -356,7 +471,7 @@ function AviationNetworkContent() {
 
   const pointerRef = useStagePointer("scroll-container-aviation", {
     onTap: (cx, cy) => {
-      const hit = pickNodeAt(cx, cy, 48);
+      const hit = pickNodeAt(cx, cy, 54);
       if (hit) {
         const cur = aviationStore.get().selectedCode;
         aviationStore.set({
@@ -364,13 +479,13 @@ function AviationNetworkContent() {
           hoveredCode: hit,
         });
       } else if (aviationStore.get().selectedCode) {
-        aviationStore.set({ selectedCode: null });
+        aviationStore.set({ selectedCode: null, hoveredCode: null });
       }
     },
   });
 
-  // Fibonacci dot-sphere geometry & shader
-  const dotCount = isLite ? 250 : 1000;
+  // Geometries and materials
+  const dotCount = isLite ? 400 : 850;
   const dotsGeometry = useMemo(() => buildFibonacciDots(dotCount), [dotCount]);
   const dotsMaterial = useMemo(
     () =>
@@ -381,23 +496,77 @@ function AviationNetworkContent() {
         depthWrite: false,
         uniforms: {
           uActiveDir: { value: AUTHORITY_NODES[0].dir.clone() },
-          uHighlight: { value: 0.4 },
-          uDotScale: { value: isLite ? 1.2 : 1.0 },
+          uHighlight: { value: 0.45 },
+          uDotScale: { value: isLite ? 1.25 : 1.05 },
         },
       }),
     [isLite]
   );
 
-  // Inner occlusion sphere, arcs, aircraft, rings, cores
-  const coreOcclusionGeo = useMemo(
-    () => new THREE.SphereGeometry(GLOBE_RADIUS * 0.975, isLite ? 20 : 32, isLite ? 16 : 24),
+  const fresnelAtmosphereGeo = useMemo(
+    () => new THREE.SphereGeometry(GLOBE_BASE_RADIUS * 1.045, isLite ? 24 : 40, isLite ? 20 : 32),
     [isLite]
   );
+  const fresnelAtmosphereMat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: FRESNEL_ATMOSPHERE_VERT,
+        fragmentShader: FRESNEL_ATMOSPHERE_FRAG,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        side: THREE.BackSide,
+      }),
+    []
+  );
+
+  const graticuleGeo = useMemo(() => buildGraticuleGeometry(GLOBE_BASE_RADIUS * 1.003), []);
+  const graticuleMat = useMemo(
+    () =>
+      new THREE.LineBasicMaterial({
+        color: "#00D9FF",
+        transparent: true,
+        opacity: 0.12,
+        blending: THREE.AdditiveBlending,
+      }),
+    []
+  );
+
+  const starfieldGeo = useMemo(() => buildStarfieldGeometry(isLite ? 250 : 600), [isLite]);
+  const starfieldMat = useMemo(
+    () =>
+      new THREE.PointsMaterial({
+        size: isLite ? 0.8 : 1.2,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.75,
+        depthWrite: false,
+      }),
+    [isLite]
+  );
+
+  const orbitRingGeo = useMemo(() => buildOrbitRingGeometry(GLOBE_BASE_RADIUS * 1.26), []);
+  const orbitRingMat = useMemo(
+    () =>
+      new THREE.LineBasicMaterial({
+        color: "#6E5BFF",
+        transparent: true,
+        opacity: 0.35,
+        blending: THREE.AdditiveBlending,
+      }),
+    []
+  );
+
+  const coreOcclusionGeo = useMemo(
+    () => new THREE.SphereGeometry(GLOBE_BASE_RADIUS * 0.978, isLite ? 24 : 36, isLite ? 18 : 28),
+    [isLite]
+  );
+
   const arcResources = useMemo(() => {
-    const segments = isLite ? 28 : 56;
+    const segments = isLite ? 32 : 64;
     return AUTHORITY_NODES.map((node, idx) => {
       const curve = new GreatCircleArcCurve(HYD_NODE.dir, node.dir, node.arcLift);
-      const geo = new THREE.TubeGeometry(curve, segments, 0.016, 5, false);
+      const geo = new THREE.TubeGeometry(curve, segments, 0.018, 5, false);
       const mat = new THREE.ShaderMaterial({
         vertexShader: ARC_VERT,
         fragmentShader: ARC_FRAG,
@@ -421,7 +590,7 @@ function AviationNetworkContent() {
     []
   );
 
-  const ringGeo = useMemo(() => new THREE.RingGeometry(0.085, 0.135, isLite ? 16 : 24), [isLite]);
+  const ringGeo = useMemo(() => new THREE.RingGeometry(0.09, 0.145, isLite ? 16 : 24), [isLite]);
   const ringMat = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
@@ -434,13 +603,12 @@ function AviationNetworkContent() {
     []
   );
 
-  const nodeCoreGeo = useMemo(() => new THREE.SphereGeometry(0.052, 10, 10), []);
+  const nodeCoreGeo = useMemo(() => new THREE.SphereGeometry(0.055, 12, 12), []);
   const nodeCoreMat = useMemo(
     () => new THREE.MeshBasicMaterial({ color: "#FFFFFF", toneMapped: false }),
     []
   );
 
-  // Set fixed instance colors once on mount
   useEffect(() => {
     if (jetsRef.current) {
       AUTHORITY_NODES.forEach((n, idx) => {
@@ -459,26 +627,23 @@ function AviationNetworkContent() {
     }
   }, [isLite]);
 
-  // Clean GPU disposal on unmount / tier swap
   useEffect(() => {
     return () => {
       dotsGeometry.dispose();
       dotsMaterial.dispose();
-    };
-  }, [dotsGeometry, dotsMaterial]);
-
-  useEffect(() => {
-    return () => {
+      fresnelAtmosphereGeo.dispose();
+      fresnelAtmosphereMat.dispose();
+      graticuleGeo.dispose();
+      graticuleMat.dispose();
+      starfieldGeo.dispose();
+      starfieldMat.dispose();
+      orbitRingGeo.dispose();
+      orbitRingMat.dispose();
       coreOcclusionGeo.dispose();
       arcResources.forEach((a) => {
         a.geo.dispose();
         a.mat.dispose();
       });
-    };
-  }, [coreOcclusionGeo, arcResources]);
-
-  useEffect(() => {
-    return () => {
       jetGeo.dispose();
       jetMat.dispose();
       ringGeo.dispose();
@@ -486,7 +651,26 @@ function AviationNetworkContent() {
       nodeCoreGeo.dispose();
       nodeCoreMat.dispose();
     };
-  }, [jetGeo, jetMat, ringGeo, ringMat, nodeCoreGeo, nodeCoreMat]);
+  }, [
+    dotsGeometry,
+    dotsMaterial,
+    fresnelAtmosphereGeo,
+    fresnelAtmosphereMat,
+    graticuleGeo,
+    graticuleMat,
+    starfieldGeo,
+    starfieldMat,
+    orbitRingGeo,
+    orbitRingMat,
+    coreOcclusionGeo,
+    arcResources,
+    jetGeo,
+    jetMat,
+    ringGeo,
+    ringMat,
+    nodeCoreGeo,
+    nodeCoreMat,
+  ]);
 
   useFrame((state, delta) => {
     const dt = Math.min(delta, 0.05);
@@ -494,11 +678,96 @@ function AviationNetworkContent() {
     const group = globeGroupRef.current;
     if (!group) return;
 
-    const pState = pointerRef.current;
+    // Viewport frustum calculation
+    const cam = camera as THREE.PerspectiveCamera;
+    const dist = cam.position.z;
+    const fovRad = (cam.fov * Math.PI) / 180;
+    const vH = 2 * dist * Math.tan(fovRad / 2);
+    const vW = vH * (size.width / size.height);
+    const isMobile = size.width < 768;
+
+    // Dynamic Sizing:
+    // Desktop: globe spans 85% to 95% (target 90%) of viewport height
+    // Phones: globe spans about 110% of viewport width, centered
+    let targetScale = 1.0;
+    let targetX = 0;
+    let targetY = 0;
+
+    if (isMobile) {
+      const targetDiameter = 1.10 * vW;
+      targetScale = targetDiameter / (2 * GLOBE_BASE_RADIUS);
+      targetX = 0;
+      targetY = -0.05 * vH;
+    } else {
+      const targetDiameter = 0.90 * vH;
+      targetScale = targetDiameter / (2 * GLOBE_BASE_RADIUS);
+      targetY = 0;
+    }
+
+    // Scroll progress section offset & camera story
+    const sp = scrollProgressRef.current;
     const syncState = aviationStore.get();
     const activeCode = syncState.domHoveredCode || syncState.selectedCode || syncState.hoveredCode;
 
-    // Accumulate incremental pointer drag + exponential inertia
+    let focusIndex = 0; // Default: DGCA (India)
+    let zoomMultiplier = 1.0;
+
+    if (!isMobile) {
+      if (sp < 0.16) {
+        // Hero: offset to right for text
+        targetX = Math.min(0.24 * vW, 4.2);
+        focusIndex = 0;
+      } else if (sp < 0.36) {
+        // Modules: shifted slightly to right
+        targetX = Math.min(0.19 * vW, 3.4);
+        focusIndex = 0;
+      } else if (sp < 0.52) {
+        // India Focus (DGCA)
+        targetX = Math.min(0.25 * vW, 4.0);
+        focusIndex = 0; // DGCA
+      } else if (sp < 0.68) {
+        // USA Focus (FAA)
+        targetX = Math.min(0.22 * vW, 3.6);
+        focusIndex = 1; // FAA
+      } else if (sp < 0.82) {
+        // Europe Focus (EASA)
+        targetX = Math.min(0.26 * vW, 4.2);
+        focusIndex = 2; // EASA
+      } else {
+        // Institutes / CTA: Centered & Zoom out
+        targetX = 0;
+        zoomMultiplier = 0.74; // Zoom out overview
+        focusIndex = 0;
+      }
+    } else {
+      // Mobile section focus
+      if (sp >= 0.52 && sp < 0.68) focusIndex = 1;
+      else if (sp >= 0.68 && sp < 0.82) focusIndex = 2;
+      else if (sp >= 0.82) zoomMultiplier = 0.85;
+    }
+
+    // Direct authority selection / hover override
+    if (activeCode) {
+      const matchIdx = AUTHORITY_NODES.findIndex((n) => n.code === activeCode);
+      if (matchIdx !== -1) focusIndex = matchIdx;
+    }
+
+    // Zoom fly-to when node selected
+    if (syncState.selectedCode) {
+      zoomMultiplier *= 1.25;
+      if (!isMobile) targetX = Math.min(0.12 * vW, 2.2);
+    }
+
+    // Smooth position and scale damping
+    group.position.x = THREE.MathUtils.damp(group.position.x, targetX, 3.8, dt);
+    group.position.y = THREE.MathUtils.damp(group.position.y, targetY, 3.8, dt);
+    const finalScale = targetScale * zoomMultiplier;
+    group.scale.x = THREE.MathUtils.damp(group.scale.x, finalScale, 3.8, dt);
+    group.scale.y = THREE.MathUtils.damp(group.scale.y, finalScale, 3.8, dt);
+    group.scale.z = THREE.MathUtils.damp(group.scale.z, finalScale, 3.8, dt);
+
+    // Pointer Drag & Inertia
+    const pState = pointerRef.current;
     const deltaDragX = pState.offsetX - lastTrackedDragX.current;
     const deltaDragY = pState.offsetY - lastTrackedDragY.current;
     lastTrackedDragX.current = pState.offsetX;
@@ -518,30 +787,35 @@ function AviationNetworkContent() {
       0.45
     );
 
-    // Target orientation: India -> USA -> Europe via scroll, or direct focus when card/node hovered
-    const sp = scrollProgressRef.current;
-    let focusIndex = 0; // DGCA (India)
-    if (sp >= 0.34 && sp < 0.7) focusIndex = 1; // FAA (USA)
-    else if (sp >= 0.7) focusIndex = 2; // EASA (Europe)
-
-    if (activeCode) {
-      const matchIdx = AUTHORITY_NODES.findIndex((n) => n.code === activeCode);
-      if (matchIdx !== -1) focusIndex = matchIdx;
-    }
-
+    // Rotation target: focused node facing camera
     const focusNode = AUTHORITY_NODES[focusIndex];
-    const idleSpin = isReducedMotion() ? 0 : Math.sin(elapsed * 0.25) * 0.08;
+    const idleSpin = isReducedMotion() ? 0 : Math.sin(elapsed * 0.2) * 0.06;
     const targetRotY = -focusNode.lon * DEG2RAD + userYaw.current + idleSpin;
     const targetRotX = focusNode.lat * DEG2RAD * 0.55 + userPitch.current;
 
     smoothRotY.current = THREE.MathUtils.damp(smoothRotY.current, targetRotY, 4.2, dt);
     smoothRotX.current = THREE.MathUtils.damp(smoothRotX.current, targetRotX, 4.2, dt);
 
-    group.rotation.y = smoothRotY.current;
-    group.rotation.x = smoothRotX.current;
+    // Pointer parallax tilt
+    const parallaxTiltX = pState.hasPointer ? pState.ndcY * 0.06 : 0;
+    const parallaxTiltY = pState.hasPointer ? pState.ndcX * 0.08 : 0;
+
+    group.rotation.y = smoothRotY.current + parallaxTiltY;
+    group.rotation.x = smoothRotX.current + parallaxTiltX;
     group.updateMatrixWorld();
 
-    // Update dot-sphere active direction highlight
+    // Starfield Parallax
+    if (starfieldRef.current) {
+      starfieldRef.current.rotation.y = elapsed * 0.015 + (pState.hasPointer ? pState.ndcX * 0.04 : 0);
+      starfieldRef.current.rotation.x = pState.hasPointer ? -pState.ndcY * 0.03 : 0;
+    }
+
+    // Orbit Ring slow spin
+    if (orbitGroupRef.current) {
+      orbitGroupRef.current.rotation.y = elapsed * 0.08;
+    }
+
+    // Update dot-sphere active highlight
     dotsMaterial.uniforms.uActiveDir.value.copy(focusNode.dir);
     dotsMaterial.uniforms.uHighlight.value = THREE.MathUtils.damp(
       dotsMaterial.uniforms.uHighlight.value,
@@ -550,7 +824,7 @@ function AviationNetworkContent() {
       dt
     );
 
-    // Update arcs + aircraft glyphs
+    // Update Great-Circle Arcs and Aircraft Glyphs
     for (let i = 0; i < arcResources.length; i++) {
       const arc = arcResources[i];
       const isFocused = activeCode ? arc.node.code === activeCode : i === focusIndex;
@@ -573,7 +847,7 @@ function AviationNetworkContent() {
         scratch.up.crossVectors(scratch.tangent, scratch.right).normalize();
         scratch.mat.makeBasis(scratch.right, scratch.up, scratch.tangent);
         scratch.mat.setPosition(scratch.p0);
-        const jetScale = isFocused ? 1.35 : 1.0;
+        const jetScale = isFocused ? 1.45 : 1.05;
         scratch.scale.set(jetScale, jetScale, jetScale);
         scratch.mat.scale(scratch.scale);
         jetsRef.current.setMatrixAt(i, scratch.mat);
@@ -581,21 +855,21 @@ function AviationNetworkContent() {
     }
     if (jetsRef.current) jetsRef.current.instanceMatrix.needsUpdate = true;
 
-    // Update pulsing node rings & node cores (4 instances: HYD, DGCA, FAA, EASA)
+    // Update Pulsing Node Rings & Cores
     if (ringsRef.current && coresRef.current) {
       for (let i = 0; i < GEO_NODES.length; i++) {
         const node = GEO_NODES[i];
         const isHighlighted =
           activeCode === node.code || (!activeCode && node.code === focusNode.code);
-        const pulse = 1 + Math.sin(elapsed * 3.4 + i * 1.3) * (isHighlighted ? 0.28 : 0.14);
-        const ringScale = (isHighlighted ? 1.48 : 1.0) * pulse;
+        const pulse = 1 + Math.sin(elapsed * 3.4 + i * 1.3) * (isHighlighted ? 0.32 : 0.16);
+        const ringScale = (isHighlighted ? 1.55 : 1.0) * pulse;
 
         scratch.quat.setFromUnitVectors(scratch.zAxis, node.dir);
         scratch.scale.set(ringScale, ringScale, ringScale);
         scratch.mat.compose(node.pos, scratch.quat, scratch.scale);
         ringsRef.current.setMatrixAt(i, scratch.mat);
 
-        const coreScale = isHighlighted ? 1.45 : 1.0;
+        const coreScale = isHighlighted ? 1.5 : 1.0;
         scratch.scale.set(coreScale, coreScale, coreScale);
         scratch.mat.compose(node.pos, scratch.quat, scratch.scale);
         coresRef.current.setMatrixAt(i, scratch.mat);
@@ -604,9 +878,9 @@ function AviationNetworkContent() {
       coresRef.current.instanceMatrix.needsUpdate = true;
     }
 
-    // Hover picking by projecting the 3 authority anchor points
+    // Hover detection when pointer moves
     if (pState.hasPointer && !pState.overDomControl && !pState.isDragging) {
-      const hovered = pickNodeAt(pState.clientX, pState.clientY, 44);
+      const hovered = pickNodeAt(pState.clientX, pState.clientY, 48);
       if (hovered !== syncState.hoveredCode) {
         aviationStore.set({ hoveredCode: hovered });
       }
@@ -614,30 +888,54 @@ function AviationNetworkContent() {
       aviationStore.set({ hoveredCode: null });
     }
 
-    // Reposition external DOM label chip directly via transform (0 React renders/frame)
+    // Connect node to DOM label chip via SVG connecting line
     const chipCode = syncState.hoveredCode || syncState.selectedCode;
     const chipEl = document.getElementById("aviation-globe-chip");
-    if (chipEl) {
-      if (chipCode) {
-        const targetNode = AUTHORITY_NODES.find((n) => n.code === chipCode);
-        if (targetNode) {
-          scratch.norm.copy(targetNode.dir).transformDirection(group.matrixWorld);
-          if (scratch.norm.z > -0.15) {
-            scratch.proj.copy(targetNode.pos).applyMatrix4(group.matrixWorld).project(camera);
-            const sx = THREE.MathUtils.clamp(
-              (scratch.proj.x * 0.5 + 0.5) * size.width,
-              140,
-              Math.max(150, size.width - 140)
-            );
-            const sy = THREE.MathUtils.clamp(
-              (-scratch.proj.y * 0.5 + 0.5) * size.height - 18,
-              76,
-              Math.max(90, size.height - 96)
-            );
-            chipEl.style.transform = `translate3d(${sx.toFixed(1)}px, ${sy.toFixed(1)}px, 0) translate(-50%, -100%)`;
+    const lineSvg = document.getElementById("aviation-chip-svg");
+    const lineEl = document.getElementById("aviation-chip-line");
+    const dotEl = document.getElementById("aviation-chip-origin-dot");
+
+    if (chipCode && chipEl) {
+      const targetNode = AUTHORITY_NODES.find((n) => n.code === chipCode);
+      if (targetNode) {
+        scratch.norm.copy(targetNode.dir).transformDirection(group.matrixWorld);
+        if (scratch.norm.z > -0.15) {
+          scratch.proj.copy(targetNode.pos).applyMatrix4(group.matrixWorld).project(camera);
+          const nodeScreenX = (scratch.proj.x * 0.5 + 0.5) * size.width;
+          const nodeScreenY = (-scratch.proj.y * 0.5 + 0.5) * size.height;
+
+          const isRightSide = nodeScreenX > size.width * 0.52;
+          const chipX = isRightSide
+            ? Math.max(20, nodeScreenX - 32)
+            : Math.min(size.width - 20, nodeScreenX + 32);
+          const chipY = THREE.MathUtils.clamp(
+            nodeScreenY - 30,
+            80,
+            Math.max(90, size.height - 130)
+          );
+          const transformAnchor = isRightSide ? "-100%, -50%" : "0%, -50%";
+
+          chipEl.style.transform = `translate3d(${chipX.toFixed(1)}px, ${chipY.toFixed(1)}px, 0) translate(${transformAnchor})`;
+
+          if (lineSvg && lineEl && dotEl) {
+            lineSvg.style.display = "block";
+            lineEl.setAttribute("x1", nodeScreenX.toFixed(1));
+            lineEl.setAttribute("y1", nodeScreenY.toFixed(1));
+            lineEl.setAttribute("x2", chipX.toFixed(1));
+            lineEl.setAttribute("y2", chipY.toFixed(1));
+            dotEl.setAttribute("cx", nodeScreenX.toFixed(1));
+            dotEl.setAttribute("cy", nodeScreenY.toFixed(1));
           }
+        } else {
+          if (lineSvg) lineSvg.style.display = "none";
         }
       }
+    } else {
+      if (lineSvg) lineSvg.style.display = "none";
+    }
+
+    if (typeof window !== "undefined") {
+      (window as any).__ZYXEN_AVIATION_CALLS__ = state.gl.info.render.calls;
     }
   });
 
@@ -645,21 +943,32 @@ function AviationNetworkContent() {
     <>
       <color attach="background" args={["#050505"]} />
 
-      <group ref={globeGroupRef} position={[0, -0.1, 0]}>
+      {/* 1. Deep Parallax Starfield */}
+      <points ref={starfieldRef} geometry={starfieldGeo} material={starfieldMat} />
+
+      {/* 2. Main Responsive Globe Group */}
+      <group ref={globeGroupRef} position={[0, 0, 0]}>
         {/* Occlusion core prevents cluttered back-hemisphere transparency */}
         <mesh geometry={coreOcclusionGeo}>
-          <meshBasicMaterial color="#05060b" transparent opacity={0.88} />
+          <meshBasicMaterial color="#05060d" transparent opacity={0.92} />
         </mesh>
 
-        {/* Dot-sphere globe (Fibonacci lattice + shader) */}
+        {/* Faint latitude / longitude graticule */}
+        <lineSegments geometry={graticuleGeo} material={graticuleMat} />
+
+        {/* Dot-sphere globe (Fibonacci lattice + landmass clustering) */}
         <points geometry={dotsGeometry} material={dotsMaterial} />
 
-        {/* Great-circle arcs from Hyderabad */}
-        {hasFirstFrame && arcResources.map((arc) => (
-          <mesh key={arc.node.code} geometry={arc.geo} material={arc.mat} />
-        ))}
+        {/* Fresnel atmosphere rim glow */}
+        <mesh geometry={fresnelAtmosphereGeo} material={fresnelAtmosphereMat} />
 
-        {/* Small aircraft glyphs travelling each arc */}
+        {/* Great-circle arcs from Hyderabad */}
+        {hasFirstFrame &&
+          arcResources.map((arc) => (
+            <mesh key={arc.node.code} geometry={arc.geo} material={arc.mat} />
+          ))}
+
+        {/* Travelling aircraft glyphs */}
         {hasFirstFrame && (
           <instancedMesh ref={jetsRef} args={[jetGeo, jetMat, AUTHORITY_NODES.length]} />
         )}
@@ -667,22 +976,28 @@ function AviationNetworkContent() {
         {/* Pulsing rings + node cores */}
         <instancedMesh ref={ringsRef} args={[ringGeo, ringMat, GEO_NODES.length]} />
         <instancedMesh ref={coresRef} args={[nodeCoreGeo, nodeCoreMat, GEO_NODES.length]} />
+
+        {/* Tilted orbital ring */}
+        <group ref={orbitGroupRef} rotation={[0.42, 0.28, 0]}>
+          <lineSegments geometry={orbitRingGeo} material={orbitRingMat} />
+        </group>
       </group>
 
+      {/* Postprocessing (Full tier only; <= 30 draw calls total) */}
       {tier === "full" && hasFirstFrame && (
-        <EffectComposer multisampling={0}>
-          <Bloom luminanceThreshold={0.35} luminanceSmoothing={0.9} intensity={1.35} mipmapBlur />
+        <EffectComposer multisampling={0} resolutionScale={0.65}>
+          <Bloom luminanceThreshold={0.3} luminanceSmoothing={0.9} intensity={1.4} mipmapBlur />
         </EffectComposer>
       )}
     </>
   );
 }
 
-export default function AviationScene({ triggerTime }: { triggerTime?: number | null }) {
+export default function AviationScene({ triggerTime }: { triggerTime?: number | null } = {}) {
   return (
     <SceneShell
       triggerTime={triggerTime}
-      camera={{ position: [0, 0.25, 8.6], fov: 45 }}
+      camera={{ position: [0, 0, 8.8], fov: 45 }}
       gl={{ powerPreference: "high-performance", antialias: false }}
     >
       <AviationNetworkContent />
