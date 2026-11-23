@@ -194,7 +194,7 @@ export function SiteFooter() {
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="text-[#BFC7D5] hover:text-[#00D9FF] transition-colors inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
+                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
                   >
                     {link.label}
                   </Link>
@@ -214,7 +214,7 @@ export function SiteFooter() {
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="text-[#BFC7D5] hover:text-[#00D9FF] transition-colors inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
+                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
                   >
                     {link.label}
                   </Link>
@@ -234,7 +234,7 @@ export function SiteFooter() {
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="text-[#BFC7D5] hover:text-[#00D9FF] transition-colors inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
+                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
                   >
                     {link.label}
                   </Link>
@@ -254,7 +254,7 @@ export function SiteFooter() {
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="text-[#BFC7D5] hover:text-[#00D9FF] transition-colors inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
+                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
                   >
                     {link.label}
                   </Link>

@@ -78,7 +78,8 @@ export function BlogsOverlay({ posts }: { posts: BlogCard[] }) {
                   }
                 >
                   <div
-                    className={`reveal-blog glass-panel p-6 md:p-8 rounded-2xl flex flex-col md:flex-row gap-6 border transition-all duration-300 ${
+                    data-spotlight="true"
+                    className={`reveal-blog precision-card p-6 md:p-8 rounded-2xl flex flex-col md:flex-row gap-6 border transition-all duration-300 ${
                       isHighlighted
                         ? "border-[#00D9FF]/80 shadow-[0_0_28px_rgba(0,217,255,0.2)]"
                         : "border-white/10 hover:border-[#6E5BFF]/50"

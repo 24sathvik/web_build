@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, type ReactNode } from "react";
+import { Suspense, useEffect } from "react";
 import { Header } from "@/components/dom/Header";
+import { SiteFooter } from "@/components/dom/SiteFooter";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { ProjectsOverlay } from "@/components/dom/projects/ProjectsOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
@@ -28,10 +29,8 @@ const FALLBACK_BG = (
 
 export default function Projects({
   projects = [],
-  footer,
 }: {
   projects?: ProjectItem[];
-  footer?: ReactNode;
 }) {
   const tier = useQualityTier();
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/projects");
@@ -71,7 +70,7 @@ export default function Projects({
         id="scroll-container-projects"
       >
         <ProjectsOverlay projects={projects} />
-        {footer}
+        <SiteFooter />
       </div>
     </main>
   );

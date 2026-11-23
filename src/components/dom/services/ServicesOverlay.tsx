@@ -113,7 +113,7 @@ export function ServicesOverlay() {
             id={service.id}
             className={`services-section content-visibility-auto w-full min-h-[100svh] flex flex-col ${isRight ? "items-end" : "items-start"} justify-center px-6 md:px-24 py-16`}
           >
-            <div className={`max-w-xl w-full pointer-events-auto glass-panel p-6 sm:p-8 md:p-10 rounded-2xl ${borderClasses[idx % borderClasses.length]} backdrop-blur-md`}>
+            <div data-spotlight="true" className={`max-w-xl w-full pointer-events-auto precision-card p-6 sm:p-8 md:p-10 rounded-2xl ${borderClasses[idx % borderClasses.length]}`}>
               <div className="text-3xl sm:text-4xl font-mono font-bold text-[#00D9FF] mb-2 sm:mb-3">
                 {service.number}
               </div>
@@ -139,11 +139,11 @@ export function ServicesOverlay() {
               <div>
                 <Link
                   href={service.linkUrl}
-                  className="inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold uppercase tracking-wider text-[#00D9FF] hover:text-[#FFFFFF] transition-colors"
+                  className="precision-link inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold uppercase tracking-wider text-[#00D9FF] hover:text-[#FFFFFF] transition-colors"
                 >
-                  {service.linkText}
+                  <span>{service.linkText}</span>
                   <svg
-                    className="w-4 h-4"
+                    className="w-4 h-4 link-arrow"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

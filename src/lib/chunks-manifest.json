@@ -1,37 +1,52 @@
 {
   "/": [
+    "static/chunks/0wk-tlfnaguqg.js",
     "static/chunks/3aggead44fyi0.js",
     "static/chunks/1ksfvquy7jkp8.js",
     "static/chunks/32_-f3kvirmsg.js",
     "static/chunks/28tworazsw4we.js",
-    "static/chunks/2xsiiihj1s2di.js"
+    "static/chunks/2xsiiihj1s2di.js",
+    "static/chunks/2vumkzo-c17_j.js"
   ],
   "/about": [
+    "static/chunks/0wk-tlfnaguqg.js",
     "static/chunks/3u5_yjlpec6an.js",
     "static/chunks/2t8d31gi5znna.js",
-    "static/chunks/32_-f3kvirmsg.js"
+    "static/chunks/32_-f3kvirmsg.js",
+    "static/chunks/2vumkzo-c17_j.js"
   ],
   "/aviation-academy-software": [
+    "static/chunks/0wk-tlfnaguqg.js",
     "static/chunks/0qcbt-y1lvvdh.js",
-    "static/chunks/2e64x_lqoqxge.js"
+    "static/chunks/2e64x_lqoqxge.js",
+    "static/chunks/2vumkzo-c17_j.js"
   ],
   "/blogs": [
+    "static/chunks/0wk-tlfnaguqg.js",
     "static/chunks/25hjqd4vmz0zb.js",
-    "static/chunks/2e64x_lqoqxge.js"
+    "static/chunks/2e64x_lqoqxge.js",
+    "static/chunks/2vumkzo-c17_j.js"
   ],
   "/contact": [
+    "static/chunks/0wk-tlfnaguqg.js",
     "static/chunks/3i4-ibk27mv3i.js",
-    "static/chunks/2e64x_lqoqxge.js"
+    "static/chunks/2e64x_lqoqxge.js",
+    "static/chunks/2vumkzo-c17_j.js",
+    "static/chunks/1k7g4pvk2jcux.js"
   ],
   "/projects": [
     "static/chunks/3u329w6ktt8nh.js",
+    "static/chunks/0wk-tlfnaguqg.js",
     "static/chunks/3ht-s7ik9mzyy.js",
     "static/chunks/0awmxz18j8utg.js",
-    "static/chunks/2e64x_lqoqxge.js"
+    "static/chunks/2e64x_lqoqxge.js",
+    "static/chunks/2vumkzo-c17_j.js"
   ],
   "/services": [
+    "static/chunks/0wk-tlfnaguqg.js",
     "static/chunks/1w9khhw-e96wi.js",
     "static/chunks/2t8d31gi5znna.js",
-    "static/chunks/32_-f3kvirmsg.js"
+    "static/chunks/32_-f3kvirmsg.js",
+    "static/chunks/2vumkzo-c17_j.js"
   ]
 }

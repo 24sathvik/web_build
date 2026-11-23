@@ -1,5 +1,4 @@
 import { pageMetadata } from "@/lib/seo";
-import { SiteFooter } from "@/components/dom/SiteFooter";
 import { SITE_URL } from "@/lib/site";
 import Services from "./client";
 
@@ -70,7 +69,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Services footer={<SiteFooter />} />
+      <Services />
     </>
   );
 }

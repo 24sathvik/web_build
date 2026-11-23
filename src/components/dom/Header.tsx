@@ -100,7 +100,7 @@ export function Header() {
                 prefetch={false}
                 className={clsx(
                   "relative flex flex-col items-center justify-center w-[68px] md:w-[72px] h-[68px] md:h-[72px] rounded-[1.2rem] md:rounded-[1.5rem] transition-all duration-300 overflow-hidden flex-shrink-0",
-                  isActive ? "text-[#FFFFFF]" : "text-[#BFC7D5] hover:text-[#FFFFFF]"
+                  isActive ? "text-[#FFFFFF]" : "text-[#BFC7D5] hover:text-[#FFFFFF] hover:bg-white/[0.06]"
                 )}
               >
                 {/* Active Background Glow */}

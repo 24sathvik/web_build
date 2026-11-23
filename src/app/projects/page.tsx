@@ -1,5 +1,4 @@
 import { pageMetadata } from "@/lib/seo";
-import { SiteFooter } from "@/components/dom/SiteFooter";
 import { siteContent } from "@/content/site";
 import { SITE_URL } from "@/lib/site";
 import Projects from "./client";
@@ -37,7 +36,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <Projects projects={siteContent.projects} footer={<SiteFooter />} />
+      <Projects projects={siteContent.projects} />
     </>
   );
 }

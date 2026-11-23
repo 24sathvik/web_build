@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, type ReactNode } from "react";
+import { Suspense, useEffect } from "react";
 import { Header } from "@/components/dom/Header";
+import { SiteFooter } from "@/components/dom/SiteFooter";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { AboutOverlay } from "@/components/dom/about/AboutOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
@@ -18,7 +19,7 @@ const AboutScene = dynamic(
   { ssr: false }
 );
 
-export default function About({ footer }: { footer?: ReactNode }) {
+export default function About() {
   const tier = useQualityTier();
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/about");
 
@@ -33,7 +34,7 @@ export default function About({ footer }: { footer?: ReactNode }) {
     <main className="relative w-full h-[100svh] overflow-hidden cursor-none">
       <CustomCursor />
       <Header />
-      
+
       <div className="absolute inset-0 z-0">
         {shouldMount ? (
           <Suspense
@@ -56,7 +57,7 @@ export default function About({ footer }: { footer?: ReactNode }) {
 
       <div className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden" id="scroll-container-about">
         <AboutOverlay />
-        {footer}
+        <SiteFooter />
       </div>
     </main>
   );

@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, type ReactNode } from "react";
+import { Suspense, useEffect } from "react";
 import { Header } from "@/components/dom/Header";
+import { SiteFooter } from "@/components/dom/SiteFooter";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { ContactOverlay } from "@/components/dom/contact/ContactOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
@@ -18,7 +19,7 @@ const ContactScene = dynamic(
   { ssr: false }
 );
 
-export default function Contact({ footer }: { footer?: ReactNode }) {
+export default function Contact() {
   const tier = useQualityTier();
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/contact");
 
@@ -56,7 +57,7 @@ export default function Contact({ footer }: { footer?: ReactNode }) {
 
       <div className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden" id="scroll-container-contact">
         <ContactOverlay />
-        {footer}
+        <SiteFooter />
       </div>
     </main>
   );

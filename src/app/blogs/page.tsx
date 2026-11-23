@@ -1,6 +1,5 @@
 import { pageMetadata } from "@/lib/seo";
 import { getAllPosts } from "@/lib/blog";
-import { SiteFooter } from "@/components/dom/SiteFooter";
 import Blogs from "./client";
 
 export const metadata = pageMetadata({
@@ -13,5 +12,5 @@ export const metadata = pageMetadata({
 
 export default function Page() {
   const posts = getAllPosts().map(({ content: _content, ...rest }) => rest);
-  return <Blogs posts={posts} footer={<SiteFooter />} />;
+  return <Blogs posts={posts} />;
 }

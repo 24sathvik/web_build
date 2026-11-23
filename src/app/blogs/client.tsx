@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, type ReactNode } from "react";
+import { Suspense, useEffect } from "react";
 import { Header } from "@/components/dom/Header";
+import { SiteFooter } from "@/components/dom/SiteFooter";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { BlogsOverlay, type BlogCard } from "@/components/dom/blogs/BlogsOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
@@ -20,7 +21,7 @@ const BlogsScene = dynamic(
   { ssr: false }
 );
 
-export default function Blogs({ posts, footer }: { posts: BlogCard[]; footer?: ReactNode }) {
+export default function Blogs({ posts }: { posts: BlogCard[] }) {
   const tier = useQualityTier();
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/blogs");
   const { hoveredSlug } = useSelectionStore(blogStore);
@@ -87,7 +88,7 @@ export default function Blogs({ posts, footer }: { posts: BlogCard[]; footer?: R
         id="scroll-container-blogs"
       >
         <BlogsOverlay posts={posts} />
-        {footer}
+        <SiteFooter />
       </div>
     </main>
   );

@@ -183,3 +183,299 @@ canvas {
     transform: none !important;
   }
 }
+
+/* ==========================================================================
+   PRECISION INSTRUMENT DESIGN SYSTEM TOKENS & UTILITIES (Phase 9f)
+   ========================================================================== */
+
+:root {
+  /* Precision Easing Curves */
+  --ease-precision: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 700ms;
+
+  /* Standardized Precision Radii */
+  --radius-card: 16px;
+  --radius-pill: 9999px;
+
+  /* Glows & Shadows */
+  --glow-cyan: 0 0 24px -4px rgba(0, 217, 255, 0.3);
+  --glow-violet: 0 0 24px -4px rgba(110, 91, 255, 0.3);
+  --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lift: 0 16px 36px -6px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+/* Precision Instrument Card */
+.precision-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(13, 13, 13, 0.75);
+  transition: transform var(--duration-normal) var(--ease-precision),
+              border-color var(--duration-normal) var(--ease-precision),
+              box-shadow var(--duration-normal) var(--ease-precision);
+  overflow: hidden;
+}
+
+/* Corner ticks (precision instrument crosshairs) */
+.precision-card::before,
+.precision-card::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+  z-index: 5;
+  transition: border-color var(--duration-normal) var(--ease-precision);
+}
+
+.precision-card::before {
+  top: 0;
+  left: 0;
+  border-top: 1.5px solid rgba(0, 217, 255, 0.4);
+  border-left: 1.5px solid rgba(0, 217, 255, 0.4);
+  border-top-left-radius: 4px;
+}
+
+.precision-card::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 1.5px solid rgba(110, 91, 255, 0.4);
+  border-right: 1.5px solid rgba(110, 91, 255, 0.4);
+  border-bottom-right-radius: 4px;
+}
+
+/* Pointer-follow spotlight & gradient border glow */
+.precision-card[data-spotlight] {
+  --mouse-x: -999px;
+  --mouse-y: -999px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .precision-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 217, 255, 0.35);
+    box-shadow: var(--shadow-lift), var(--glow-cyan);
+  }
+
+  .precision-card:hover::before {
+    border-color: #00D9FF;
+  }
+
+  .precision-card:hover::after {
+    border-color: #6E5BFF;
+  }
+
+  /* Card image zoom 1.04 */
+  .precision-card:hover img,
+  .precision-card:hover picture img {
+    transform: scale(1.04);
+  }
+
+  .precision-card img,
+  .precision-card picture img {
+    transition: transform var(--duration-slow) var(--ease-precision);
+  }
+
+  /* Radial spotlight overlay */
+  .precision-card[data-spotlight]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      280px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+      rgba(0, 217, 255, 0.12),
+      rgba(110, 91, 255, 0.06),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-precision);
+    z-index: 2;
+  }
+
+  .precision-card[data-spotlight]:hover::after {
+    opacity: 1;
+  }
+}
+
+/* Touch feedback: active scale */
+@media (hover: none) or (pointer: coarse) {
+  .precision-card:active {
+    transform: scale(0.98);
+    transition: transform var(--duration-fast) var(--ease-precision);
+  }
+}
+
+/* Precision Button with shine sweep & scale feedback */
+.precision-button {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  transition: transform var(--duration-normal) var(--ease-precision),
+              box-shadow var(--duration-normal) var(--ease-precision),
+              filter var(--duration-normal) var(--ease-precision);
+}
+
+.precision-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+  transition: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .precision-button:hover::before {
+    left: 140%;
+    transition: left 0.7s var(--ease-precision);
+  }
+
+  .precision-button:hover {
+    box-shadow: 0 0 20px -2px rgba(0, 217, 255, 0.4);
+    filter: brightness(1.05);
+  }
+}
+
+@media (hover: none) or (pointer: coarse) {
+  .precision-button:active {
+    transform: scale(0.97);
+    transition: transform var(--duration-fast) var(--ease-precision);
+  }
+}
+
+/* Precision Link: animated gradient underline and arrow nudge */
+.precision-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #00D9FF;
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-precision);
+}
+
+.precision-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, #00D9FF, #6E5BFF);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-normal) var(--ease-precision);
+}
+
+.precision-link .link-arrow {
+  display: inline-block;
+  transition: transform var(--duration-normal) var(--ease-precision);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .precision-link:hover::after {
+    transform: scaleX(1);
+  }
+
+  .precision-link:hover .link-arrow {
+    transform: translateX(4px);
+  }
+}
+
+/* Precision Nav & Footer Link: hover pill */
+.precision-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+  transition: color var(--duration-fast) var(--ease-precision),
+              background-color var(--duration-fast) var(--ease-precision);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .precision-nav-link:hover {
+    color: #FFFFFF !important;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Scroll Reveals (CSS First) */
+/* Content is always visible without JavaScript */
+.reveal-on-scroll {
+  opacity: 1;
+  transform: none;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-on-scroll {
+      animation: precisionReveal linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 25%;
+    }
+
+    @keyframes precisionReveal {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+@supports not (animation-timeline: view()) {
+  html.js:not(.reduced-motion) .reveal-on-scroll:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  html.js:not(.reduced-motion) .reveal-on-scroll.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity var(--duration-slow) var(--ease-precision),
+                transform var(--duration-slow) var(--ease-precision);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+}
+
+/* Reduced Motion Override: disable all motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .precision-card,
+  .precision-card:hover,
+  .precision-button,
+  .precision-button:hover,
+  .reveal-on-scroll {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import dynamic from "next/dynamic";
 import { useReportWebVitals } from "next/web-vitals";
 import { trackEvent } from "@/lib/analytics";
 import { safeRequestIdleCallback, safeCancelIdleCallback } from "@/lib/browser-compat";
+
+const GoogleAnalytics = dynamic(
+  () => import("@next/third-parties/google").then((m) => m.GoogleAnalytics),
+  { ssr: false }
+);
 
 export function Analytics() {
   const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-WKZ9NBF6WN";

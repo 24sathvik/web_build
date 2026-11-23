@@ -1,5 +1,4 @@
 import { pageMetadata } from "@/lib/seo";
-import { SiteFooter } from "@/components/dom/SiteFooter";
 import Home from "./client";
 
 export const metadata = pageMetadata({
@@ -11,5 +10,5 @@ export const metadata = pageMetadata({
 });
 
 export default function Page() {
-  return <Home footer={<SiteFooter />} />;
+  return <Home />;
 }

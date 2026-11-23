@@ -1,9 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, type ReactNode } from "react";
+import { Suspense, useEffect } from "react";
 import { Overlay } from "@/components/dom/Overlay";
 import { Header } from "@/components/dom/Header";
+import { SiteFooter } from "@/components/dom/SiteFooter";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { useQualityTier } from "@/hooks/useQualityTier";
 import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
@@ -19,7 +20,7 @@ const Scene = dynamic(
   { ssr: false }
 );
 
-export default function Home({ footer }: { footer?: ReactNode }) {
+export default function Home() {
   const tier = useQualityTier();
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/");
 
@@ -36,7 +37,7 @@ export default function Home({ footer }: { footer?: ReactNode }) {
     <main className="relative w-full h-[100svh] overflow-hidden cursor-none">
       <CustomCursor />
       <Header />
-      
+
       {/* 3D WebGL Background: gated by tier so static tier never downloads the 3D bundle */}
       <div className="absolute inset-0 z-0">
         {shouldMount ? (
@@ -61,7 +62,7 @@ export default function Home({ footer }: { footer?: ReactNode }) {
       {/* DOM Overlay for Scroll and UI */}
       <div className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden" id="scroll-container">
         <Overlay />
-        {footer}
+        <SiteFooter />
       </div>
     </main>
   );

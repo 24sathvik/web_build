@@ -124,13 +124,13 @@ export function SolutionPageLayout({ solution }: SolutionPageLayoutProps) {
             <Link
               href="/contact"
               data-cta="solution_primary_cta"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#00D9FF] px-7 py-3 text-xs font-bold uppercase tracking-widest text-black hover:bg-white hover:scale-105 transition-all"
+              className="precision-button inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#00D9FF] px-7 py-3 text-xs font-bold uppercase tracking-widest text-black hover:bg-white hover:scale-105 transition-all"
             >
               Consult with Engineering &rarr;
             </Link>
             <Link
               href="/aviation-academy-software"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/20 px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-colors"
+              className="precision-button inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/20 px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-colors"
             >
               Explore Aviation Platform
             </Link>
@@ -162,7 +162,8 @@ export function SolutionPageLayout({ solution }: SolutionPageLayoutProps) {
             {solution.problems.map((prob, idx) => (
               <div
                 key={idx}
-                className="rounded-xl border border-white/10 bg-black/40 p-5 space-y-2.5"
+                data-spotlight="true"
+                className="precision-card p-5 space-y-2.5"
               >
                 <div className="flex items-center gap-2.5 text-red-400">
                   <span className="font-mono text-xs font-bold uppercase tracking-wider">
@@ -195,10 +196,11 @@ export function SolutionPageLayout({ solution }: SolutionPageLayoutProps) {
             {solution.solutions.map((sol, idx) => (
               <div
                 key={idx}
-                className="rounded-2xl border border-[#00D9FF]/20 bg-gradient-to-br from-[#00D9FF]/[0.05] via-white/[0.02] to-transparent p-6 space-y-3"
+                data-spotlight="true"
+                className="precision-card p-6 space-y-3"
               >
                 <div className="w-8 h-8 rounded-lg bg-[#00D9FF]/20 text-[#00D9FF] flex items-center justify-center font-mono text-xs font-bold">
-                  {idx + 1}
+                  0{idx + 1}
                 </div>
                 <h3 className="text-lg font-bold text-white tracking-tight">
                   {sol.title}
@@ -224,9 +226,10 @@ export function SolutionPageLayout({ solution }: SolutionPageLayoutProps) {
             {solution.inclusions.map((inc, idx) => (
               <div
                 key={idx}
-                className="rounded-xl border border-white/10 bg-white/[0.02] p-5 space-y-2 hover:border-white/20 transition-colors"
+                data-spotlight="true"
+                className="precision-card p-5 space-y-2 hover:border-white/20 transition-colors"
               >
-                <div className="text-xs font-mono text-white/40 tracking-wider">
+                <div className="text-xs font-mono text-[#00D9FF] tracking-wider">
                   Module 0{idx + 1}
                 </div>
                 <h3 className="text-base font-bold text-white">
@@ -255,7 +258,8 @@ export function SolutionPageLayout({ solution }: SolutionPageLayoutProps) {
             {solution.process.map((step) => (
               <div
                 key={step.step}
-                className="flex flex-col sm:flex-row items-start gap-4 rounded-xl border border-white/10 bg-white/[0.02] p-6 hover:bg-white/[0.04] transition-colors"
+                data-spotlight="true"
+                className="precision-card flex flex-col sm:flex-row items-start gap-4 p-6 hover:bg-white/[0.04] transition-colors"
               >
                 <div className="font-mono text-2xl font-extrabold text-[#00D9FF] shrink-0 w-12">
                   {step.step}
@@ -286,7 +290,8 @@ export function SolutionPageLayout({ solution }: SolutionPageLayoutProps) {
             {solution.faqs.map((faq, idx) => (
               <div
                 key={idx}
-                className="rounded-xl border border-white/10 bg-white/[0.02] p-6 space-y-2.5"
+                data-spotlight="true"
+                className="precision-card p-6 space-y-2.5"
               >
                 <h3 className="text-base sm:text-lg font-bold text-white flex items-start gap-3">
                   <span className="font-mono text-xs text-[#00D9FF] border border-[#00D9FF]/40 rounded px-1.5 py-0.5 mt-0.5">

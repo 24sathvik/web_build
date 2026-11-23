@@ -101,19 +101,19 @@ export function Overlay() {
         <div className="hero-entrance-delay-2 mt-10 flex gap-4 md:gap-6 justify-center pointer-events-auto flex-wrap">
           <button 
             onClick={() => setIsContactOpen(true)}
-            className="min-h-[44px] px-8 py-3 bg-[#00D9FF] text-black font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white hover:scale-105 transition-all"
+            className="precision-button min-h-[44px] px-8 py-3 bg-[#00D9FF] text-black font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white hover:scale-105 transition-all"
           >
             {siteContent.home.hero.primaryCta}
           </button>
           <a 
             href="/aviation-academy-software" 
-            className="min-h-[44px] px-8 py-3 bg-white/10 border border-[#00D9FF]/40 text-[#00D9FF] font-bold uppercase tracking-widest text-sm rounded-full hover:bg-[#00D9FF]/20 hover:scale-105 transition-all inline-flex items-center"
+            className="precision-button min-h-[44px] px-8 py-3 bg-white/10 border border-[#00D9FF]/40 text-[#00D9FF] font-bold uppercase tracking-widest text-sm rounded-full hover:bg-[#00D9FF]/20 hover:scale-105 transition-all inline-flex items-center"
           >
             {siteContent.home.hero.aviationCta}
           </a>
           <a 
             href="/projects" 
-            className="min-h-[44px] px-8 py-3 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all inline-flex items-center"
+            className="precision-button min-h-[44px] px-8 py-3 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all inline-flex items-center"
           >
             {siteContent.home.hero.secondaryCta}
           </a>
@@ -122,8 +122,8 @@ export function Overlay() {
 
       {/* Chapter 2: The Mission */}
       <section className="chapter-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-start justify-center px-6 md:px-24 py-20">
-        <div className="max-w-2xl pointer-events-auto glass-panel p-6 md:p-8 rounded-2xl">
-          <p className="reveal-text text-xs text-[#00D9FF] uppercase tracking-[0.3em] font-bold mb-4">
+        <div data-spotlight="true" className="max-w-2xl pointer-events-auto precision-card p-6 md:p-8 rounded-2xl">
+          <p className="reveal-text text-xs text-[#00D9FF] uppercase tracking-[0.3em] font-bold mb-4 font-mono">
             {siteContent.home.mission.tag}
           </p>
           <h2 className="reveal-text text-[clamp(1.75rem,4vw,3rem)] font-bold mb-6 leading-tight">
@@ -148,6 +148,7 @@ export function Overlay() {
               const margins = ["", "ml-0 md:ml-12", "ml-0 md:ml-24"];
               return (
                 <div key={item.title} className={`reveal-text border-l-2 ${borderColors[idx % borderColors.length]} pl-6 ${margins[idx % margins.length]}`}>
+                  <div className="font-mono text-xs text-[#00D9FF] tracking-widest uppercase mb-1">0{idx + 1}</div>
                   <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{item.title}</h3>
                   <p className="text-[#BFC7D5] text-[clamp(1rem,1.1vw,1.125rem)]">{item.description}</p>
                 </div>
@@ -158,9 +159,10 @@ export function Overlay() {
           <div className="reveal-text mt-10">
             <a 
               href="/aviation-academy-software" 
-              className="min-h-[44px] text-base font-semibold text-[#00D9FF] hover:underline inline-flex items-center gap-1.5"
+              className="precision-link min-h-[44px] text-base font-semibold text-[#00D9FF] inline-flex items-center gap-1.5"
             >
-              Explore Aviation Academy Software Modules &rarr;
+              <span>Explore Aviation Academy Software Modules</span>
+              <span className="link-arrow">&rarr;</span>
             </a>
           </div>
         </div>
@@ -168,7 +170,7 @@ export function Overlay() {
 
       {/* Chapter 4: Future Vision & Contact */}
       <section className="chapter-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-center justify-center px-4 py-20">
-        <div className="pointer-events-auto text-center bg-[#050505]/80 p-8 md:p-12 rounded-3xl backdrop-blur-md border border-[#00D9FF]/20 max-w-3xl">
+        <div data-spotlight="true" className="pointer-events-auto text-center bg-[#050505]/80 p-8 md:p-12 rounded-3xl precision-card border border-[#00D9FF]/20 max-w-3xl">
           <h2 className="reveal-text text-[clamp(2rem,5vw,3.75rem)] font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-[#00D9FF] leading-tight">
             {siteContent.home.cta.heading}
           </h2>
@@ -178,13 +180,13 @@ export function Overlay() {
           <div className="reveal-text flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => setIsContactOpen(true)}
-              className="min-h-[44px] px-8 py-3.5 bg-[#FFFFFF] text-[#050505] font-bold tracking-widest uppercase text-sm rounded-full hover:bg-[#BFC7D5] hover:scale-105 transition-all duration-300"
+              className="precision-button min-h-[44px] px-8 py-3.5 bg-[#FFFFFF] text-[#050505] font-bold tracking-widest uppercase text-sm rounded-full hover:bg-[#BFC7D5] hover:scale-105 transition-all duration-300"
             >
               {siteContent.home.cta.primaryButton}
             </button>
             <a 
               href="/services"
-              className="min-h-[44px] px-8 py-3.5 border border-white/20 text-white font-bold tracking-widest uppercase text-sm rounded-full hover:bg-white/10 transition-all duration-300 inline-flex items-center justify-center"
+              className="precision-button min-h-[44px] px-8 py-3.5 border border-white/20 text-white font-bold tracking-widest uppercase text-sm rounded-full hover:bg-white/10 transition-all duration-300 inline-flex items-center justify-center"
             >
               {siteContent.home.cta.secondaryButton}
             </a>

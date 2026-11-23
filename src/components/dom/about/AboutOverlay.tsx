@@ -125,7 +125,8 @@ export function AboutOverlay() {
           {siteContent.about.pillars.map((pillar, idx) => (
             <div
               key={pillar.number}
-              className={`glass-panel p-6 md:p-8 rounded-2xl text-left border ${borderColors[idx % borderColors.length]} transition-colors backdrop-blur-md`}
+              data-spotlight="true"
+              className={`precision-card p-6 md:p-8 rounded-2xl text-left border ${borderColors[idx % borderColors.length]}`}
             >
               <div className={`text-4xl font-mono font-bold ${textColors[idx % textColors.length]} mb-4`}>
                 {pillar.number}
@@ -140,7 +141,7 @@ export function AboutOverlay() {
         <div className="mt-16 pointer-events-auto">
           <Link
             href="/services"
-            className="inline-flex min-h-[44px] items-center gap-2 px-8 py-3 rounded-full bg-[#00D9FF] text-black font-semibold uppercase tracking-wider text-sm hover:bg-white transition-colors duration-300"
+            className="precision-button inline-flex min-h-[44px] items-center gap-2 px-8 py-3 rounded-full bg-[#00D9FF] text-black font-semibold uppercase tracking-wider text-sm hover:bg-white transition-colors duration-300"
           >
             Explore What We Build
             <svg

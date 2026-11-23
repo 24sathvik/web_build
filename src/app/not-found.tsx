@@ -89,7 +89,8 @@ export default function NotFound() {
                 key={item.href}
                 href={item.href}
                 prefetch={false}
-                className="group relative flex flex-col justify-between p-5 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.06] hover:border-cyan-500/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 min-h-[44px]"
+                data-spotlight="true"
+                className="group relative flex flex-col justify-between p-5 rounded-xl border border-white/10 precision-card transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 min-h-[44px]"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -115,7 +116,7 @@ export default function NotFound() {
             <Link
               href="/"
               prefetch={false}
-              className="inline-flex items-center justify-center min-h-[44px] px-6 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300 shadow-[0_0_20px_rgba(0,217,255,0.3)]"
+              className="precision-button inline-flex items-center justify-center min-h-[44px] px-6 py-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300 shadow-[0_0_20px_rgba(0,217,255,0.3)]"
             >
               Return to Homepage
             </Link>

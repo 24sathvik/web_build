@@ -67,7 +67,8 @@ export function AviationOverlay() {
             return (
               <div
                 key={mod.id}
-                className={`reveal-text glass-panel p-6 sm:p-8 rounded-2xl border ${accents[idx % accents.length]} backdrop-blur-xl bg-[#050505]/70 flex flex-col justify-between`}
+                data-spotlight="true"
+                className={`reveal-text precision-card p-6 sm:p-8 rounded-2xl border ${accents[idx % accents.length]} bg-[#050505]/70 flex flex-col justify-between`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -118,11 +119,12 @@ export function AviationOverlay() {
                 key={auth.code}
                 id={`authority-${auth.code.toLowerCase()}`}
                 tabIndex={0}
+                data-spotlight="true"
                 onMouseEnter={() => aviationStore.set({ domHoveredCode: auth.code })}
                 onMouseLeave={() => aviationStore.set({ domHoveredCode: null })}
                 onFocus={() => aviationStore.set({ domHoveredCode: auth.code })}
                 onBlur={() => aviationStore.set({ domHoveredCode: null })}
-                className={`reveal-text glass-panel p-8 rounded-2xl border backdrop-blur-xl bg-[#050505]/70 flex flex-col justify-between transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${
+                className={`reveal-text precision-card p-8 rounded-2xl border bg-[#050505]/70 flex flex-col justify-between transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${
                   isHighlighted
                     ? "border-[#00D9FF]/80 shadow-[0_0_28px_rgba(0,217,255,0.2)]"
                     : "border-white/10 hover:border-[#00D9FF]/45"

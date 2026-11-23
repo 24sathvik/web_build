@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, type ReactNode } from "react";
+import { Suspense, useEffect } from "react";
 import { Header } from "@/components/dom/Header";
+import { SiteFooter } from "@/components/dom/SiteFooter";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { AviationOverlay } from "@/components/dom/aviation/AviationOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
@@ -21,7 +22,7 @@ const AviationScene = dynamic(
   { ssr: false }
 );
 
-export default function AviationClient({ footer }: { footer?: ReactNode }) {
+export default function AviationClient() {
   const tier = useQualityTier();
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/aviation-academy-software");
   const { hoveredCode, selectedCode } = useSelectionStore(aviationStore);
@@ -138,7 +139,7 @@ export default function AviationClient({ footer }: { footer?: ReactNode }) {
         id="scroll-container-aviation"
       >
         <AviationOverlay />
-        {footer}
+        <SiteFooter />
       </div>
     </main>
   );
