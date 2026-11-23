@@ -68,7 +68,11 @@ export function DebugOverlay() {
       frameCount++;
       const elapsed = now - lastTime;
       if (elapsed >= 500) {
-        setFps(Math.round((frameCount * 1000) / elapsed));
+        const measuredFps = Math.round((frameCount * 1000) / elapsed);
+        setFps(measuredFps);
+        if (typeof window !== "undefined") {
+          (window as any).__ZYXEN_FPS__ = measuredFps;
+        }
         frameCount = 0;
         lastTime = now;
       }

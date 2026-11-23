@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
-import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, ChromaticAberration, Noise, Vignette } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { debugStore } from "@/lib/debugState";
@@ -19,13 +19,10 @@ import SceneShell, { useQualityTierContext, useHasFirstFrame } from "./SceneShel
 function SceneEffects() {
   const tier = useQualityTierContext();
   const hasFirstFrame = useHasFirstFrame();
-  // Requirement 5: Lite tier removes the postprocessing composer entirely.
-  // Full tier keeps current effects with optimized resolutionScale and multisampling 0.
-  // Defer until after first frame so initial frame paints immediately.
   if (tier !== "full" || !hasFirstFrame) return null;
 
   return (
-    <EffectComposer multisampling={0} resolutionScale={0.75}>
+    <EffectComposer multisampling={0} resolutionScale={0.65}>
       <Bloom
         luminanceThreshold={0.2}
         luminanceSmoothing={0.9}
@@ -38,6 +35,7 @@ function SceneEffects() {
         radialModulation={false}
         modulationOffset={0}
       />
+      <Noise opacity={0.02} blendFunction={BlendFunction.OVERLAY} />
       <Vignette eskil={false} offset={0.1} darkness={1.1} />
     </EffectComposer>
   );
@@ -77,7 +75,7 @@ function CompiledChapter({
       if (groupRef.current && typeof (gl as any).compileAsync === "function") {
         try {
           await (gl as any).compileAsync(groupRef.current, camera);
-        } catch {}
+        } catch { }
       }
 
       if (!cancelled) {
@@ -150,12 +148,18 @@ function SceneContent() {
       <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
       <spotLight position={[-10, 10, -5]} intensity={2} color="#00D9FF" angle={0.5} penumbra={1} />
 
-      {/* Local Environment: full tier only; generated once at resolution 64 with frames=1 after first frame */}
+      {/* Local Environment: full tier only; tuned to replicate city HDR reflections without external download */}
       {tier === "full" && hasFirstFrame && (
         <Environment resolution={64} frames={1}>
-          <Lightformer form="rect" intensity={1.5} position={[10, 5, 0]} scale={[10, 5, 1]} target={[0, 0, 0]} />
-          <Lightformer form="rect" intensity={2} color="#00D9FF" position={[-10, 5, 0]} scale={[10, 5, 1]} target={[0, 0, 0]} />
-          <Lightformer form="ring" color="#6E5BFF" intensity={1} position={[0, -5, 5]} scale={10} />
+          {/* Overhead sky fill */}
+          <Lightformer form="rect" intensity={2} position={[0, 10, 2]} scale={[20, 10, 1]} target={[0, 0, 0]} />
+          {/* Lateral specular lightformers mimicking high-rise window reflections */}
+          <Lightformer form="rect" intensity={2.5} color="#ffffff" position={[12, 6, 2]} scale={[12, 6, 1]} target={[0, 0, 0]} />
+          <Lightformer form="rect" intensity={3} color="#00D9FF" position={[-12, 6, -2]} scale={[12, 6, 1]} target={[0, 0, 0]} />
+          {/* Accent horizon ring */}
+          <Lightformer form="ring" color="#6E5BFF" intensity={2} position={[0, -6, 4]} scale={14} />
+          {/* Back rim highlight */}
+          <Lightformer form="rect" color="#00FFB2" intensity={1.5} position={[0, 8, -10]} scale={[15, 4, 1]} />
         </Environment>
       )}
 

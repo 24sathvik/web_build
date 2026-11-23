@@ -56,17 +56,28 @@ export default function Chapter2() {
           )}
         </group>
 
-        {/* Outer Tech Shell: simple standard material on lite */}
+        {/* Outer Tech Shell: physical material on full, standard on lite */}
         <mesh ref={shellRef}>
           <icosahedronGeometry args={[2, 1]} />
-          <meshStandardMaterial
-            color="#050505"
-            metalness={0.9}
-            roughness={0.2}
-            wireframe
-            transparent
-            opacity={0.3}
-          />
+          {isLite ? (
+            <meshStandardMaterial
+              color="#050505"
+              metalness={0.9}
+              roughness={0.2}
+              wireframe
+              transparent
+              opacity={0.3}
+            />
+          ) : (
+            <meshPhysicalMaterial
+              color="#050505"
+              metalness={0.9}
+              roughness={0.1}
+              wireframe
+              transparent
+              opacity={0.3}
+            />
+          )}
         </mesh>
       </Float>
     </group>

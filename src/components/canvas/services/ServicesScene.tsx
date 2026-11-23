@@ -20,7 +20,7 @@ function Carousel() {
   useGSAP(() => {
     if (!groupRef.current) return;
     if (!hasFirstFrame || isReducedMotion()) return;
-    
+
     // Rotate the entire carousel based on scroll
     gsap.to(groupRef.current.rotation, {
       y: Math.PI * 2, // Full rotation
@@ -96,6 +96,24 @@ function ServicesEffects() {
   );
 }
 
+function ServicesContent() {
+  const tier = useQualityTierContext();
+  const hasFirstFrame = useHasFirstFrame();
+
+  return (
+    <>
+      <color attach="background" args={["#050505"]} />
+
+      <ambientLight intensity={0.5} />
+      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} color="#00D9FF" intensity={2} />
+
+      <Carousel />
+
+      <ServicesEffects />
+    </>
+  );
+}
+
 export default function ServicesScene({ triggerTime }: { triggerTime?: number | null }) {
   return (
     <SceneShell
@@ -103,14 +121,7 @@ export default function ServicesScene({ triggerTime }: { triggerTime?: number | 
       camera={{ position: [0, 2, 10], fov: 45 }}
       gl={{ powerPreference: "high-performance", antialias: false }}
     >
-      <color attach="background" args={["#050505"]} />
-      
-      <ambientLight intensity={0.5} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} color="#00D9FF" intensity={2} />
-
-      <Carousel />
-
-      <ServicesEffects />
+      <ServicesContent />
     </SceneShell>
   );
 }
