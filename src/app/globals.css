@@ -27,6 +27,12 @@ body {
   overscroll-behavior-x: none;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 /* Ensure all interactive canvases preserve vertical page scroll */
 canvas {
   touch-action: pan-y !important;
@@ -124,8 +130,8 @@ canvas {
 
 /* Blog article typography (server-rendered markdown) */
 .zy-prose { color: #BFC7D5; font-size: 1.0625rem; line-height: 1.8; }
-.zy-prose h2 { color: #fff; font-size: 1.6rem; font-weight: 700; margin: 2.5rem 0 1rem; line-height: 1.25; }
-.zy-prose h3 { color: #fff; font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.75rem; }
+.zy-prose h2 { color: #fff; font-size: 1.6rem; font-weight: 700; margin: 2.5rem 0 1rem; line-height: 1.25; scroll-margin-top: 6.5rem; }
+.zy-prose h3 { color: #fff; font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.75rem; scroll-margin-top: 6.5rem; }
 .zy-prose p { margin: 1rem 0; }
 .zy-prose a { color: #00D9FF; text-decoration: underline; text-underline-offset: 3px; }
 .zy-prose strong { color: #fff; }

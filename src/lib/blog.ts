@@ -79,11 +79,26 @@ export interface HeadingItem {
   text: string;
 }
 
+export interface TocHeadingItem {
+  id: string;
+  text: string;
+  level: 2 | 3;
+}
+
 export function extractH2Headings(html: string): HeadingItem[] {
   const matches = [...html.matchAll(/<h2[^>]*\bid=["']([^"']+)["'][^>]*>([\s\S]*?)<\/h2>/gi)];
   return matches.map((m) => ({
     id: m[1],
     text: m[2].replace(/<[^>]*>/g, "").trim(),
+  }));
+}
+
+export function extractTocHeadings(html: string): TocHeadingItem[] {
+  const matches = [...html.matchAll(/<h([23])[^>]*\bid=["']([^"']+)["'][^>]*>([\s\S]*?)<\/h\1>/gi)];
+  return matches.map((m) => ({
+    level: Number(m[1]) as 2 | 3,
+    id: m[2],
+    text: m[3].replace(/<[^>]*>/g, "").trim(),
   }));
 }
 

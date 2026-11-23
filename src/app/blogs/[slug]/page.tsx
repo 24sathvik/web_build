@@ -5,7 +5,18 @@ import { Header } from "@/components/dom/Header";
 import { CustomCursor } from "@/components/dom/CustomCursor";
 import { SiteFooter } from "@/components/dom/SiteFooter";
 import { Breadcrumbs } from "@/components/dom/Breadcrumbs";
-import { getAllPosts, getPostBySlug, renderContent, safeImageSrc, extractH2Headings } from "@/lib/blog";
+import {
+  ReadingProgressBar,
+  TableOfContents,
+  MobileCollapsibleToc,
+} from "@/components/dom/blog/BlogReadingEnhancements";
+import {
+  getAllPosts,
+  getPostBySlug,
+  renderContent,
+  safeImageSrc,
+  extractTocHeadings,
+} from "@/lib/blog";
 import { pageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 
@@ -165,7 +176,9 @@ export default async function BlogPostPage({ params }: Params) {
     const beforeH2 = html.slice(0, splitIndex).replace(/<h3([^>]*)>([\s\S]*?)<\/h3>/gi, "<h2$1>$2</h2>");
     html = beforeH2 + html.slice(splitIndex);
   }
-  const h2Headings = extractH2Headings(html);
+  const tocHeadings = extractTocHeadings(html);
+  const h2Count = tocHeadings.filter((h) => h.level === 2).length;
+  const showToc = h2Count >= 3;
 
   // Guarantee 3 related articles (prefer matching category, fill from other posts)
   const allPosts = getAllPosts();
@@ -219,171 +232,248 @@ export default async function BlogPostPage({ params }: Params) {
       />
       <CustomCursor />
       <Header />
+      <ReadingProgressBar />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <article className="relative z-10 mx-auto w-full max-w-3xl px-5 pt-28 md:pt-36 pb-16 md:pb-24">
-        <Breadcrumbs
-          items={[{ label: "Blogs", href: "/blogs" }, { label: post.title }]}
-          className="mb-6"
-        />
-
-        <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-[0.2em]">
-          <span className="font-bold text-[#00D9FF]">{post.category}</span>
-          <span className="text-[#BFC7D5] normal-case tracking-normal">{post.readTime}</span>
-        </div>
-
-        <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight md:text-5xl">
-          {post.title}
-        </h1>
-
-        <p className="mt-4 text-sm text-[#BFC7D5]">
-          {post.author} · <time dateTime={post.date}>{post.date}</time>
-          {post.updatedDate && (
-            <span className="ml-2 text-[#BFC7D5]">
-              (Updated: <time dateTime={post.updatedDate}>{post.updatedDate}</time>)
-            </span>
-          )}
-        </p>
-
-        {h2Headings.length >= 4 && (
-          <nav
-            aria-label="Table of contents"
-            className="my-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6"
-          >
-            <p className="text-xs font-mono uppercase tracking-[0.25em] text-[#00D9FF] mb-3">
-              Table of Contents
-            </p>
-            <ol className="space-y-1 list-decimal list-inside text-sm text-[#BFC7D5]">
-              {h2Headings.map((h) => (
-                <li key={h.id} className="leading-snug">
-                  <a
-                    href={`#${h.id}`}
-                    className="hover:text-[#00D9FF] hover:underline transition-colors ml-1 inline-flex min-h-[44px] items-center py-1"
-                  >
-                    {h.text}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        )}
-
-        <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
-          <picture>
-            {coverMeta.mobileWebp && (
-              <source
-                media="(max-width: 640px)"
-                srcSet={coverMeta.mobileWebp}
-                type="image/webp"
-              />
-            )}
-            {coverMeta.webp && (
-              <source
-                srcSet={coverMeta.webp}
-                type="image/webp"
-              />
-            )}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={coverMeta.fallback}
-              alt={post.coverImageAlt || post.title}
-              width={800}
-              height={450}
-              loading="lazy"
-              fetchPriority="low"
-              decoding="async"
-              className="w-full h-auto aspect-[16/9] object-cover"
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8 pt-28 md:pt-36 pb-16 md:pb-24">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10 xl:gap-14">
+          {/* Main Article Column (max 720px) */}
+          <article className="w-full max-w-[720px] min-w-0">
+            <Breadcrumbs
+              items={[{ label: "Blogs", href: "/blogs" }, { label: post.title }]}
+              className="mb-6"
             />
-          </picture>
-        </div>
 
-        <div className="zy-prose mt-10" dangerouslySetInnerHTML={{ __html: html }} />
-
-        {/* Author Box */}
-        <section className="mt-12 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#00D9FF] to-[#6E5BFF] flex items-center justify-center text-black font-extrabold text-xl shrink-0">
-              {post.author ? post.author.slice(0, 2).toUpperCase() : "ZY"}
+            <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-[0.2em]">
+              <span className="font-bold text-[#00D9FF]">{post.category}</span>
+              <span className="text-[#BFC7D5] normal-case tracking-normal">{post.readTime}</span>
             </div>
-            <div className="space-y-1.5 flex-1">
-              <div className="flex items-center gap-3">
-                <h3 className="text-base font-bold text-white">
-                  {post.author || "ZYXEN Engineering Team"}
-                </h3>
-                <span className="text-[10px] font-mono text-[#00D9FF] border border-[#00D9FF]/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  Author
+
+            <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight md:text-5xl">
+              {post.title}
+            </h1>
+
+            <p className="mt-4 text-sm text-[#BFC7D5]">
+              {post.author} · <time dateTime={post.date}>{post.date}</time>
+              {post.updatedDate && (
+                <span className="ml-2 text-[#BFC7D5]">
+                  (Updated: <time dateTime={post.updatedDate}>{post.updatedDate}</time>)
                 </span>
+              )}
+            </p>
+
+            {/* Cover Image */}
+            <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
+              <picture>
+                {coverMeta.mobileWebp && (
+                  <source
+                    media="(max-width: 640px)"
+                    srcSet={coverMeta.mobileWebp}
+                    type="image/webp"
+                  />
+                )}
+                {coverMeta.webp && (
+                  <source
+                    srcSet={coverMeta.webp}
+                    type="image/webp"
+                  />
+                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={coverMeta.fallback}
+                  alt={post.coverImageAlt || post.title}
+                  width={800}
+                  height={450}
+                  loading="lazy"
+                  fetchPriority="low"
+                  decoding="async"
+                  className="w-full h-auto aspect-[16/9] object-cover"
+                />
+              </picture>
+            </div>
+
+            {/* Mobile / Tablet: Collapsible "On this page" panel under cover image (closed by default) */}
+            {showToc && (
+              <div className="lg:hidden mt-6 mb-2">
+                <MobileCollapsibleToc headings={tocHeadings} />
               </div>
-              <p className="text-sm text-[#BFC7D5] leading-relaxed">
+            )}
+
+            {/* Article Markdown / Prose Content */}
+            <div className="zy-prose mt-8" dangerouslySetInnerHTML={{ __html: html }} />
+
+            {/* Mobile / Tablet Author Box (lg:hidden) */}
+            <section className="lg:hidden mt-12 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#00D9FF] to-[#6E5BFF] flex items-center justify-center text-black font-extrabold text-xl shrink-0">
+                  {post.author ? post.author.slice(0, 2).toUpperCase() : "ZY"}
+                </div>
+                <div className="space-y-1.5 flex-1">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-base font-bold text-white">
+                      {post.author || "ZYXEN Engineering Team"}
+                    </h3>
+                    <span className="text-[10px] font-mono text-[#00D9FF] border border-[#00D9FF]/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                      Author
+                    </span>
+                  </div>
+                  <p className="text-sm text-[#BFC7D5] leading-relaxed">
+                    Engineering software architectures, high-performance web applications, and operational platforms for aviation academies and enterprise businesses at ZYXEN.
+                  </p>
+                  <div className="pt-2 flex items-center gap-4 text-xs font-mono">
+                    <Link href="/about" prefetch={false} className="min-h-[44px] inline-flex items-center text-[#00D9FF] hover:underline">
+                      About ZYXEN &rarr;
+                    </Link>
+                    <Link href="/contact" prefetch={false} className="min-h-[44px] inline-flex items-center text-white/60 hover:text-white transition-colors">
+                      Contact Team
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Mobile / Tablet Contextual Service Call-to-Action (lg:hidden) */}
+            <div className="lg:hidden mt-14 rounded-2xl border border-[#00D9FF]/30 bg-gradient-to-br from-[#00D9FF]/[0.07] via-white/[0.02] to-transparent p-6 sm:p-8">
+              <p className="text-xs font-mono uppercase tracking-[0.25em] text-[#00D9FF] mb-2">
+                {contextualCta.eyebrow}
+              </p>
+              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                {contextualCta.title}
+              </h2>
+              <p className="mt-2 text-sm sm:text-base text-[#BFC7D5] leading-relaxed">
+                {contextualCta.description}
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-4">
+                <Link
+                  href={contextualCta.href}
+                  prefetch={false}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#00D9FF] px-6 py-3 text-xs font-bold uppercase tracking-widest text-black hover:bg-white hover:scale-105 transition-all"
+                >
+                  {contextualCta.ctaText} &rarr;
+                </Link>
+                <Link
+                  href="/contact"
+                  prefetch={false}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/20 px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-colors"
+                >
+                  Talk to Our Team
+                </Link>
+              </div>
+            </div>
+
+            {/* Related Articles Section (visible on all breakpoints) */}
+            {related.length > 0 && (
+              <section className="mt-16 border-t border-white/10 pt-10">
+                <h2 className="text-xl font-bold text-white">Related articles</h2>
+                <ul className="mt-4 grid gap-3">
+                  {related.map((r) => (
+                    <li key={r.slug} className="group">
+                      <Link
+                        href={`/blogs/${r.slug}`}
+                        prefetch={false}
+                        className="text-[#BFC7D5] group-hover:text-[#00D9FF] transition-colors flex items-center justify-between text-sm sm:text-base min-h-[44px] py-2"
+                      >
+                        <span>{r.title}</span>
+                        <span className="text-xs font-mono text-[#BFC7D5] ml-4 shrink-0">
+                          {r.category} &rarr;
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </article>
+
+          {/* Desktop Sticky Right Sidebar (>= 1024px: top about 96px, width about 280px) */}
+          <aside
+            aria-label="Article sidebar"
+            className="hidden lg:block w-[280px] shrink-0 sticky top-[96px] self-start space-y-6 max-h-[calc(100vh-116px)] overflow-y-auto pr-1"
+          >
+            {/* 1. On this page (TOC from h2/h3 headings, server-rendered anchor links) */}
+            {showToc && (
+              <nav
+                aria-label="Table of contents"
+                className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 shadow-lg shadow-black/20"
+              >
+                <p className="text-xs font-mono uppercase tracking-[0.25em] text-[#00D9FF] mb-3">
+                  On this page
+                </p>
+                <TableOfContents headings={tocHeadings} />
+              </nav>
+            )}
+
+            {/* 2. Author Box */}
+            <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 shadow-lg shadow-black/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#00D9FF] to-[#6E5BFF] flex items-center justify-center text-black font-extrabold text-sm shrink-0">
+                  {post.author ? post.author.slice(0, 2).toUpperCase() : "ZY"}
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white leading-tight">
+                    {post.author || "ZYXEN Team"}
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#00D9FF] border border-[#00D9FF]/30 px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+                    Author
+                  </span>
+                </div>
+              </div>
+              <p className="text-xs text-[#BFC7D5] leading-relaxed">
                 Engineering software architectures, high-performance web applications, and operational platforms for aviation academies and enterprise businesses at ZYXEN.
               </p>
-              <div className="pt-2 flex items-center gap-4 text-xs font-mono">
-                <Link href="/about" prefetch={false} className="min-h-[44px] inline-flex items-center text-[#00D9FF] hover:underline">
+              <div className="pt-3 flex items-center gap-3 text-xs font-mono border-t border-white/10 mt-3">
+                <Link
+                  href="/about"
+                  prefetch={false}
+                  className="text-[#00D9FF] hover:underline min-h-[36px] inline-flex items-center"
+                >
                   About ZYXEN &rarr;
                 </Link>
-                <Link href="/contact" prefetch={false} className="min-h-[44px] inline-flex items-center text-white/60 hover:text-white transition-colors">
+                <Link
+                  href="/contact"
+                  prefetch={false}
+                  className="text-white/60 hover:text-white transition-colors min-h-[36px] inline-flex items-center"
+                >
                   Contact Team
                 </Link>
               </div>
-            </div>
-          </div>
-        </section>
+            </section>
 
-        {/* Contextual Service Call-to-Action */}
-        <div className="mt-14 rounded-2xl border border-[#00D9FF]/30 bg-gradient-to-br from-[#00D9FF]/[0.07] via-white/[0.02] to-transparent p-6 sm:p-8">
-          <p className="text-xs font-mono uppercase tracking-[0.25em] text-[#00D9FF] mb-2">
-            {contextualCta.eyebrow}
-          </p>
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            {contextualCta.title}
-          </h2>
-          <p className="mt-2 text-sm sm:text-base text-[#BFC7D5] leading-relaxed">
-            {contextualCta.description}
-          </p>
-          <div className="mt-6 flex flex-wrap items-center gap-4">
-            <Link
-              href={contextualCta.href}
-              prefetch={false}
-              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#00D9FF] px-6 py-3 text-xs font-bold uppercase tracking-widest text-black hover:bg-white hover:scale-105 transition-all"
-            >
-              {contextualCta.ctaText} &rarr;
-            </Link>
-            <Link
-              href="/contact"
-              prefetch={false}
-              className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/20 px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-colors"
-            >
-              Talk to Our Team
-            </Link>
-          </div>
+            {/* 3. Contact Call-to-Action */}
+            <section className="rounded-2xl border border-[#00D9FF]/30 bg-gradient-to-br from-[#00D9FF]/[0.08] via-white/[0.02] to-transparent p-5 shadow-lg shadow-black/20">
+              <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#00D9FF] mb-1.5">
+                {contextualCta.eyebrow}
+              </p>
+              <h3 className="text-sm font-bold text-white tracking-tight leading-snug">
+                {contextualCta.title}
+              </h3>
+              <p className="mt-2 text-xs text-[#BFC7D5] leading-relaxed">
+                {contextualCta.description}
+              </p>
+              <div className="mt-4 flex flex-col gap-2">
+                <Link
+                  href={contextualCta.href}
+                  prefetch={false}
+                  className="inline-flex min-h-[38px] items-center justify-center rounded-full bg-[#00D9FF] px-4 py-2 text-xs font-bold uppercase tracking-wider text-black hover:bg-white hover:scale-[1.02] transition-all text-center"
+                >
+                  {contextualCta.ctaText} &rarr;
+                </Link>
+                <Link
+                  href="/contact"
+                  prefetch={false}
+                  className="inline-flex min-h-[36px] items-center justify-center rounded-full border border-white/20 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/10 transition-colors text-center"
+                >
+                  Talk to Our Team
+                </Link>
+              </div>
+            </section>
+          </aside>
         </div>
+      </div>
 
-        {/* Related Articles Section */}
-        {related.length > 0 && (
-          <section className="mt-16 border-t border-white/10 pt-10">
-            <h2 className="text-xl font-bold text-white">Related articles</h2>
-            <ul className="mt-4 grid gap-3">
-              {related.map((r) => (
-                <li key={r.slug} className="group">
-                  <Link
-                    href={`/blogs/${r.slug}`}
-                    prefetch={false}
-                    className="text-[#BFC7D5] group-hover:text-[#00D9FF] transition-colors flex items-center justify-between text-sm sm:text-base min-h-[44px] py-2"
-                  >
-                    <span>{r.title}</span>
-                    <span className="text-xs font-mono text-[#BFC7D5] ml-4 shrink-0">
-                      {r.category} &rarr;
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-      </article>
       <SiteFooter />
     </main>
   );
