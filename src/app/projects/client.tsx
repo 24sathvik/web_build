@@ -8,8 +8,6 @@ import { ProjectsOverlay } from "@/components/dom/projects/ProjectsOverlay";
 import { useQualityTier } from "@/hooks/useQualityTier";
 import { useLazySceneTrigger } from "@/hooks/useLazySceneTrigger";
 import { debugStore } from "@/lib/debugState";
-
-import { useSelectionStore, projectStore } from "@/lib/sceneSync";
 import type { ProjectItem } from "@/content/site";
 
 const ProjectsScene = dynamic(
@@ -21,6 +19,13 @@ const ProjectsScene = dynamic(
   { ssr: false }
 );
 
+const FALLBACK_BG = (
+  <div
+    className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(110,91,255,0.18),rgba(5,5,5,1))]"
+    aria-hidden="true"
+  />
+);
+
 export default function Projects({
   projects = [],
   footer,
@@ -30,11 +35,6 @@ export default function Projects({
 }) {
   const tier = useQualityTier();
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/projects");
-  const { hoveredId, activeId } = useSelectionStore(projectStore);
-  const previewId = hoveredId || activeId;
-  const previewProject = previewId
-    ? projects.find((p) => p.id === previewId)
-    : null;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -47,55 +47,25 @@ export default function Projects({
     <main className="relative w-full h-[100svh] overflow-hidden cursor-none">
       <CustomCursor />
       <Header />
-      
+
+      {/* 3D Background Canvas Layer */}
       <div className="absolute inset-0 z-0" aria-hidden="true">
         {shouldMount ? (
-          <Suspense
-            fallback={
-              <div
-                className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(110,91,255,0.18),rgba(5,5,5,1))]"
-                aria-hidden="true"
-              />
-            }
-          >
+          <Suspense fallback={FALLBACK_BG}>
             <ProjectsScene triggerTime={triggerTime} />
           </Suspense>
         ) : (
-          <div
-            className="w-full h-full bg-[#050505] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(110,91,255,0.18),rgba(5,5,5,1))]"
-            aria-hidden="true"
-          />
+          FALLBACK_BG
         )}
       </div>
 
-      {/* Subtle status chip when user hovers/taps a 3D gallery panel */}
-      {previewProject && tier !== "static" && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-20 md:bottom-8 left-1/2 -translate-x-1/2 z-30 rounded-full border border-white/15 bg-[#05060d]/90 px-4 py-2 text-xs font-mono text-white shadow-lg flex items-center gap-3 pointer-events-auto"
-        >
-          <span
-            className={`font-bold uppercase tracking-wider ${
-              previewProject.id === "pharma-quotation-system"
-                ? "text-[#00FFB2]"
-                : previewProject.group === "aviation"
-                  ? "text-[#00D9FF]"
-                  : "text-[#6E5BFF]"
-            }`}
-          >
-            {previewProject.badge}
-          </span>
-          <span className="text-white/90">{previewProject.name}</span>
-          <a
-            href={`#${previewProject.id}`}
-            className="text-[#00D9FF] hover:underline min-h-[44px] inline-flex items-center"
-          >
-            View &darr;
-          </a>
-        </div>
-      )}
+      {/* Ambient background gradient scrim so 3D never clashes with text */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-[#050505]/75 via-[#050505]/45 to-[#050505]/80"
+        aria-hidden="true"
+      />
 
+      {/* Scrollable DOM Content Container */}
       <div
         className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden touch-pan-y"
         id="scroll-container-projects"
