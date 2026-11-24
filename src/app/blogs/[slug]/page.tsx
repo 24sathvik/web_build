@@ -428,14 +428,14 @@ export default async function BlogPostPage({ params }: Params) {
                 <Link
                   href="/about"
                   prefetch={false}
-                  className="text-[#00D9FF] hover:underline min-h-[36px] inline-flex items-center"
+                  className="text-[#00D9FF] hover:underline min-h-[40px] inline-flex items-center"
                 >
                   About ZYXEN &rarr;
                 </Link>
                 <Link
                   href="/contact"
                   prefetch={false}
-                  className="text-white/60 hover:text-white transition-colors min-h-[36px] inline-flex items-center"
+                  className="text-white/60 hover:text-white transition-colors min-h-[40px] inline-flex items-center"
                 >
                   Contact Team
                 </Link>
@@ -457,14 +457,14 @@ export default async function BlogPostPage({ params }: Params) {
                 <Link
                   href={contextualCta.href}
                   prefetch={false}
-                  className="inline-flex min-h-[38px] items-center justify-center rounded-full bg-[#00D9FF] px-4 py-2 text-xs font-bold uppercase tracking-wider text-black hover:bg-white hover:scale-[1.02] transition-all text-center"
+                  className="inline-flex min-h-[40px] items-center justify-center rounded-full bg-[#00D9FF] px-4 py-2 text-xs font-bold uppercase tracking-wider text-black hover:bg-white hover:scale-[1.02] transition-all text-center"
                 >
                   {contextualCta.ctaText} &rarr;
                 </Link>
                 <Link
                   href="/contact"
                   prefetch={false}
-                  className="inline-flex min-h-[36px] items-center justify-center rounded-full border border-white/20 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/10 transition-colors text-center"
+                  className="inline-flex min-h-[40px] items-center justify-center rounded-full border border-white/20 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/10 transition-colors text-center"
                 >
                   Talk to Our Team
                 </Link>

@@ -37,9 +37,9 @@ export function detectQualityTier(): QualityTier {
     const canvas = document.createElement("canvas");
     hasWebGL = Boolean(
       window.WebGLRenderingContext &&
-        (canvas.getContext("webgl2") ||
-          canvas.getContext("webgl") ||
-          canvas.getContext("experimental-webgl"))
+      (canvas.getContext("webgl2") ||
+        canvas.getContext("webgl") ||
+        canvas.getContext("experimental-webgl"))
     );
   } catch {
     hasWebGL = false;
@@ -69,14 +69,17 @@ export function detectQualityTier(): QualityTier {
 }
 
 export function useQualityTier(): QualityTier {
-  const [tier, setTier] = useState<QualityTier>(() => detectQualityTier());
+  const [tier, setTier] = useState<QualityTier>(() => {
+    if (typeof window !== "undefined") {
+      return detectQualityTier();
+    }
+    return "static";
+  });
 
   useEffect(() => {
     const detected = detectQualityTier();
-    if (tier !== detected) {
-      setTier(detected);
-    }
-  }, [tier]);
+    setTier(detected);
+  }, []);
 
   return tier;
 }

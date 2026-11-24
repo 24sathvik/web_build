@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { QualityTier } from "./useQualityTier";
 import { debugStore } from "@/lib/debugState";
-import chunksManifest from "@/lib/chunks-manifest.json";
 import {
   getNetworkConnection,
   safeRequestIdleCallback,
@@ -11,7 +10,7 @@ import {
 } from "@/lib/browser-compat";
 
 export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
-  const [shouldMount, setShouldMount] = useState(tier !== "static");
+  const [shouldMount, setShouldMount] = useState(false);
   const [triggerTime, setTriggerTime] = useState<number | null>(null);
   const hasTriggered = useRef(false);
 
@@ -49,49 +48,29 @@ export function useLazySceneTrigger(tier: QualityTier, routePath: string) {
       return eff === "2g" || eff === "slow-2g" || eff === "3g";
     };
 
-    // Start fetching 3D chunk right after hydration (no artificial delay; skip on Save-Data/2g/3g)
+    // Dynamic chunk fetching is triggered natively by client.tsx on mount
     const prefetchChunks = () => {
-      if (isConnectionSlowOrSaveData()) return;
-
-      try {
-        const manifest = chunksManifest as Record<string, string[]>;
-        const files = manifest[routePath];
-        if (Array.isArray(files)) {
-          files.forEach((file: string) => {
-            const fullHref = `/_next/${file}`;
-            if (!document.querySelector(`link[href="${fullHref}"]`)) {
-              const link = document.createElement("link");
-              link.rel = "preload";
-              link.as = "script";
-              link.href = fullHref;
-              document.head.appendChild(link);
-            }
-          });
-        }
-      } catch {}
+      // Native dynamic import() in client.tsx handles chunk fetching without 404 hash drift
     };
 
     // Fetch chunk immediately upon hydration
     prefetchChunks();
 
-    // Mount right after hydration and first paint (two requestAnimationFrames or requestIdleCallback with 150ms timeout)
+    // Mount right after hydration and first paint
     raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => {
-        fireTrigger();
-      });
+      fireTrigger();
     });
 
     idleId = safeRequestIdleCallback(
       () => {
         fireTrigger();
       },
-      { timeout: 150 }
+      { timeout: 80 }
     );
 
     return () => {
       isDisposed = true;
       if (raf1 !== null) cancelAnimationFrame(raf1);
-      if (raf2 !== null) cancelAnimationFrame(raf2);
       if (idleId !== null) safeCancelIdleCallback(idleId);
     };
   }, [tier, routePath]);

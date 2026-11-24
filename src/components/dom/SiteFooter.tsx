@@ -125,7 +125,7 @@ export function SiteFooter() {
               <Link
                 href="/"
                 prefetch={false}
-                className="text-xl font-bold tracking-tighter text-white hover:text-[#00D9FF] transition-colors"
+                className="inline-flex items-center min-h-[40px] min-w-[44px] text-xl font-bold tracking-tighter text-white hover:text-[#00D9FF] transition-colors"
               >
                 ZYXEN
               </Link>
@@ -134,7 +134,7 @@ export function SiteFooter() {
               </span>
             </div>
             {/* Social Icons on Mobile */}
-            <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1.5">
               {SOCIALS.map((url) => {
                 const social = getSocialMeta(url);
                 return (
@@ -144,7 +144,7 @@ export function SiteFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="w-10 h-10 inline-flex items-center justify-center rounded-full border border-white/15 bg-white/[0.03] text-[#BFC7D5] hover:border-[#00D9FF]/60 hover:text-[#00D9FF] transition-colors"
+                    className="shrink-0 w-10 h-10 min-w-[40px] min-h-[40px] inline-flex items-center justify-center rounded-full border border-white/15 bg-white/[0.03] text-[#BFC7D5] hover:border-[#00D9FF]/60 hover:text-[#00D9FF] transition-colors"
                   >
                     <svg
                       width="14"
@@ -194,7 +194,7 @@ export function SiteFooter() {
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
+                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center w-full min-w-[44px] min-h-[40px] py-0.5 leading-tight"
                   >
                     {link.label}
                   </Link>
@@ -214,7 +214,7 @@ export function SiteFooter() {
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
+                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center w-full min-w-[44px] min-h-[40px] py-0.5 leading-tight"
                   >
                     {link.label}
                   </Link>
@@ -234,7 +234,7 @@ export function SiteFooter() {
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
+                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center w-full min-w-[44px] min-h-[40px] py-0.5 leading-tight"
                   >
                     {link.label}
                   </Link>
@@ -254,7 +254,7 @@ export function SiteFooter() {
                   <Link
                     href={link.href}
                     prefetch={false}
-                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center min-h-[40px] sm:min-h-[28px] py-0.5 leading-tight"
+                    className="text-[#BFC7D5] hover:text-[#00D9FF] hover:translate-x-1 duration-200 transition-all inline-flex items-center w-full min-w-[44px] min-h-[40px] py-0.5 leading-tight"
                   >
                     {link.label}
                   </Link>
@@ -272,7 +272,7 @@ export function SiteFooter() {
               <div>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="text-white hover:text-[#00D9FF] transition-colors inline-flex items-center min-h-[28px]"
+                  className="text-white hover:text-[#00D9FF] transition-colors inline-flex items-center min-h-[40px]"
                 >
                   {CONTACT_EMAIL}
                 </a>
@@ -282,7 +282,7 @@ export function SiteFooter() {
                   <a
                     key={phone}
                     href={`tel:${phone.replace(/\s+/g, "")}`}
-                    className="text-white hover:text-[#00D9FF] transition-colors inline-flex items-center min-h-[28px]"
+                    className="text-white hover:text-[#00D9FF] transition-colors inline-flex items-center min-h-[40px]"
                   >
                     {phone}
                   </a>
@@ -293,7 +293,7 @@ export function SiteFooter() {
               </p>
             </div>
             {/* Desktop Social Links */}
-            <div className="flex items-center gap-1.5 pt-1">
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
               {SOCIALS.map((url) => {
                 const social = getSocialMeta(url);
                 return (
@@ -303,7 +303,7 @@ export function SiteFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-white/15 bg-white/[0.03] text-[#BFC7D5] hover:border-[#00D9FF]/60 hover:text-[#00D9FF] transition-colors"
+                    className="shrink-0 w-10 h-10 min-w-[40px] min-h-[40px] inline-flex items-center justify-center rounded-full border border-white/15 bg-white/[0.03] text-[#BFC7D5] hover:border-[#00D9FF]/60 hover:text-[#00D9FF] transition-colors"
                   >
                     <svg
                       width="13"

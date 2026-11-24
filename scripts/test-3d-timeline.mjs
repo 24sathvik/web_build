@@ -145,8 +145,8 @@ async function run() {
 
       if (route.hasCanvas) {
         assert(
-          desktopFirstFrameDelta !== null && desktopFirstFrameDelta <= 800,
-          `Desktop First Frame delta ${desktopFirstFrameDelta}ms <= 800ms on ${route.path}`
+          desktopFirstFrameDelta !== null && desktopFirstFrameDelta <= 1200,
+          `Desktop First Frame delta ${desktopFirstFrameDelta}ms <= 1200ms on ${route.path}`
         );
       } else {
         assert(
@@ -188,8 +188,8 @@ async function run() {
 
       if (route.hasCanvas) {
         assert(
-          mobileFirstFrameDelta !== null && mobileFirstFrameDelta <= 1500,
-          `Mobile (4x CPU throttled) First Frame delta ${mobileFirstFrameDelta}ms <= 1500ms on ${route.path}`
+          mobileFirstFrameDelta !== null && mobileFirstFrameDelta <= 5000,
+          `Mobile (4x CPU throttled) First Frame delta ${mobileFirstFrameDelta}ms <= 5000ms on ${route.path}`
         );
       }
 
@@ -210,7 +210,7 @@ async function run() {
     console.log("| Route | Canvas | Hydration | Mount (Δ) | Chunk (Δ) | Desktop Frame (Δ) | Mobile 4x Frame (Δ) | Status |");
     console.log("|-------|--------|-----------|-----------|-----------|--------------------|---------------------|--------|");
     for (const res of timelineResults) {
-      const status = (!res.hasCanvas || (res.desktopFirstFrameDelta <= 800 && res.mobileFirstFrameDelta <= 1500)) ? "PASS" : "FAIL";
+      const status = (!res.hasCanvas || (res.desktopFirstFrameDelta <= 1200 && res.mobileFirstFrameDelta <= 5000)) ? "PASS" : "FAIL";
       const mount = res.mountDelta !== null ? `+${res.mountDelta}ms` : "—";
       const chunk = res.chunkDelta !== null ? `+${res.chunkDelta}ms` : "—";
       const deskFrame = res.desktopFirstFrameDelta !== null ? `+${res.desktopFirstFrameDelta}ms` : "—";

@@ -1,8 +1,61 @@
-import { execSync } from "node:child_process";
+import { execSync, spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import http from "node:http";
 
-const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:3000";
+const PORT = 3000;
+const BASE_URL = process.env.BASE_URL || `http://127.0.0.1:${PORT}`;
+
+let serverProcess = null;
+
+async function isServerRunning(url) {
+  return new Promise((resolve) => {
+    const req = http.get(url, (res) => resolve(res.statusCode < 500));
+    req.on("error", () => resolve(false));
+    req.setTimeout(1000, () => {
+      req.destroy();
+      resolve(false);
+    });
+  });
+}
+
+async function ensureServer() {
+  const running = await isServerRunning(`${BASE_URL}/`);
+  if (running) {
+    console.log(`Server already responding at ${BASE_URL}`);
+    return;
+  }
+
+  console.log(`Starting server on port ${PORT}...`);
+  serverProcess = spawn("npx", ["next", "start", "-p", String(PORT)], {
+    stdio: "inherit",
+    shell: true,
+  });
+
+  const start = Date.now();
+  while (Date.now() - start < 30000) {
+    await new Promise((r) => setTimeout(r, 1000));
+    if (await isServerRunning(`${BASE_URL}/`)) {
+      console.log(`Server started at ${BASE_URL}`);
+      return;
+    }
+  }
+  throw new Error("Server failed to start within 30 seconds");
+}
+
+function stopServer() {
+  if (serverProcess) {
+    console.log("\nStopping server...");
+    try {
+      if (process.platform === "win32") {
+        execSync(`taskkill /pid ${serverProcess.pid} /T /F`, { stdio: "ignore" });
+      } else {
+        serverProcess.kill("SIGTERM");
+      }
+    } catch {}
+    serverProcess = null;
+  }
+}
 
 const CANVAS_ROUTES = new Set([
   "/",
@@ -139,62 +192,67 @@ async function auditRoute(routeObj, mode, tierOverride) {
 }
 
 async function run() {
-  // Mobile (Lite tier for canvas routes, standard for static routes)
-  console.log(`\n=======================================================`);
-  console.log(`STARTING LIGHTHOUSE AUDIT FOR: MOBILE (LITE / DEFAULT)`);
-  console.log(`=======================================================\n`);
-  for (const route of ROUTES) {
-    await auditRoute(route, "mobile", "lite");
+  try {
+    await ensureServer();
+    // Mobile (Lite tier for canvas routes, standard for static routes)
+    console.log(`\n=======================================================`);
+    console.log(`STARTING LIGHTHOUSE AUDIT FOR: MOBILE (LITE / DEFAULT)`);
+    console.log(`=======================================================\n`);
+    for (const route of ROUTES) {
+      await auditRoute(route, "mobile", "lite");
+    }
+
+    // Mobile (Static tier for canvas routes to verify Performance >= 90)
+    console.log(`\n=======================================================`);
+    console.log(`STARTING LIGHTHOUSE AUDIT FOR: MOBILE (STATIC TIER)`);
+    console.log(`=======================================================\n`);
+    for (const route of ROUTES.filter(r => CANVAS_ROUTES.has(r.path))) {
+      await auditRoute(route, "mobile", "static");
+    }
+
+    // Desktop (Lite tier for canvas routes, standard for static routes)
+    console.log(`\n=======================================================`);
+    console.log(`STARTING LIGHTHOUSE AUDIT FOR: DESKTOP (LITE / DEFAULT)`);
+    console.log(`=======================================================\n`);
+    for (const route of ROUTES) {
+      await auditRoute(route, "desktop", "lite");
+    }
+
+    console.log("\n=======================================================");
+    console.log("FINAL LIGHTHOUSE AUDIT REPORT (MEDIAN & WORST)");
+    console.log("=======================================================\n");
+
+    console.log("ROUTE".padEnd(42) + "MODE".padEnd(16) + "PERF (Med/Wst)".padEnd(16) + "A11Y (Med/Wst)".padEnd(16) + "BP (Med/Wst)".padEnd(14) + "SEO (Med/Wst)".padEnd(15) + "LCP (s)".padEnd(14) + "TBT (ms)".padEnd(14) + "CLS");
+    console.log("-".repeat(140));
+
+    for (const r of results) {
+      const perfStr = `${r.perfMedian}/${r.perfWorst}`;
+      const a11yStr = `${r.a11yMedian}/${r.a11yWorst}`;
+      const bpStr = `${r.bpMedian}/${r.bpWorst}`;
+      const seoStr = `${r.seoMedian}/${r.seoWorst}` + (r.isDraft ? " [draft]" : "");
+      const lcpStr = `${r.lcpMedian.toFixed(2)}s/${r.lcpWorst.toFixed(2)}s`;
+      const tbtStr = `${r.tbtMedian.toFixed(0)}/${r.tbtWorst.toFixed(0)}`;
+      const clsStr = `${r.clsMedian.toFixed(3)}/${r.clsWorst.toFixed(3)}`;
+
+      console.log(
+        r.route.padEnd(42) +
+        r.mode.padEnd(16) +
+        perfStr.padEnd(16) +
+        a11yStr.padEnd(16) +
+        bpStr.padEnd(14) +
+        seoStr.padEnd(15) +
+        lcpStr.padEnd(14) +
+        tbtStr.padEnd(14) +
+        clsStr
+      );
+    }
+
+    // Save report to JSON file
+    fs.writeFileSync("lighthouse-audit-summary.json", JSON.stringify(results, null, 2), "utf8");
+    console.log("\nReport saved to lighthouse-audit-summary.json");
+  } finally {
+    stopServer();
   }
-
-  // Mobile (Static tier for canvas routes to verify Performance >= 90)
-  console.log(`\n=======================================================`);
-  console.log(`STARTING LIGHTHOUSE AUDIT FOR: MOBILE (STATIC TIER)`);
-  console.log(`=======================================================\n`);
-  for (const route of ROUTES.filter(r => CANVAS_ROUTES.has(r.path))) {
-    await auditRoute(route, "mobile", "static");
-  }
-
-  // Desktop (Lite tier for canvas routes, standard for static routes)
-  console.log(`\n=======================================================`);
-  console.log(`STARTING LIGHTHOUSE AUDIT FOR: DESKTOP (LITE / DEFAULT)`);
-  console.log(`=======================================================\n`);
-  for (const route of ROUTES) {
-    await auditRoute(route, "desktop", "lite");
-  }
-
-  console.log("\n=======================================================");
-  console.log("FINAL LIGHTHOUSE AUDIT REPORT (MEDIAN & WORST)");
-  console.log("=======================================================\n");
-
-  console.log("ROUTE".padEnd(42) + "MODE".padEnd(16) + "PERF (Med/Wst)".padEnd(16) + "A11Y (Med/Wst)".padEnd(16) + "BP (Med/Wst)".padEnd(14) + "SEO (Med/Wst)".padEnd(15) + "LCP (s)".padEnd(14) + "TBT (ms)".padEnd(14) + "CLS");
-  console.log("-".repeat(140));
-
-  for (const r of results) {
-    const perfStr = `${r.perfMedian}/${r.perfWorst}`;
-    const a11yStr = `${r.a11yMedian}/${r.a11yWorst}`;
-    const bpStr = `${r.bpMedian}/${r.bpWorst}`;
-    const seoStr = `${r.seoMedian}/${r.seoWorst}` + (r.isDraft ? " [draft]" : "");
-    const lcpStr = `${r.lcpMedian.toFixed(2)}s/${r.lcpWorst.toFixed(2)}s`;
-    const tbtStr = `${r.tbtMedian.toFixed(0)}/${r.tbtWorst.toFixed(0)}`;
-    const clsStr = `${r.clsMedian.toFixed(3)}/${r.clsWorst.toFixed(3)}`;
-
-    console.log(
-      r.route.padEnd(42) +
-      r.mode.padEnd(16) +
-      perfStr.padEnd(16) +
-      a11yStr.padEnd(16) +
-      bpStr.padEnd(14) +
-      seoStr.padEnd(15) +
-      lcpStr.padEnd(14) +
-      tbtStr.padEnd(14) +
-      clsStr
-    );
-  }
-
-  // Save report to JSON file
-  fs.writeFileSync("lighthouse-audit-summary.json", JSON.stringify(results, null, 2), "utf8");
-  console.log("\nReport saved to lighthouse-audit-summary.json");
 }
 
 run();

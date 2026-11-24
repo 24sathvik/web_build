@@ -129,7 +129,7 @@ export function TableOfContents({
             <a
               href={`#${h.id}`}
               onClick={(e) => handleLinkClick(e, h.id)}
-              className={`group flex items-center min-h-[36px] py-1.5 px-2.5 rounded-lg transition-all duration-150 ${
+              className={`group flex items-center min-h-[44px] py-1.5 px-2.5 rounded-lg transition-all duration-150 ${
                 isActive
                   ? "bg-[#00D9FF]/[0.08] text-[#00D9FF] font-semibold border-l-2 border-[#00D9FF] -ml-[2px] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                   : "text-[#BFC7D5] hover:text-white hover:bg-white/[0.03] border-l-2 border-transparent"

@@ -1,8 +1,51 @@
 #!/usr/bin/env node
 import fs from "node:fs";
+import http from "node:http";
+import { spawn } from "node:child_process";
 
 const LIVE_SITEMAP_URL = "https://zyxen.in/sitemap.xml";
-const LOCAL_BASE = process.env.LOCAL_BASE || "http://127.0.0.1:3000";
+const PORT = 3000;
+const LOCAL_BASE = process.env.LOCAL_BASE || `http://127.0.0.1:${PORT}`;
+let serverProcess = null;
+
+async function isServerRunning(url) {
+  return new Promise((resolve) => {
+    const req = http.get(url, (res) => resolve(res.statusCode < 500));
+    req.on("error", () => resolve(false));
+    req.setTimeout(1000, () => {
+      req.destroy();
+      resolve(false);
+    });
+  });
+}
+
+async function ensureServer() {
+  const running = await isServerRunning(`${LOCAL_BASE}/`);
+  if (running) return null;
+
+  console.log(`Starting server on port ${PORT}...`);
+  serverProcess = spawn("npx", ["next", "start", "-p", String(PORT)], {
+    stdio: "inherit",
+    shell: true,
+  });
+
+  const start = Date.now();
+  while (Date.now() - start < 30000) {
+    await new Promise((r) => setTimeout(r, 1000));
+    if (await isServerRunning(`${LOCAL_BASE}/`)) {
+      console.log(`Server started at ${LOCAL_BASE}`);
+      return serverProcess;
+    }
+  }
+  throw new Error("Server failed to start within 30 seconds");
+}
+
+function stopServer() {
+  if (serverProcess) {
+    console.log("\nStopping server...");
+    serverProcess.kill();
+  }
+}
 
 function extractTag(html, regex) {
   const match = html.match(regex);
@@ -23,6 +66,7 @@ function extractTitle(html) {
 }
 
 async function main() {
+  await ensureServer();
   console.log("Fetching live sitemap from:", LIVE_SITEMAP_URL);
   const sitemapXml = await fetch(LIVE_SITEMAP_URL, {
     headers: { "User-Agent": "Zyxen-Parity-Audit/1.0" },
@@ -129,7 +173,12 @@ async function main() {
     "utf8"
   );
   console.log("\nSaved detailed report to url-parity-report.json");
+  stopServer();
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  console.error(err);
+  stopServer();
+  process.exit(1);
+});
 

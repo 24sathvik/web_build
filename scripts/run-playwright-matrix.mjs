@@ -1,9 +1,53 @@
 import { chromium, firefox, webkit } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
+import http from "node:http";
+import { spawn } from "node:child_process";
 
-const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:3000";
+const PORT = 3000;
+const BASE_URL = process.env.BASE_URL || `http://127.0.0.1:${PORT}`;
 const SCREENSHOT_DIR = path.resolve("playwright-screenshots");
+
+let serverProcess = null;
+
+async function isServerRunning(url) {
+  return new Promise((resolve) => {
+    const req = http.get(url, (res) => resolve(res.statusCode < 500));
+    req.on("error", () => resolve(false));
+    req.setTimeout(1000, () => {
+      req.destroy();
+      resolve(false);
+    });
+  });
+}
+
+async function ensureServer() {
+  const running = await isServerRunning(`${BASE_URL}/`);
+  if (running) return null;
+
+  console.log(`Starting server on port ${PORT}...`);
+  serverProcess = spawn("npx", ["next", "start", "-p", String(PORT)], {
+    stdio: "inherit",
+    shell: true,
+  });
+
+  const start = Date.now();
+  while (Date.now() - start < 30000) {
+    await new Promise((r) => setTimeout(r, 1000));
+    if (await isServerRunning(`${BASE_URL}/`)) {
+      console.log(`Server started at ${BASE_URL}`);
+      return serverProcess;
+    }
+  }
+  throw new Error("Server failed to start within 30 seconds");
+}
+
+function stopServer() {
+  if (serverProcess) {
+    console.log("\nStopping server...");
+    serverProcess.kill();
+  }
+}
 
 if (!fs.existsSync(SCREENSHOT_DIR)) {
   fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
@@ -264,6 +308,7 @@ async function testPage(browserType, browserName, route, viewport, tier) {
 }
 
 async function run() {
+  await ensureServer();
   console.log("=== PLAYWRIGHT CROSS-BROWSER & VIEWPORT MATRIX AUDIT ===");
   console.log(`Base URL: ${BASE_URL}`);
   console.log(`Saving screenshots to: ${SCREENSHOT_DIR}\n`);
@@ -331,15 +376,21 @@ async function run() {
     failures.forEach((f, idx) => {
       console.error(`${idx + 1}. [${f.test}]: ${f.error}`);
     });
+    stopServer();
     process.exit(1);
   } else {
     console.log("✅ ALL PLAYWRIGHT MATRIX TESTS PASSED PERFECTLY!");
     console.log("\nSample Screenshot Paths (first 10):");
     screenshotPaths.slice(0, 10).forEach((p) => console.log(" -", p));
     console.log(`... and ${screenshotPaths.length - 10} more in ${SCREENSHOT_DIR}`);
+    stopServer();
     process.exit(0);
   }
 }
 
-run();
+run().catch((err) => {
+  console.error(err);
+  stopServer();
+  process.exit(1);
+});
 

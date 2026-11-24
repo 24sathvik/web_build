@@ -107,7 +107,7 @@ export function OrbitControlsDock({
             </span>
             <button
               onClick={() => onOpenDrawer(currentProject)}
-              className="min-h-[36px] inline-flex items-center text-xs font-mono text-[#00D9FF] hover:underline px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF]"
+              className="min-h-[40px] inline-flex items-center text-xs font-mono text-[#00D9FF] hover:underline px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF]"
             >
               Details &rarr;
             </button>
