@@ -7,8 +7,13 @@ import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { useRef, useMemo } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { debugStore } from "@/lib/debugState";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 function Helix() {
   const pointsRef = useRef<THREE.Points>(null);
@@ -64,7 +69,7 @@ function CameraRig() {
     camera.rotation.set(-Math.PI / 2, 0, 0);
 
     // Animate camera flying through the tunnel on scroll
-    gsap.to(camera.position, {
+    const anim = gsap.to(camera.position, {
       y: -40,
       ease: "none",
       scrollTrigger: {
@@ -73,9 +78,20 @@ function CameraRig() {
         start: "top top",
         end: "bottom bottom",
         scrub: 1,
+        invalidateOnRefresh: true,
       },
     });
-  });
+
+    // Defer ScrollTrigger.refresh to rAF so first frame paint is not blocked by synchronous DOM layout reflow
+    const rafId = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      anim.kill();
+    };
+  }, [camera]);
 
   return null;
 }

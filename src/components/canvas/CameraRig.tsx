@@ -1,16 +1,24 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function CameraRig() {
   const { camera } = useThree();
   const groupRef = useRef<THREE.Group>(null);
 
   useGSAP(() => {
+    // Explicitly set camera to Chapter 1 position
+    camera.position.set(0, 0, 5);
+
     // The master timeline synced with the main scroll container
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -19,6 +27,7 @@ export default function CameraRig() {
         start: "top top",
         end: "bottom bottom",
         scrub: 1, // Smooth scrubbing
+        invalidateOnRefresh: true,
       },
     });
 
@@ -54,7 +63,16 @@ export default function CameraRig() {
       ease: "power2.inOut",
     }, "chapter5");
 
-  });
+    // Defer ScrollTrigger.refresh to rAF so first frame paint is not blocked by synchronous DOM layout reflow
+    const rafId = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      tl.kill();
+    };
+  }, [camera]);
 
   return <group ref={groupRef} />;
 }

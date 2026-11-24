@@ -25,8 +25,17 @@ export default function Home() {
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/");
 
   useEffect(() => {
-    // Scroll to top on load
-    window.scrollTo(0, 0);
+    // Scroll to top on load and prevent browser scroll restoration from jumping
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      const scroller = document.getElementById("scroll-container");
+      if (scroller) {
+        scroller.scrollTop = 0;
+      }
+      window.scrollTo(0, 0);
+    }
     // Start fetching 3D chunk immediately upon hydration
     if (tier !== "static") {
       import("@/components/canvas/Scene");

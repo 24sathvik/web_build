@@ -24,7 +24,16 @@ export default function About() {
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/about");
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      const scroller = document.getElementById("scroll-container-about");
+      if (scroller) {
+        scroller.scrollTop = 0;
+      }
+      window.scrollTo(0, 0);
+    }
     if (tier !== "static") {
       import("@/components/canvas/about/AboutScene");
     }

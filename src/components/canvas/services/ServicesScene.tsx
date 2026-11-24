@@ -7,8 +7,13 @@ import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { debugStore } from "@/lib/debugState";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 function FirstFrameNotifier() {
   useFrame(() => {
@@ -26,7 +31,7 @@ function Carousel() {
     if (!groupRef.current) return;
     
     // Rotate the entire carousel based on scroll
-    gsap.to(groupRef.current.rotation, {
+    const anim = gsap.to(groupRef.current.rotation, {
       y: Math.PI * 2, // Full rotation
       ease: "none",
       scrollTrigger: {
@@ -35,9 +40,20 @@ function Carousel() {
         start: "top top",
         end: "bottom bottom",
         scrub: 1,
+        invalidateOnRefresh: true,
       },
     });
-  });
+
+    // Defer ScrollTrigger.refresh to rAF so first frame paint is not blocked by synchronous DOM layout reflow
+    const rafId = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      anim.kill();
+    };
+  }, []);
 
   const material = new THREE.MeshPhysicalMaterial({
     color: "#050505",

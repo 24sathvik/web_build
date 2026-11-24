@@ -24,7 +24,16 @@ export default function Services() {
   const { shouldMount, triggerTime } = useLazySceneTrigger(tier, "/services");
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      const scroller = document.getElementById("scroll-container-services");
+      if (scroller) {
+        scroller.scrollTop = 0;
+      }
+      window.scrollTo(0, 0);
+    }
     if (tier !== "static") {
       import("@/components/canvas/services/ServicesScene");
     }

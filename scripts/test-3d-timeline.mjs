@@ -108,8 +108,12 @@ async function run() {
     console.log("Warming up Chromium browser...");
     const warmupCtx = await browser.newContext();
     const warmupPage = await warmupCtx.newPage();
-    await warmupPage.goto(`${BASE_URL}/?debug=1`, { waitUntil: "networkidle" });
-    await warmupPage.waitForTimeout(1000);
+    await warmupPage.goto(`${BASE_URL}/?debug=1`, { waitUntil: "domcontentloaded" });
+    try {
+      await warmupPage.waitForFunction(() => {
+        return Boolean(window.__ZYXEN_TIMELINE__ && window.__ZYXEN_TIMELINE__.firstFrame !== null);
+      }, { timeout: 12000 });
+    } catch {}
     await warmupCtx.close();
     console.log("Chromium browser warmed up.");
 
