@@ -121,6 +121,10 @@ async function run() {
         viewport: { width: 1920, height: 1080 },
       });
       const desktopPage = await desktopContext.newPage();
+      desktopPage.on("pageerror", (err) => console.error("  [PAGE ERROR]", err.message));
+      desktopPage.on("console", (msg) => {
+        if (msg.type() === "error") console.error("  [CONSOLE ERROR]", msg.text());
+      });
 
       await desktopPage.goto(`${BASE_URL}${route.path}?debug=1`, { waitUntil: "domcontentloaded" });
 
