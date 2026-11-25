@@ -95,7 +95,7 @@ export function AboutOverlay() {
         <p className="hero-entrance text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           {siteContent.about.tag}
         </p>
-        <h1 className="hero-entrance-delay text-5xl md:text-7xl font-extrabold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto">
+        <h1 className="hero-entrance-delay text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto">
           {siteContent.about.headline}
         </h1>
         <p className="hero-entrance-delay-2 text-base md:text-xl text-[#BFC7D5] max-w-2xl font-light leading-relaxed pointer-events-auto">
@@ -104,21 +104,21 @@ export function AboutOverlay() {
       </section>
 
       {/* Chapter 2: The Philosophy */}
-      <section className="about-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-start justify-center px-6 md:px-24 py-20">
-        <h2 className="reveal-text text-3xl md:text-5xl font-bold tracking-tight text-[#FFFFFF] mb-8 border-l-4 border-[#00D9FF] pl-6 pointer-events-auto">
+      <section className="about-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-start justify-center px-4 sm:px-6 md:px-24 py-16 sm:py-20">
+        <h2 className="reveal-text text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-[#FFFFFF] mb-6 sm:mb-8 border-l-4 border-[#00D9FF] pl-4 sm:pl-6 pointer-events-auto">
           {siteContent.about.storyTitle}
         </h2>
-        <p className="reveal-text text-lg md:text-2xl text-[#BFC7D5] max-w-3xl font-light leading-relaxed mb-12 pointer-events-auto">
+        <p className="reveal-text text-base sm:text-lg md:text-2xl text-[#BFC7D5] max-w-3xl font-light leading-relaxed mb-8 sm:mb-12 pointer-events-auto">
           {siteContent.about.storyBody}
         </p>
-        <blockquote className="reveal-text border-l-2 border-[#6E5BFF] pl-6 text-[#FFFFFF] italic text-xl md:text-2xl font-serif max-w-2xl pointer-events-auto">
+        <blockquote className="reveal-text border-l-2 border-[#6E5BFF] pl-4 sm:pl-6 text-[#FFFFFF] italic text-lg sm:text-xl md:text-2xl font-serif max-w-2xl pointer-events-auto">
           &ldquo;{siteContent.about.quote}&rdquo;
         </blockquote>
       </section>
 
       {/* Chapter 3: Pillars */}
-      <section className="about-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-24">
-        <h2 className="reveal-text text-3xl md:text-5xl font-bold tracking-tight text-[#FFFFFF] mb-16 pointer-events-auto">
+      <section className="about-section content-visibility-auto w-full min-h-[100svh] flex flex-col items-center justify-center text-center px-4 py-16 sm:py-24">
+        <h2 className="reveal-text text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-[#FFFFFF] mb-12 sm:mb-16 pointer-events-auto">
           {siteContent.about.pillarsTitle}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full pointer-events-auto">

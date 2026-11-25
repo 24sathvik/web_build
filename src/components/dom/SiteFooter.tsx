@@ -78,11 +78,12 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer
-      aria-label="Site footer"
-      id="site-footer"
-      className="relative z-20 pointer-events-auto border-t border-[#00D9FF]/20 bg-gradient-to-b from-[#07080f] via-[#050508] to-[#030305] text-white"
-    >
+    <>
+      <footer
+        aria-label="Site footer"
+        id="site-footer"
+        className="relative z-20 pointer-events-auto border-t border-[#00D9FF]/20 bg-gradient-to-b from-[#07080f] via-[#050508] to-[#030305] text-white"
+      >
       {/* Glowing top divider hairline */}
       <div
         aria-hidden="true"
@@ -345,6 +346,12 @@ export function SiteFooter() {
         </div>
       </div>
     </footer>
+    {/* Mobile bottom bar clearance spacer so fixed bottom navigation never occludes footer content */}
+    <div
+      className="h-[calc(4rem+env(safe-area-inset-bottom,0px))] md:hidden pointer-events-none bg-[#030305]"
+      aria-hidden="true"
+    />
+  </>
   );
 }
 

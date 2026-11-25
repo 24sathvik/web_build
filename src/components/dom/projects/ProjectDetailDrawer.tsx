@@ -122,7 +122,7 @@ export function ProjectDetailDrawer({
         data-drawer-open={isOpen ? "true" : "false"}
         aria-labelledby={titleId}
         aria-describedby={descId}
-        className={`fixed top-0 right-0 bottom-0 w-full sm:max-w-xl bg-[#05060d]/[0.96] border-l border-white/[0.12] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),-16px_0_48px_rgba(0,0,0,0.85)] backdrop-blur-none md:backdrop-blur-xl p-6 sm:p-8 flex flex-col justify-between overflow-y-auto transform transition-transform duration-300 ease-out ${
+        className={`fixed top-0 right-0 bottom-0 w-full sm:max-w-xl bg-[#05060d]/[0.96] border-l border-white/[0.12] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),-16px_0_48px_rgba(0,0,0,0.85)] backdrop-blur-none md:backdrop-blur-xl p-6 sm:p-8 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:pb-8 flex flex-col justify-between overflow-y-auto transform transition-transform duration-300 ease-out ${
           visible ? "translate-x-0" : "translate-x-full"
         }`}
       >

@@ -63,7 +63,7 @@ export function Header() {
   return (
     <>
       {/* Top Left Logo */}
-      <div className="fixed top-0 left-0 w-full z-50 p-4 md:p-8 pointer-events-none flex items-center justify-between">
+      <div className="fixed top-0 left-0 w-full z-50 px-4 md:px-8 pt-[max(1rem,env(safe-area-inset-top,0px))] pb-4 md:py-8 pointer-events-none flex items-center justify-between">
         <Link href="/" prefetch={false} aria-label="ZYXEN Home" className="pointer-events-auto inline-flex items-center justify-center min-w-[44px] min-h-[44px]">
           <Image
             src="/images/logo-top.png"

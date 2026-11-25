@@ -25,7 +25,7 @@ export function OrbitControlsDock({
     <div
       role="region"
       aria-label="3D Orbit Navigation Controls"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-auto max-w-[95vw]"
+      className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:bottom-20 left-1/2 -translate-x-1/2 z-30 pointer-events-auto max-w-[95vw]"
     >
       <div className="flex items-center gap-2 sm:gap-4 rounded-full border border-white/[0.15] bg-[#05060d]/[0.88] backdrop-blur-none md:backdrop-blur-xl px-3 sm:px-5 py-2 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_12px_32px_rgba(0,0,0,0.6)]">
         {/* Previous Button */}

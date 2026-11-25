@@ -98,22 +98,22 @@ export function Overlay() {
         <p className="hero-entrance-delay mt-4 text-[#BFC7D5] max-w-2xl text-[clamp(1rem,1.2vw,1.125rem)] font-light tracking-wide pointer-events-auto mx-auto leading-relaxed">
           {siteContent.home.hero.subHeadline}
         </p>
-        <div className="hero-entrance-delay-2 mt-10 flex gap-4 md:gap-6 justify-center pointer-events-auto flex-wrap">
+        <div className="hero-entrance-delay-2 mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center items-stretch sm:items-center pointer-events-auto w-full max-w-sm sm:max-w-none mx-auto">
           <button 
             onClick={() => setIsContactOpen(true)}
-            className="precision-button min-h-[44px] px-8 py-3 bg-[#00D9FF] text-black font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white hover:scale-105 transition-all"
+            className="precision-button min-h-[44px] px-6 sm:px-8 py-3 bg-[#00D9FF] text-black font-bold uppercase tracking-widest text-xs sm:text-sm rounded-full hover:bg-white hover:scale-105 transition-all text-center justify-center inline-flex items-center"
           >
             {siteContent.home.hero.primaryCta}
           </button>
           <a 
             href="/aviation-academy-software" 
-            className="precision-button min-h-[44px] px-8 py-3 bg-white/10 border border-[#00D9FF]/40 text-[#00D9FF] font-bold uppercase tracking-widest text-sm rounded-full hover:bg-[#00D9FF]/20 hover:scale-105 transition-all inline-flex items-center"
+            className="precision-button min-h-[44px] px-6 sm:px-8 py-3 bg-white/10 border border-[#00D9FF]/40 text-[#00D9FF] font-bold uppercase tracking-widest text-xs sm:text-sm rounded-full hover:bg-[#00D9FF]/20 hover:scale-105 transition-all inline-flex items-center justify-center text-center"
           >
             {siteContent.home.hero.aviationCta}
           </a>
           <a 
             href="/projects" 
-            className="precision-button min-h-[44px] px-8 py-3 border border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded-full hover:bg-white/10 transition-all inline-flex items-center"
+            className="precision-button min-h-[44px] px-6 sm:px-8 py-3 border border-white/20 text-white font-bold uppercase tracking-widest text-xs sm:text-sm rounded-full hover:bg-white/10 transition-all inline-flex items-center justify-center text-center"
           >
             {siteContent.home.hero.secondaryCta}
           </a>

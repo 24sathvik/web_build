@@ -232,8 +232,8 @@ export function AviationOverlay() {
       </section>
 
       {/* (5) Call to Action to /contact */}
-      <section className="aviation-section content-visibility-auto w-full min-h-[70vh] flex flex-col items-center justify-center px-6 text-center">
-        <div className="max-w-3xl pointer-events-auto bg-[#050505]/90 p-10 md:p-14 rounded-3xl border border-[#6E5BFF]/30 backdrop-blur-2xl">
+      <section className="aviation-section content-visibility-auto w-full min-h-[70vh] flex flex-col items-center justify-center px-4 sm:px-6 text-center">
+        <div className="max-w-3xl w-full pointer-events-auto bg-[#050505]/90 p-6 sm:p-10 md:p-14 rounded-3xl border border-[#6E5BFF]/30 backdrop-blur-2xl">
           <h2 className="reveal-text text-3xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#00D9FF] mb-4">
             {aviation.cta.heading}
           </h2>

@@ -96,7 +96,7 @@ export function ServicesOverlay() {
         <p className="hero-entrance text-sm md:text-base text-[#00D9FF] uppercase tracking-[0.3em] font-mono font-bold mb-4 pointer-events-auto">
           Capacities &amp; Disciplines
         </p>
-        <h1 className="hero-entrance-delay text-5xl md:text-7xl font-extrabold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto">
+        <h1 className="hero-entrance-delay text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter text-[#FFFFFF] mb-6 pointer-events-auto">
           SOFTWARE &amp; WEB.
         </h1>
         <p className="hero-entrance-delay-2 text-base md:text-xl text-[#BFC7D5] max-w-2xl font-light leading-relaxed pointer-events-auto">
@@ -111,7 +111,7 @@ export function ServicesOverlay() {
           <section
             key={service.id}
             id={service.id}
-            className={`services-section content-visibility-auto w-full min-h-[100svh] flex flex-col ${isRight ? "items-end" : "items-start"} justify-center px-6 md:px-24 py-16`}
+            className={`services-section content-visibility-auto w-full min-h-[100svh] flex flex-col ${isRight ? "items-end" : "items-start"} justify-center px-4 sm:px-6 md:px-24 py-12 sm:py-16`}
           >
             <div data-spotlight="true" className={`max-w-xl w-full pointer-events-auto precision-card p-6 sm:p-8 md:p-10 rounded-2xl ${borderClasses[idx % borderClasses.length]}`}>
               <div className="text-3xl sm:text-4xl font-mono font-bold text-[#00D9FF] mb-2 sm:mb-3">
