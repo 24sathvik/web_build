@@ -79,10 +79,10 @@ export function BlogsOverlay({ posts }: { posts: BlogCard[] }) {
                 >
                   <div
                     data-spotlight="true"
-                    className={`reveal-blog precision-card p-6 md:p-8 rounded-2xl flex flex-col md:flex-row gap-6 border transition-all duration-300 ${
+                    className={`reveal-blog precision-card p-6 md:p-8 rounded-2xl flex flex-col md:flex-row gap-6 border bg-gradient-to-br from-[#0d1428]/95 via-[#080d1c]/95 to-[#050814]/95 shadow-[0_12px_36px_rgba(0,0,0,0.65)] transition-all duration-300 ${
                       isHighlighted
-                        ? "border-[#00D9FF]/80 shadow-[0_0_28px_rgba(0,217,255,0.2)]"
-                        : "border-white/10 hover:border-[#6E5BFF]/50"
+                        ? "border-[#00D9FF]/80 shadow-[0_0_28px_rgba(0,217,255,0.25)]"
+                        : "border-white/15 hover:border-[#6E5BFF]/50"
                     }`}
                   >
                 

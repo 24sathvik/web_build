@@ -43,9 +43,11 @@ canvas {
   .min-h-\[100svh\] {
     min-height: 100vh !important;
   }
+
   .h-\[100svh\] {
     height: 100vh !important;
   }
+
   .max-h-\[100svh\] {
     max-height: 100vh !important;
   }
@@ -122,28 +124,102 @@ canvas {
 
 /* Glassmorphism utilities */
 .glass-panel {
-  background: rgba(13, 13, 13, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(191, 199, 213, 0.1);
+  background: linear-gradient(145deg, rgba(16, 22, 38, 0.92) 0%, rgba(9, 12, 24, 0.96) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* Blog article typography (server-rendered markdown) */
-.zy-prose { color: #BFC7D5; font-size: 1.0625rem; line-height: 1.8; }
-.zy-prose h2 { color: #fff; font-size: 1.6rem; font-weight: 700; margin: 2.5rem 0 1rem; line-height: 1.25; scroll-margin-top: 6.5rem; }
-.zy-prose h3 { color: #fff; font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.75rem; scroll-margin-top: 6.5rem; }
-.zy-prose p { margin: 1rem 0; }
-.zy-prose a { color: #00D9FF; text-decoration: underline; text-underline-offset: 3px; }
-.zy-prose strong { color: #fff; }
-.zy-prose ul, .zy-prose ol { margin: 1rem 0; padding-left: 1.5rem; }
-.zy-prose ul { list-style: disc; }
-.zy-prose ol { list-style: decimal; }
-.zy-prose li { margin: 0.4rem 0; }
-.zy-prose blockquote { border-left: 3px solid #6E5BFF; padding-left: 1rem; margin: 1.5rem 0; color: #fff; font-style: italic; }
-.zy-prose img { max-width: 100%; height: auto; border-radius: 1rem; margin: 1.5rem 0; }
-.zy-prose hr { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 2.5rem 0; }
-.zy-prose table { display: block; overflow-x: auto; max-width: 100%; }
-.zy-prose code { background: rgba(255,255,255,0.08); padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.9em; }
+.zy-prose {
+  color: #BFC7D5;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+
+.zy-prose h2 {
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 2.5rem 0 1rem;
+  line-height: 1.25;
+  scroll-margin-top: 6.5rem;
+}
+
+.zy-prose h3 {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 2rem 0 0.75rem;
+  scroll-margin-top: 6.5rem;
+}
+
+.zy-prose p {
+  margin: 1rem 0;
+}
+
+.zy-prose a {
+  color: #00D9FF;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.zy-prose strong {
+  color: #fff;
+}
+
+.zy-prose ul,
+.zy-prose ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.zy-prose ul {
+  list-style: disc;
+}
+
+.zy-prose ol {
+  list-style: decimal;
+}
+
+.zy-prose li {
+  margin: 0.4rem 0;
+}
+
+.zy-prose blockquote {
+  border-left: 3px solid #6E5BFF;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: #fff;
+  font-style: italic;
+}
+
+.zy-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin: 1.5rem 0;
+}
+
+.zy-prose hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2.5rem 0;
+}
+
+.zy-prose table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.zy-prose code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
 
 /* Hero section entrance animation: pure CSS, no JS dependency, zero layout shift */
 @keyframes heroFadeIn {
@@ -214,11 +290,12 @@ canvas {
 .precision-card {
   position: relative;
   border-radius: var(--radius-card);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(13, 13, 13, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(145deg, rgba(16, 20, 36, 0.94) 0%, rgba(9, 12, 22, 0.97) 100%);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition: transform var(--duration-normal) var(--ease-precision),
-              border-color var(--duration-normal) var(--ease-precision),
-              box-shadow var(--duration-normal) var(--ease-precision);
+    border-color var(--duration-normal) var(--ease-precision),
+    box-shadow var(--duration-normal) var(--ease-precision);
   overflow: hidden;
 }
 
@@ -288,12 +365,10 @@ canvas {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(
-      280px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
-      rgba(0, 217, 255, 0.12),
-      rgba(110, 91, 255, 0.06),
-      transparent 70%
-    );
+    background: radial-gradient(280px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+        rgba(0, 217, 255, 0.12),
+        rgba(110, 91, 255, 0.06),
+        transparent 70%);
     opacity: 0;
     transition: opacity var(--duration-fast) var(--ease-precision);
     z-index: 2;
@@ -318,8 +393,8 @@ canvas {
   overflow: hidden;
   border-radius: var(--radius-pill);
   transition: transform var(--duration-normal) var(--ease-precision),
-              box-shadow var(--duration-normal) var(--ease-precision),
-              filter var(--duration-normal) var(--ease-precision);
+    box-shadow var(--duration-normal) var(--ease-precision),
+    filter var(--duration-normal) var(--ease-precision);
 }
 
 .precision-button::before {
@@ -329,12 +404,10 @@ canvas {
   left: -120%;
   width: 60%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent);
   transform: skewX(-20deg);
   pointer-events: none;
   transition: none;
@@ -406,7 +479,7 @@ canvas {
   padding: 0.35rem 0.75rem;
   border-radius: var(--radius-pill);
   transition: color var(--duration-fast) var(--ease-precision),
-              background-color var(--duration-fast) var(--ease-precision);
+    background-color var(--duration-fast) var(--ease-precision);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -436,6 +509,7 @@ canvas {
         opacity: 0;
         transform: translateY(20px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -454,13 +528,14 @@ canvas {
     opacity: 1;
     transform: translateY(0);
     transition: opacity var(--duration-slow) var(--ease-precision),
-                transform var(--duration-slow) var(--ease-precision);
+      transform var(--duration-slow) var(--ease-precision);
     transition-delay: calc(var(--i, 0) * 80ms);
   }
 }
 
 /* Reduced Motion Override: disable all motion */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

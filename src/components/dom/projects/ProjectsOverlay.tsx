@@ -46,7 +46,7 @@ function SectionHeadingPanel({
       <div
         className={`relative group max-w-3xl w-full rounded-2xl md:rounded-3xl p-[1px] transition-all duration-300 pointer-events-auto bg-gradient-to-b from-white/15 to-white/5 ${borderHoverClass}`}
       >
-        <div className="w-full rounded-[15px] md:rounded-[23px] bg-[#05060d]/[0.72] backdrop-blur-none md:backdrop-blur-xl p-8 sm:p-10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_16px_40px_rgba(0,0,0,0.6)] flex flex-col items-center">
+        <div className="w-full rounded-[15px] md:rounded-[23px] bg-gradient-to-br from-[#0c1428]/95 via-[#080d1c]/95 to-[#050814]/95 border border-white/15 backdrop-blur-none md:backdrop-blur-xl p-8 sm:p-10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.12),0_16px_40px_rgba(0,0,0,0.7)] flex flex-col items-center">
           <span className={`text-xs font-mono uppercase tracking-[0.25em] px-3.5 py-1 rounded-full mb-4 ${badgeClass}`}>
             {badgeText}
           </span>
@@ -65,7 +65,7 @@ function SectionHeadingPanel({
 function ProjectPlaceholder({ project }: { project: ProjectItem }) {
   const isAv = project.group === "aviation";
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-[#080a12]/[0.85] p-4 md:p-6 shadow-2xl font-sans backdrop-blur-none md:backdrop-blur-md">
+    <div className="w-full rounded-2xl border border-white/15 bg-gradient-to-br from-[#0b1224]/95 via-[#070c18]/95 to-[#040710]/95 p-4 md:p-6 shadow-2xl font-sans backdrop-blur-none md:backdrop-blur-md">
       <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
@@ -181,8 +181,14 @@ function ProjectCard({
           aria-hidden="true"
         />
         <div
-          className={`relative w-full rounded-[15px] md:rounded-[23px] bg-[#05060d]/[0.72] backdrop-blur-none md:backdrop-blur-xl p-6 sm:p-8 md:p-10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_16px_40px_rgba(0,0,0,0.6)] ${
-            isHighlighted ? (isAviation ? "shadow-[0_0_36px_rgba(0,217,255,0.2)]" : "shadow-[0_0_36px_rgba(110,91,255,0.2)]") : ""
+          className={`relative w-full rounded-[15px] md:rounded-[23px] backdrop-blur-none md:backdrop-blur-xl p-6 sm:p-8 md:p-10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.12),0_16px_40px_rgba(0,0,0,0.7)] ${
+            isAviation
+              ? "bg-gradient-to-br from-[#0c162d]/95 via-[#080e1e]/95 to-[#050814]/95 border border-[#00D9FF]/30"
+              : project.id === "pharma-quotation-system"
+                ? "bg-gradient-to-br from-[#091d18]/95 via-[#061413]/95 to-[#040c0b]/95 border border-[#00FFB2]/30"
+                : "bg-gradient-to-br from-[#16102c]/95 via-[#0e0a20]/95 to-[#080614]/95 border border-[#6E5BFF]/30"
+          } ${
+            isHighlighted ? (isAviation ? "shadow-[0_0_36px_rgba(0,217,255,0.25)]" : "shadow-[0_0_36px_rgba(110,91,255,0.25)]") : ""
           }`}
         >
           <div
@@ -374,9 +380,8 @@ export function ProjectsOverlay({
                 role="tab"
                 aria-selected={filter === "all"}
                 onClick={() => handleFilterChange("all")}
-                className={`min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${
-                  filter === "all" ? "bg-white text-black font-bold shadow-lg" : "bg-white/5 text-white/80 border border-white/15 hover:bg-white/10 hover:text-white"
-                }`}
+                className={`min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${filter === "all" ? "bg-white text-black font-bold shadow-lg" : "bg-white/5 text-white/80 border border-white/15 hover:bg-white/10 hover:text-white"
+                  }`}
               >
                 <span>All</span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] ${filter === "all" ? "bg-black/10 text-black" : "bg-white/10 text-white/70"}`}>
@@ -388,9 +393,8 @@ export function ProjectsOverlay({
                 role="tab"
                 aria-selected={filter === "aviation"}
                 onClick={() => handleFilterChange("aviation")}
-                className={`min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${
-                  filter === "aviation" ? "bg-[#00D9FF] text-black font-bold shadow-[0_0_24px_rgba(0,217,255,0.4)]" : "bg-white/5 text-white/80 border border-white/15 hover:bg-white/10 hover:text-white"
-                }`}
+                className={`min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${filter === "aviation" ? "bg-[#00D9FF] text-black font-bold shadow-[0_0_24px_rgba(0,217,255,0.4)]" : "bg-white/5 text-white/80 border border-white/15 hover:bg-white/10 hover:text-white"
+                  }`}
               >
                 <span>For aviation academies</span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] ${filter === "aviation" ? "bg-black/10 text-black" : "bg-white/10 text-white/70"}`}>
@@ -402,9 +406,8 @@ export function ProjectsOverlay({
                 role="tab"
                 aria-selected={filter === "business"}
                 onClick={() => handleFilterChange("business")}
-                className={`min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${
-                  filter === "business" ? "bg-[#6E5BFF] text-white font-bold shadow-[0_0_24px_rgba(110,91,255,0.4)]" : "bg-white/5 text-white/80 border border-white/15 hover:bg-white/10 hover:text-white"
-                }`}
+                className={`min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${filter === "business" ? "bg-[#6E5BFF] text-white font-bold shadow-[0_0_24px_rgba(110,91,255,0.4)]" : "bg-white/5 text-white/80 border border-white/15 hover:bg-white/10 hover:text-white"
+                  }`}
               >
                 <span>For businesses</span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] ${filter === "business" ? "bg-white/20 text-white" : "bg-white/10 text-white/70"}`}>
@@ -468,7 +471,7 @@ export function ProjectsOverlay({
           aria-hidden="true"
         />
         <div className="relative group max-w-3xl w-full rounded-2xl md:rounded-3xl p-[1px] transition-all duration-300 pointer-events-auto bg-gradient-to-b from-white/15 to-white/5 hover:from-[#00D9FF]/40 hover:to-[#6E5BFF]/40">
-          <div className="w-full rounded-[15px] md:rounded-[23px] bg-[#05060d]/[0.72] backdrop-blur-none md:backdrop-blur-xl p-8 sm:p-12 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_16px_40px_rgba(0,0,0,0.6)] flex flex-col items-center">
+          <div className="w-full rounded-[15px] md:rounded-[23px] bg-gradient-to-br from-[#0d152a]/95 via-[#080d1c]/95 to-[#050814]/95 border border-[#00D9FF]/25 backdrop-blur-none md:backdrop-blur-xl p-8 sm:p-12 shadow-[inset_0_1px_1px_rgba(255,255,255,0.12),0_16px_40px_rgba(0,0,0,0.7)] flex flex-col items-center">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
               Need a Custom Platform?
             </h2>

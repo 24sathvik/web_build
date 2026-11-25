@@ -63,17 +63,25 @@ export function Header() {
   return (
     <>
       {/* Top Left Logo */}
-      <div className="fixed top-0 left-0 w-full z-50 px-4 md:px-8 pt-[max(1rem,env(safe-area-inset-top,0px))] pb-4 md:py-8 pointer-events-none flex items-center justify-between">
-        <Link href="/" prefetch={false} aria-label="ZYXEN Home" className="pointer-events-auto inline-flex items-center justify-center min-w-[44px] min-h-[44px]">
+      <div className="fixed top-0 left-0 w-full z-50 px-4 md:px-8 pt-3.5 sm:pt-4 md:pt-6 pointer-events-none flex items-center justify-between">
+        <Link
+          href="/"
+          prefetch={false}
+          aria-label="ZYXEN Home"
+          className="pointer-events-auto inline-flex items-center gap-2.5 p-1 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF]"
+        >
           <Image
             src="/images/logo-top.png"
-            alt="Zyxen Logo"
-            width={52}
-            height={40}
+            alt="ZYXEN Logo"
+            width={48}
+            height={36}
             priority
             unoptimized
-            className="h-7 sm:h-8 md:h-10 w-auto object-contain cursor-pointer"
+            className="h-8 sm:h-9 md:h-10 w-auto object-contain cursor-pointer drop-shadow-[0_0_12px_rgba(0,217,255,0.45)]"
           />
+          <span className="text-base sm:text-lg md:text-xl font-bold tracking-tight text-white font-mono drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+            ZYXEN
+          </span>
         </Link>
       </div>
 

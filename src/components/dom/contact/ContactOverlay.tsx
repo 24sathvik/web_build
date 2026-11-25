@@ -96,7 +96,7 @@ export function ContactOverlay() {
 
       {/* Right side form */}
       <div className="w-full lg:w-1/2 flex justify-end items-center pointer-events-auto">
-        <div className="hero-entrance-delay-2 w-full max-w-lg precision-card p-6 md:p-8 rounded-3xl border border-[#00D9FF]/30 bg-[#050505]/75 shadow-2xl">
+        <div className="hero-entrance-delay-2 w-full max-w-lg precision-card p-6 md:p-8 rounded-3xl border border-[#00D9FF]/30 bg-gradient-to-br from-[#0c1428]/95 via-[#080d1c]/95 to-[#050814]/95 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
           <ContactFormView />
         </div>
       </div>

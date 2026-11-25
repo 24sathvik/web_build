@@ -68,7 +68,7 @@ export function AviationOverlay() {
               <div
                 key={mod.id}
                 data-spotlight="true"
-                className={`reveal-text precision-card p-6 sm:p-8 rounded-2xl border ${accents[idx % accents.length]} bg-[#050505]/70 flex flex-col justify-between`}
+                className={`reveal-text precision-card p-6 sm:p-8 rounded-2xl border ${accents[idx % accents.length]} bg-gradient-to-br from-[#0c1428]/95 via-[#080d1e]/95 to-[#050814]/95 shadow-[0_12px_36px_rgba(0,0,0,0.65)] flex flex-col justify-between`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -124,9 +124,9 @@ export function AviationOverlay() {
                 onMouseLeave={() => aviationStore.set({ domHoveredCode: null })}
                 onFocus={() => aviationStore.set({ domHoveredCode: auth.code })}
                 onBlur={() => aviationStore.set({ domHoveredCode: null })}
-                className={`reveal-text precision-card p-8 rounded-2xl border bg-[#050505]/70 flex flex-col justify-between transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${
+                className={`reveal-text precision-card p-8 rounded-2xl border bg-gradient-to-br from-[#0e172e]/95 via-[#090f20]/95 to-[#050914]/95 shadow-[0_12px_36px_rgba(0,0,0,0.65)] flex flex-col justify-between transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00D9FF] ${
                   isHighlighted
-                    ? "border-[#00D9FF]/80 shadow-[0_0_28px_rgba(0,217,255,0.2)]"
+                    ? "border-[#00D9FF]/80 shadow-[0_0_28px_rgba(0,217,255,0.25)]"
                     : "border-white/10 hover:border-[#00D9FF]/45"
                 }`}
               >
@@ -177,7 +177,7 @@ export function AviationOverlay() {
 
       {/* (4) For Other Institutes */}
       <section className="aviation-section content-visibility-auto w-full min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-16 py-20">
-        <div className="max-w-4xl w-full glass-panel p-8 md:p-12 rounded-3xl border border-[#00D9FF]/20 backdrop-blur-xl bg-[#050505]/80 pointer-events-auto text-center">
+        <div className="max-w-4xl w-full glass-panel p-8 md:p-12 rounded-3xl border border-[#00D9FF]/30 backdrop-blur-xl bg-gradient-to-br from-[#0a1224]/95 via-[#070d1a]/95 to-[#040810]/95 shadow-[0_16px_40px_rgba(0,0,0,0.7)] pointer-events-auto text-center">
           <h2 className="reveal-text text-2xl sm:text-4xl font-bold text-white mb-4">
             {aviation.otherInstitutes.title}
           </h2>
@@ -214,7 +214,7 @@ export function AviationOverlay() {
             {aviation.faqs.map((faq) => (
               <details
                 key={faq.question}
-                className="group glass-panel p-6 rounded-2xl border border-white/10 bg-[#050505]/70 open:border-[#00D9FF]/40 transition-colors"
+                className="group glass-panel p-6 rounded-2xl border border-white/15 bg-gradient-to-br from-[#0a1224]/95 to-[#060a16]/95 open:border-[#00D9FF]/50 transition-colors shadow-lg"
               >
                 <summary className="font-semibold text-base sm:text-lg text-white cursor-pointer list-none flex items-center justify-between gap-4">
                   <span>{faq.question}</span>
@@ -233,7 +233,7 @@ export function AviationOverlay() {
 
       {/* (5) Call to Action to /contact */}
       <section className="aviation-section content-visibility-auto w-full min-h-[70vh] flex flex-col items-center justify-center px-4 sm:px-6 text-center">
-        <div className="max-w-3xl w-full pointer-events-auto bg-[#050505]/90 p-6 sm:p-10 md:p-14 rounded-3xl border border-[#6E5BFF]/30 backdrop-blur-2xl">
+        <div className="max-w-3xl w-full pointer-events-auto bg-gradient-to-br from-[#0c1428]/95 via-[#080d1c]/95 to-[#050814]/95 p-6 sm:p-10 md:p-14 rounded-3xl border border-[#6E5BFF]/40 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
           <h2 className="reveal-text text-3xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#00D9FF] mb-4">
             {aviation.cta.heading}
           </h2>
